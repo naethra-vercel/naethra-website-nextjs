@@ -85,13 +85,22 @@ const insights = [
   ["AI", "From promising prototype to dependable production system", "5 min"],
 ];
 
-function Logo() {
+const integrations = [
+  { label: "AWS", icon: Cloud },
+  { label: "API", icon: Braces },
+  { label: "DATA", icon: Database },
+  { label: "AI", icon: Sparkles },
+  { label: "FAST", icon: Zap },
+  { label: "SAFE", icon: ShieldCheck },
+];
+
+function Logo({ inverse = false }: { inverse?: boolean }) {
   return (
     <a href="#top" className="inline-flex items-center gap-2.5" aria-label="Putech home">
       <span className="grid size-7 place-items-center rounded-full bg-primary text-primary-foreground">
         <Asterisk className="size-4" strokeWidth={2.5} />
       </span>
-      <span className="font-display text-[1.05rem] font-bold text-foreground">Putech</span>
+      <span className={`font-display text-[1.05rem] font-bold ${inverse ? "text-surface" : "text-foreground"}`}>Putech</span>
     </a>
   );
 }
@@ -222,11 +231,9 @@ function Index() {
           <p className="mx-auto mt-5 max-w-xl text-sm leading-6 text-muted-foreground">We join the systems your business relies on, removing fragile handoffs and creating a clear operational picture.</p>
           <div className="integration-map mt-16" aria-label="Technology integrations illustration">
             <div className="integration-line" />
-            {[
-              ["AWS", Cloud], ["API", Braces], ["DATA", Database], ["AI", Sparkles], ["FAST", Zap], ["SAFE", ShieldCheck],
-            ].map(([label, Icon], i) => (
-              <div key={label as string} className={`integration-node node-${i + 1}`}>
-                <Icon className="size-5" /><span>{label as string}</span>
+            {integrations.map(({ label, icon: Icon }, i) => (
+              <div key={label} className={`integration-node node-${i + 1}`}>
+                <Icon className="size-5" /><span>{label}</span>
               </div>
             ))}
             <div className="integration-core"><Asterisk className="size-6" /><strong>Putech</strong></div>
@@ -310,7 +317,7 @@ function Index() {
 
       <footer className="bg-ink py-10 text-surface">
         <div className="page-shell flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
-          <div><Logo /><p className="mt-4 max-w-xs text-xs leading-5 text-surface/45">Secure digital products and connected technology for ambitious organisations.</p></div>
+          <div><Logo inverse /><p className="mt-4 max-w-xs text-xs leading-5 text-surface/45">Secure digital products and connected technology for ambitious organisations.</p></div>
           <div className="flex gap-6 text-xs text-surface/60"><a href="#top">Top</a><a href="#services">Services</a><a href="#work">Work</a></div>
           <span className="text-[0.65rem] text-surface/35">© 2026 Putech</span>
         </div>
