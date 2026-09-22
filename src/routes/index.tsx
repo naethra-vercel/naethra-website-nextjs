@@ -285,35 +285,75 @@ function Index() {
       </header>
 
       <section className="hero-section">
-        <div className="site-container hero-layout">
-          <div className="hero-copy" data-reveal="hero">
-            <h1>
-              Comprehensive full-stack <em>development outsourcing.</em>
-            </h1>
-            <p>
-              Mastering web, mobile native, and cross-platform applications with the experience to
-              build, improve, and support the software your business depends on.
-            </p>
+        <video
+          className="sentinel-bg"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          poster="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260912_105822_bf7c2d53-9957-4521-bbbf-7c1ab7a70130.png"
+          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260912_105953_21ad8049-9088-4a00-bad3-aee6b5575a2b.mp4"
+          aria-hidden="true"
+        />
+        <div className="sentinel-tint" />
+        <div className="sentinel-hero-inner">
+          <div className="sentinel-topbar">
+            <a className="sentinel-brand" href="#top" aria-label="ConSentinel home">
+              <span className="sentinel-mark" aria-hidden="true">◎</span>
+              <strong>ConSentinel</strong>
+            </a>
+            <nav className="sentinel-nav" aria-label="ConSentinel navigation">
+              <a href="#top">⌂ <span>Explore</span></a>
+              <i aria-hidden="true" />
+              <a href="#services">▦ <span>Product</span></a>
+            </nav>
+            <a className="sentinel-cta" href="#contact">
+              <span>Get free plan</span><b>›</b>
+            </a>
+            <button
+              className="sentinel-menu-button"
+              type="button"
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={menuOpen}
+              onClick={() => setMenuOpen((open) => !open)}
+            >
+              <span /><span />
+            </button>
           </div>
-          <div className="hero-visual" data-reveal="image">
-            <div className="hero-image-frame">
-              <img
-                src={teamImage}
-                alt="Naethra team collaborating on a digital product"
-                width={1408}
-                height={1008}
-              />
-              <div className="hero-image-glow" />
+          {menuOpen && (
+            <nav className="sentinel-mobile-menu" aria-label="ConSentinel mobile navigation">
+              <a href="#top" onClick={() => setMenuOpen(false)}>Explore</a>
+              <a href="#services" onClick={() => setMenuOpen(false)}>Product</a>
+              <a href="#contact" onClick={() => setMenuOpen(false)}>Get free plan</a>
+            </nav>
+          )}
+          <div className="sentinel-main">
+            <div className="sentinel-copy">
+              <p className="sentinel-eyebrow">Your digital infrastructure</p>
+              <h1>Smarter Security<br />Starts Here</h1>
+              <div className="sentinel-tagrow">
+                <span className="sentinel-play" aria-hidden="true">▶</span>
+                <span>Secure the Sphere. Protect What Matters.</span>
+              </div>
             </div>
-            <div className="hero-note hero-note-top">
-              <HugeiconsIcon icon={SparklesIcon} size={16} />
-              <span>Ideas into systems</span>
+            <aside className="sentinel-panel">
+              <div className="sentinel-panel-top"><span>AI-Driven</span><i /><b>◈</b></div>
+              <p>Cloud<br />Infrastructure<br />Protection</p>
+              <div className="sentinel-scale"><span>1K</span><span>10K</span><span>50K</span><span>100K</span></div>
+              <div className="sentinel-track"><i /></div>
+            </aside>
+          </div>
+          <div className="sentinel-bottom">
+            <div className="sentinel-stats">
+              <div><strong>112+</strong><span>Countries<br />Protected<br />Globally</span></div>
+              <i aria-hidden="true" />
+              <div><strong>55K+</strong><span>Clients<br />Secured</span></div>
             </div>
-            <div className="hero-note hero-note-bottom">
-              <span className="status-dot" />
-              <span>Shipping with intent</span>
-              <HugeiconsIcon icon={ArrowUpRight01Icon} size={15} />
-            </div>
+            <a className="sentinel-meet" href="#contact">
+              <img alt="" src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260912_105822_bf7c2d53-9957-4521-bbbf-7c1ab7a70130.png" />
+              <b>Meet Sentinel</b><span>›</span>
+            </a>
           </div>
         </div>
       </section>
