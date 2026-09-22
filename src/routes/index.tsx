@@ -1,40 +1,44 @@
 import { createFileRoute } from "@tanstack/react-router";
 import {
-  ArrowDownRight,
   ArrowRight,
-  Asterisk,
-  Braces,
+  ArrowUpRight,
   Check,
-  ChevronRight,
+  ChevronDown,
   Cloud,
-  Code2,
   Database,
+  Globe2,
   Menu,
-  ShieldCheck,
+  MoveUpRight,
+  Palette,
+  Quote,
+  Smartphone,
   Sparkles,
+  Users,
   X,
-  Zap,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import founderImage from "@/assets/putech-founder.jpg";
 import projectImage from "@/assets/putech-project.jpg";
-import securityImage from "@/assets/putech-security.jpg";
 import teamImage from "@/assets/putech-team.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Putech — Secure technology, built for what’s next" },
+      { title: "Naethra Technologies | Comprehensive Full Stack Development Outsourcing" },
       {
         name: "description",
         content:
-          "Putech designs secure digital products, connected platforms, and resilient cloud systems for ambitious teams.",
+          "Naethra Technologies delivers full-stack web, mobile, cross-platform, UX/UI, FileMaker, and enterprise application development.",
       },
-      { property: "og:title", content: "Putech — Secure technology, built for what’s next" },
+      {
+        property: "og:title",
+        content: "Naethra Technologies | Comprehensive Full Stack Development Outsourcing",
+      },
       {
         property: "og:description",
-        content: "Strategy, design, engineering, and security for technology that moves business forward.",
+        content:
+          "Mastering web, mobile native, and cross-platform applications for ambitious businesses.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "/" },
@@ -46,69 +50,90 @@ export const Route = createFileRoute("/")({
 });
 
 const navItems = [
-  ["About", "#about"],
+  ["Mobile", "#mobile"],
+  ["Web App", "#web-app"],
+  ["Portfolio", "#work"],
   ["Services", "#services"],
-  ["Work", "#work"],
-  ["Insights", "#insights"],
+  ["FileMaker", "#filemaker"],
+  ["About Us", "#about"],
+  ["Contact Us", "#contact"],
 ];
 
 const services = [
-  {
-    number: "01",
-    title: "Digital products",
-    body: "Research, product strategy, interface design, and scalable engineering—one senior team from first idea to launch.",
-    icon: Code2,
-  },
-  {
-    number: "02",
-    title: "Cloud systems",
-    body: "Modern infrastructure and connected platforms engineered for performance, observability, and long-term resilience.",
-    icon: Cloud,
-  },
-  {
-    number: "03",
-    title: "Cyber security",
-    body: "Practical security reviews and threat-led improvements built into your product, people, and operating model.",
-    icon: ShieldCheck,
-  },
-  {
-    number: "04",
-    title: "Data & AI",
-    body: "Useful intelligence from complex data, with responsible automation that supports better, faster decisions.",
-    icon: Database,
-  },
-];
+  [
+    "01",
+    "Web & enterprise applications",
+    "Outsource web applications, enterprise systems, UX/UI planning, and usability testing to an experienced delivery team.",
+    Globe2,
+  ],
+  [
+    "02",
+    "Cross-platform mobile apps",
+    "Build mobile applications with Ionic Framework, Cordova, Flutter, or the native approach your product requires.",
+    Smartphone,
+  ],
+  [
+    "03",
+    "User interface & graphic design",
+    "Responsive, mobile-first design concepts that make your product easier and more enjoyable to use.",
+    Palette,
+  ],
+  [
+    "04",
+    "Claris FileMaker development",
+    "FileMaker integration, database development, WebDirect, Custom Web Publishing, and custom application development.",
+    Database,
+  ],
+  [
+    "05",
+    "Content management systems",
+    "Powerful CMS solutions with PHP, WordPress, Joomla, and Magento for teams that need to publish and grow.",
+    Cloud,
+  ],
+  [
+    "06",
+    "Zoho & cloud applications",
+    "Quickly build and deploy cloud applications with Zoho Creator, plus maintenance and support for existing systems.",
+    Users,
+  ],
+] as const;
 
-const insights = [
-  ["Security", "Why secure-by-design changes the economics of product development", "6 min"],
-  ["Product", "The operating model behind high-performing digital teams", "8 min"],
-  ["AI", "From promising prototype to dependable production system", "5 min"],
-];
-
-const integrations = [
-  { label: "AWS", icon: Cloud },
-  { label: "API", icon: Braces },
-  { label: "DATA", icon: Database },
-  { label: "AI", icon: Sparkles },
-  { label: "FAST", icon: Zap },
-  { label: "SAFE", icon: ShieldCheck },
+const process = [
+  [
+    "01",
+    "Understand",
+    "We listen first, map the real problem, and create a clear plan your team can believe in.",
+  ],
+  [
+    "02",
+    "Make",
+    "Small, senior teams turn the plan into a useful product with visible progress at every step.",
+  ],
+  [
+    "03",
+    "Improve",
+    "After launch, we stay close to the product and help it become more valuable over time.",
+  ],
 ];
 
 function Logo({ inverse = false }: { inverse?: boolean }) {
   return (
-    <a href="#top" className="inline-flex items-center gap-2.5" aria-label="Putech home">
-      <span className="grid size-7 place-items-center rounded-full bg-primary text-primary-foreground">
-        <Asterisk className="size-4" strokeWidth={2.5} />
-      </span>
-      <span className={`font-display text-[1.05rem] font-bold ${inverse ? "text-surface" : "text-foreground"}`}>Putech</span>
+    <a href="#top" className="brand-mark" aria-label="Naethra Technologies home">
+      <img
+        src="/logo.png"
+        alt="Naethra Technologies"
+        className={`brand-logo ${inverse ? "brand-logo-inverse" : ""}`}
+        width={220}
+        height={49}
+      />
     </a>
   );
 }
 
-function SectionLabel({ children, inverse = false }: { children: string; inverse?: boolean }) {
+function Eyebrow({ children, inverse = false }: { children: string; inverse?: boolean }) {
   return (
-    <div className={`section-label ${inverse ? "text-surface" : "text-muted-foreground"}`}>
-      <span className={inverse ? "bg-lime" : "bg-primary"} />
+    <div className={`eyebrow ${inverse ? "eyebrow-inverse" : ""}`}>
+      <span />
       {children}
     </div>
   );
@@ -116,210 +141,411 @@ function SectionLabel({ children, inverse = false }: { children: string; inverse
 
 function Index() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const revealElements = document.querySelectorAll<HTMLElement>("[data-reveal]");
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { rootMargin: "-8% 0px", threshold: 0.12 },
+    );
+
+    revealElements.forEach((element) => revealObserver.observe(element));
+    const handleScroll = () => setIsScrolled(window.scrollY > 24);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      revealObserver.disconnect();
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
-    <main id="top" className="overflow-hidden bg-background text-foreground">
-      <header className="absolute inset-x-0 top-0 z-30 border-b border-ink/10">
-        <div className="page-shell flex h-20 items-center justify-between">
+    <main id="top" className="site-page">
+      <header className={`site-header ${isScrolled ? "is-scrolled" : ""}`}>
+        <div className="site-container header-inner">
           <Logo />
-          <nav className="hidden items-center gap-8 md:flex" aria-label="Primary navigation">
+          <nav className="desktop-nav" aria-label="Primary navigation">
             {navItems.map(([label, href]) => (
-              <a key={label} href={href} className="nav-link">
+              <a key={label} href={href}>
                 {label}
               </a>
             ))}
           </nav>
-          <a href="#contact" className="button-primary hidden md:inline-flex">
-            Start a project <ArrowRight className="size-4" />
+          <a href="#contact" className="button button-orange header-cta">
+            30 mins meeting <ArrowUpRight size={16} />
           </a>
           <button
             type="button"
-            className="icon-button md:hidden"
+            className="menu-button"
             onClick={() => setMenuOpen((open) => !open)}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
           >
-            {menuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+            {menuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
         {menuOpen && (
-          <nav className="mobile-menu md:hidden" aria-label="Mobile navigation">
+          <nav className="mobile-nav" aria-label="Mobile navigation">
             {navItems.map(([label, href]) => (
               <a key={label} href={href} onClick={() => setMenuOpen(false)}>
-                {label} <ArrowDownRight className="size-5" />
+                {label}
+                <ArrowUpRight size={18} />
               </a>
             ))}
-            <a href="#contact" onClick={() => setMenuOpen(false)} className="button-primary mt-3 justify-center">
-              Start a project <ArrowRight className="size-4" />
+            <a href="#contact" className="button button-orange" onClick={() => setMenuOpen(false)}>
+              30 mins meeting <ArrowRight size={16} />
             </a>
           </nav>
         )}
       </header>
 
-      <section className="hero-grid relative min-h-[760px] border-b border-ink/10 pt-20 md:min-h-[820px]">
-        <div className="page-shell relative flex min-h-[680px] flex-col justify-between py-20 md:min-h-[740px] md:py-24">
-          <div className="max-w-3xl">
-            <SectionLabel>Independent technology partner · London / Global</SectionLabel>
-            <h1 className="mt-10 font-display text-[clamp(3.6rem,8vw,7.7rem)] font-semibold leading-[0.86]">
-              Smarter security
-              <br />
-              starts <span className="text-primary">here.</span>
+      <section className="hero-section">
+        <div className="site-container hero-layout">
+          <div className="hero-copy" data-reveal="hero">
+            <Eyebrow>Naethra Technologies · Full-stack development outsourcing</Eyebrow>
+            <h1>
+              Comprehensive full-stack <em>development outsourcing.</em>
             </h1>
-            <p className="mt-8 max-w-md text-base leading-7 text-muted-foreground md:ml-[36%]">
-              We design and engineer secure digital products for organisations moving faster than convention.
+            <p>
+              Mastering web, mobile native, and cross-platform applications with the experience to
+              build, improve, and support the software your business depends on.
+            </p>
+            <div className="hero-actions">
+              <a href="#contact" className="button button-orange">
+                Schedule a 30-minute meeting <ArrowUpRight size={17} />
+              </a>
+              <a href="#work" className="text-link">
+                Explore our services <ArrowRight size={16} />
+              </a>
+            </div>
+          </div>
+          <div className="hero-visual" data-reveal="image">
+            <div className="hero-image-frame">
+              <img
+                src={teamImage}
+                alt="Naethra team collaborating on a digital product"
+                width={1408}
+                height={1008}
+              />
+              <div className="hero-image-glow" />
+            </div>
+            <div className="hero-note hero-note-top">
+              <Sparkles size={16} />
+              <span>Ideas into systems</span>
+            </div>
+            <div className="hero-note hero-note-bottom">
+              <span className="status-dot" />
+              <span>Shipping with intent</span>
+              <ArrowUpRight size={15} />
+            </div>
+          </div>
+        </div>
+        <div className="hero-bottom site-container" data-reveal="fade-up">
+          <span>Web · Mobile · UX/UI · FileMaker · Enterprise applications</span>
+          <span className="hero-scroll">
+            <ChevronDown size={16} /> Scroll to explore
+          </span>
+        </div>
+      </section>
+
+      <section className="trust-strip">
+        <div className="site-container trust-grid">
+          <div>
+            <strong>
+              20<span>+</span>
+            </strong>
+            <span>years of experience</span>
+          </div>
+          <div>
+            <strong>
+              15<span>+</span>
+            </strong>
+            <span>technology capabilities</span>
+          </div>
+          <div>
+            <strong>
+              100<span>+</span>
+            </strong>
+            <span>projects delivered</span>
+          </div>
+          <div>
+            <strong>
+              24<span>/7</span>
+            </strong>
+            <span>long-term support</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="services" className="section section-services">
+        <div className="site-container">
+          <div className="section-heading split-heading" data-reveal="fade-up">
+            <div>
+              <Eyebrow>Our major software development services</Eyebrow>
+              <h2>
+                One capable team for every <em>digital need.</em>
+              </h2>
+            </div>
+            <p>
+              Tailored solutions for businesses that need dependable technology, a flexible delivery
+              partner, and a product that keeps creating value after launch.
             </p>
           </div>
+          <div className="services-grid">
+            {services.map(([number, title, body, Icon], index) => (
+              <article
+                key={title}
+                id={
+                  title === "Cross-platform mobile apps"
+                    ? "mobile"
+                    : title === "Web & enterprise applications"
+                      ? "web-app"
+                      : title === "Claris FileMaker development"
+                        ? "filemaker"
+                        : undefined
+                }
+                className="service-card"
+                data-reveal="fade-up"
+                data-reveal-delay={String((index % 3) + 1)}
+              >
+                <div className="service-card-top">
+                  <span>{number}</span>
+                  <Icon size={22} strokeWidth={1.7} />
+                </div>
+                <h3>{title}</h3>
+                <p>{body}</p>
+                <ArrowUpRight className="service-arrow" size={19} />
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
 
-          <div className="grid items-end gap-8 md:grid-cols-[1fr_0.75fr_0.45fr]">
-            <div className="flex gap-10 border-t border-ink/15 pt-5 md:border-0 md:pt-0">
-              <div><strong className="stat">112+</strong><span className="stat-label">Products shipped</span></div>
-              <div><strong className="stat">55K+</strong><span className="stat-label">Risks resolved</span></div>
+      <section id="process" className="section process-section">
+        <div className="site-container process-layout">
+          <div data-reveal="fade-up">
+            <Eyebrow inverse>Why Naethra Technologies</Eyebrow>
+            <h2>
+              You make real things. We make them <em>happen.</em>
+            </h2>
+            <p>
+              Our experienced developers understand the latest web and mobile technologies, work
+              around your needs, and stay with you through delivery, maintenance, and support.
+            </p>
+            <a href="#contact" className="button button-light">
+              Schedule a 30-minute meeting <ArrowUpRight size={16} />
+            </a>
+          </div>
+          <div className="process-list">
+            {process.map(([number, title], index) => (
+              <div
+                className="process-item"
+                key={title}
+                data-reveal="fade-up"
+                data-reveal-delay={String(index + 1)}
+              >
+                <span>{number}</span>
+                <div>
+                  <h3>
+                    {title === "Understand"
+                      ? "Tailored solutions"
+                      : title === "Make"
+                        ? "Agile delivery"
+                        : "Ongoing support"}
+                  </h3>
+                  <p>
+                    {title === "Understand"
+                      ? "We understand your requirements and shape the right web, mobile, or custom data solution for your business."
+                      : title === "Make"
+                        ? "Our agile team adapts quickly as the product takes shape, keeping quality and communication visible."
+                        : "Maintenance, DevOps, and support services help you get the most from your investment."}
+                  </p>
+                </div>
+                <MoveUpRight size={18} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="work" className="section work-section">
+        <div className="site-container">
+          <div className="section-heading split-heading" data-reveal="fade-up">
+            <div>
+              <Eyebrow>Portfolio</Eyebrow>
+              <h2>
+                Custom software that <em>works for people.</em>
+              </h2>
             </div>
-            <div className="security-ticket">
-              <span className="grid size-9 place-items-center rounded-full bg-lime text-ink"><ShieldCheck className="size-4" /></span>
-              <div><span className="text-[0.64rem] uppercase text-muted-foreground">Security status</span><strong className="block text-sm">All systems protected</strong></div>
-              <Check className="ml-auto size-4 text-primary" />
+            <a href="#contact" className="text-link">
+              View all projects <ArrowRight size={16} />
+            </a>
+          </div>
+          <div className="work-grid">
+            <article className="work-card work-card-large" data-reveal="fade-up">
+              <img
+                src={projectImage}
+                alt="Product team reviewing an app experience"
+                width={1200}
+                height={1504}
+              />
+              <div className="work-caption">
+                <span>Healthcare / Web and mobile application</span>
+                <h3>Digital experiences built around real users.</h3>
+                <ArrowUpRight size={20} />
+              </div>
+            </article>
+            <article className="work-card" data-reveal="fade-up" data-reveal-delay="1">
+              <img
+                src={founderImage}
+                alt="Founder working with a technology team"
+                width={1200}
+                height={1104}
+              />
+              <div className="work-caption">
+                <span>Advisory / Enterprise application</span>
+                <h3>Technology that makes work easier.</h3>
+                <ArrowUpRight size={20} />
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="about" className="section about-section">
+        <div className="site-container about-layout">
+          <div className="about-visual" data-reveal="image">
+            <div className="about-image about-image-tall">
+              <img
+                src={founderImage}
+                alt="Naethra team member working on a digital product"
+                width={1200}
+                height={1104}
+              />
             </div>
-            <a href="#about" className="group flex items-center justify-end gap-3 text-xs font-semibold uppercase">
-              Explore Putech
-              <span className="grid size-10 place-items-center rounded-full border border-ink/20 transition-transform group-hover:translate-y-1"><ArrowDownRight className="size-4" /></span>
+            <div className="about-image about-image-small">
+              <img
+                src={teamImage}
+                alt="Naethra colleagues collaborating in a modern office"
+                width={1408}
+                height={1008}
+              />
+            </div>
+            <div className="about-image about-image-wide">
+              <img
+                src={projectImage}
+                alt="Naethra team discussing a software project"
+                width={1200}
+                height={1504}
+              />
+            </div>
+            <div className="about-stat">
+              <strong>
+                2k<span>+</span>
+              </strong>
+              <span>Projects completed</span>
+            </div>
+          </div>
+          <div className="about-copy" data-reveal="fade-up" data-reveal-delay="1">
+            <Eyebrow>About us</Eyebrow>
+            <h2>
+              Innovate. Integrate. <em>Elevate tech.</em>
+            </h2>
+            <p>
+              Technology is constantly evolving, shaping the way we live and work. It encompasses
+              innovation, automation, and connectivity, driving progress for businesses everywhere.
+            </p>
+            <div className="about-statements">
+              <span>Tech forward. Future ready. Your tomorrow, enhanced today.</span>
+              <span>Revolutionizing reality through technology. Tech it to the next level.</span>
+              <span>Tech-savvy lives, brighter tomorrows. Connect. Create. Transform.</span>
+            </div>
+            <div className="about-help">
+              <span className="about-help-icon">
+                <Users size={22} />
+              </span>
+              <div>
+                <span>Need help?</span>
+                <strong>+91 44 3500 3204</strong>
+              </div>
+            </div>
+            <div className="about-proof">
+              <Check size={16} />
+              <span>Experienced developers, tailored delivery, dependable support.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="quote-section">
+        <div className="site-container quote-layout" data-reveal="fade-up">
+          <Quote size={38} className="quote-icon" />
+          <blockquote>
+            “We recently had the pleasure of outsourcing our application development to Naethra, and
+            we are extremely satisfied with the results.”
+          </blockquote>
+          <div className="quote-author">
+            <span>VB</span>
+            <div>
+              <strong>Vasudha Bhushan</strong>
+              <small>Vasudha Bhushan · Manager, Software Technology &amp; Engineering</small>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact" className="contact-section">
+        <div className="site-container contact-layout">
+          <div data-reveal="fade-up">
+            <Eyebrow inverse>Request a free demo today</Eyebrow>
+            <h2>Let&apos;s build your next application.</h2>
+            <p>
+              Tell us what you need to build, improve, or connect. Schedule a 30-minute meeting and
+              get a clear next step from our team.
+            </p>
+          </div>
+          <div className="contact-actions" data-reveal="fade-up" data-reveal-delay="1">
+            <a href="mailto:info@naethra.com" className="contact-email">
+              info@naethra.com <ArrowUpRight size={22} />
+            </a>
+            <a href="tel:+914435003204" className="contact-phone">
+              +91 44 3500 3204
+            </a>
+            <a href="mailto:info@naethra.com" className="button button-light">
+              Schedule a 30-minute meeting <ArrowRight size={16} />
             </a>
           </div>
         </div>
       </section>
 
-      <section id="about" className="section-space bg-ink text-surface">
-        <div className="page-shell grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-24">
+      <footer className="site-footer">
+        <div className="site-container footer-grid">
           <div>
-            <SectionLabel inverse>Our company</SectionLabel>
-            <p className="mt-8 max-w-xs text-sm leading-6 text-surface/60">Built for the difficult work: connected systems, complex organisations, and technology that cannot fail.</p>
+            <Logo inverse />
+            <p>Comprehensive full-stack development outsourcing.</p>
           </div>
-          <div>
-            <h2 className="section-title text-surface">Technology should create momentum, <span className="text-surface/35">not complexity.</span></h2>
-            <div className="mt-14 grid gap-8 border-t border-surface/15 pt-8 sm:grid-cols-2">
-              <p className="text-sm leading-7 text-surface/65">Putech is an independent team of strategists, designers, engineers, and security specialists. We bring different disciplines around one table to solve the whole problem.</p>
-              <p className="text-sm leading-7 text-surface/65">Our work is direct, collaborative, and outcome-led. No bloated handovers—just senior people making informed decisions with your team.</p>
-            </div>
+          <div className="footer-address">
+            <span>Visit us</span>
+            <p>
+              Viswanathapuram Main Road
+              <br />
+              Kodambakkam, Chennai
+            </p>
           </div>
-        </div>
-      </section>
-
-      <section id="services" className="section-space">
-        <div className="page-shell">
-          <div className="grid gap-8 md:grid-cols-[1fr_1.6fr]">
-            <SectionLabel>Capabilities</SectionLabel>
-            <div><h2 className="section-title">Our core consulting services.</h2><p className="mt-5 max-w-lg text-sm leading-6 text-muted-foreground">From strategy to systems, we assemble the right expertise around the outcome—not the org chart.</p></div>
+          <div className="footer-links">
+            <a href="#services">Services</a>
+            <a href="#work">Work</a>
+            <a href="#contact">Contact</a>
           </div>
-          <div className="mt-16 border-t border-ink/15">
-            {services.map(({ number, title, body, icon: Icon }) => (
-              <article key={title} className="service-row group">
-                <span className="text-xs text-muted-foreground">{number}</span>
-                <span className="service-icon"><Icon className="size-5" /></span>
-                <h3 className="font-display text-2xl font-semibold md:text-3xl">{title}</h3>
-                <p className="max-w-md text-sm leading-6 text-muted-foreground">{body}</p>
-                <ArrowDownRight className="size-5 transition-transform group-hover:translate-x-1 group-hover:translate-y-1" />
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="section-space bg-soft-blue">
-        <div className="page-shell text-center">
-          <SectionLabel>Connected by design</SectionLabel>
-          <h2 className="section-title mx-auto mt-8 max-w-2xl">Your entire tech stack—fully connected.</h2>
-          <p className="mx-auto mt-5 max-w-xl text-sm leading-6 text-muted-foreground">We join the systems your business relies on, removing fragile handoffs and creating a clear operational picture.</p>
-          <div className="integration-map mt-16" aria-label="Technology integrations illustration">
-            <div className="integration-line" />
-            {integrations.map(({ label, icon: Icon }, i) => (
-              <div key={label} className={`integration-node node-${i + 1}`}>
-                <Icon className="size-5" /><span>{label}</span>
-              </div>
-            ))}
-            <div className="integration-core"><Asterisk className="size-6" /><strong>Putech</strong></div>
-          </div>
-        </div>
-      </section>
-
-      <section id="work" className="section-space">
-        <div className="page-shell">
-          <div className="grid items-end gap-8 md:grid-cols-2">
-            <div><SectionLabel>Selected work</SectionLabel><h2 className="section-title mt-8">Work that moved the needle.</h2></div>
-            <p className="max-w-md text-sm leading-6 text-muted-foreground md:justify-self-end">A selection of digital systems and product experiences made with ambitious organisations.</p>
-          </div>
-          <div className="mt-14 grid gap-5 md:grid-cols-[1.4fr_0.6fr]">
-            <article className="project-feature group">
-              <img src={teamImage} alt="Technology team collaborating around a laptop" width={1408} height={1008} loading="lazy" />
-              <div className="project-caption"><span>Finance · 2026</span><h3>Rebuilding trust into every transaction.</h3><ArrowDownRight className="size-5" /></div>
-            </article>
-            <article className="project-feature group">
-              <img src={projectImage} alt="Product designers reviewing a mobile experience" width={1200} height={1504} loading="lazy" />
-              <div className="project-caption"><span>Product · 2025</span><h3>A simpler operating system for field teams.</h3><ArrowDownRight className="size-5" /></div>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section className="section-space border-y border-ink/10 bg-ink text-surface">
-        <div className="page-shell grid gap-12 md:grid-cols-[0.8fr_1.2fr] md:items-center">
-          <img className="aspect-[1.15] w-full object-cover" src={securityImage} alt="Security specialist connecting a hardware security key" width={1408} height={912} loading="lazy" />
-          <div className="md:pl-10">
-            <SectionLabel inverse>Security, built in</SectionLabel>
-            <h2 className="section-title mt-8 text-surface">Move fast without leaving the door open.</h2>
-            <p className="mt-6 max-w-lg text-sm leading-7 text-surface/60">We make security part of the design and engineering process—not a late-stage checklist. Your teams gain confidence without losing momentum.</p>
-            <a href="#contact" className="button-light mt-10">Discuss your security <ArrowRight className="size-4" /></a>
-          </div>
-        </div>
-      </section>
-
-      <section id="insights" className="section-space">
-        <div className="page-shell">
-          <div className="flex items-end justify-between gap-6"><div><SectionLabel>Thinking</SectionLabel><h2 className="section-title mt-8">Insights & ideas.</h2></div><a href="#insights-list" className="button-outline hidden sm:inline-flex">All insights <ArrowRight className="size-4" /></a></div>
-          <div id="insights-list" className="mt-14 grid border-t border-ink/15 md:grid-cols-3">
-            {insights.map(([category, title, time], i) => (
-              <article key={title} className="insight-item">
-                <div className={`insight-visual visual-${i + 1}`}><span>{String(i + 1).padStart(2, "0")}</span><Braces className="size-9" /></div>
-                <div className="mt-6 flex justify-between text-[0.65rem] font-semibold uppercase text-muted-foreground"><span>{category}</span><span>{time}</span></div>
-                <h3 className="mt-4 font-display text-xl font-semibold leading-tight">{title}</h3>
-                <a href="#contact" className="mt-6 inline-flex items-center gap-2 text-xs font-semibold">Read perspective <ChevronRight className="size-3.5" /></a>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="section-space bg-soft-blue">
-        <div className="page-shell grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
-          <img className="aspect-[1.08] w-full object-cover object-center" src={founderImage} alt="Technology founder in a bright design studio" width={1200} height={1104} loading="lazy" />
-          <div className="lg:px-12">
-            <SectionLabel>Client perspective</SectionLabel>
-            <div className="mt-9 font-display text-6xl leading-none text-primary">“</div>
-            <blockquote className="font-display text-3xl font-semibold leading-tight md:text-4xl">Putech didn’t just deliver a platform. They gave our team the confidence to think bigger.</blockquote>
-            <p className="mt-7 text-sm leading-7 text-muted-foreground">The work was unusually clear and collaborative. Every decision tied back to the real problem, and the quality of the result changed what we thought was possible.</p>
-            <div className="mt-8 flex items-center gap-4 border-t border-ink/15 pt-6"><span className="grid size-10 place-items-center rounded-full bg-lime font-display text-sm font-bold">EB</span><div><strong className="block text-sm">Emery Bryan</strong><span className="text-xs text-muted-foreground">Founder, Northbank</span></div></div>
-          </div>
-        </div>
-      </section>
-
-      <section id="contact" className="section-space bg-primary text-primary-foreground">
-        <div className="page-shell">
-          <SectionLabel inverse>Start a conversation</SectionLabel>
-          <div className="mt-10 grid gap-12 lg:grid-cols-[1.3fr_0.7fr]">
-            <div><h2 className="font-display text-[clamp(3.3rem,7vw,7rem)] font-semibold leading-[0.88]">Let’s build what’s next.</h2><p className="mt-8 max-w-md text-sm leading-7 text-primary-foreground/70">Tell us what you’re working through. We’ll bring a senior perspective and a clear next step.</p></div>
-            <div className="flex flex-col justify-end border-t border-primary-foreground/25 pt-8 lg:border-l lg:border-t-0 lg:pl-12 lg:pt-0">
-              <span className="text-xs uppercase text-primary-foreground/60">New business</span>
-              <a href="mailto:hello@putech.co" className="mt-3 font-display text-2xl font-semibold md:text-3xl">hello@putech.co</a>
-              <a href="mailto:hello@putech.co" className="button-light mt-8 w-fit">Start a project <ArrowRight className="size-4" /></a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <footer className="bg-ink py-10 text-surface">
-        <div className="page-shell flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
-          <div><Logo inverse /><p className="mt-4 max-w-xs text-xs leading-5 text-surface/45">Secure digital products and connected technology for ambitious organisations.</p></div>
-          <div className="flex gap-6 text-xs text-surface/60"><a href="#top">Top</a><a href="#services">Services</a><a href="#work">Work</a></div>
-          <span className="text-[0.65rem] text-surface/35">© 2026 Putech</span>
+          <span className="footer-copy">© 2026 Naethra Technologies</span>
         </div>
       </footer>
     </main>
