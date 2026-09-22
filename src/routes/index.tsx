@@ -1,22 +1,25 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  ArrowRight,
-  ArrowUpRight,
-  Check,
-  ChevronDown,
-  Cloud,
-  Database,
-  Globe2,
-  Menu,
-  MoveUpRight,
-  Palette,
-  Quote,
-  Smartphone,
-  Sparkles,
-  Users,
-  X,
-} from "lucide-react";
-import { useEffect, useState } from "react";
+  ArrowDown01Icon,
+  ArrowRight01Icon,
+  ArrowUpRight01Icon,
+  Cancel01Icon,
+  CheckmarkCircle02Icon,
+  CloudIcon,
+  Database02Icon,
+  Globe02Icon,
+  Location01Icon,
+  Mail01Icon,
+  Menu01Icon,
+  Message01Icon,
+  PaletteIcon,
+  QuoteDownIcon,
+  SmartPhone01Icon,
+  SparklesIcon,
+  UserGroupIcon,
+} from "@hugeicons/core-free-icons";
+import { type CSSProperties, type FormEvent, useEffect, useState } from "react";
 
 import founderImage from "@/assets/putech-founder.jpg";
 import projectImage from "@/assets/putech-project.jpg";
@@ -64,37 +67,37 @@ const services = [
     "01",
     "Web & enterprise applications",
     "Outsource web applications, enterprise systems, UX/UI planning, and usability testing to an experienced delivery team.",
-    Globe2,
+    Globe02Icon,
   ],
   [
     "02",
     "Cross-platform mobile apps",
     "Build mobile applications with Ionic Framework, Cordova, Flutter, or the native approach your product requires.",
-    Smartphone,
+    SmartPhone01Icon,
   ],
   [
     "03",
     "User interface & graphic design",
     "Responsive, mobile-first design concepts that make your product easier and more enjoyable to use.",
-    Palette,
+    PaletteIcon,
   ],
   [
     "04",
     "Claris FileMaker development",
     "FileMaker integration, database development, WebDirect, Custom Web Publishing, and custom application development.",
-    Database,
+    Database02Icon,
   ],
   [
     "05",
     "Content management systems",
     "Powerful CMS solutions with PHP, WordPress, Joomla, and Magento for teams that need to publish and grow.",
-    Cloud,
+    CloudIcon,
   ],
   [
     "06",
     "Zoho & cloud applications",
     "Quickly build and deploy cloud applications with Zoho Creator, plus maintenance and support for existing systems.",
-    Users,
+    UserGroupIcon,
   ],
 ] as const;
 
@@ -115,6 +118,86 @@ const process = [
     "After launch, we stay close to the product and help it become more valuable over time.",
   ],
 ];
+
+const techStack = [
+  ["Angular", "#5550a8"],
+  ["React", "#d94c7b"],
+  ["Node.js", "#198c5c"],
+  ["JavaScript", "#3d6db5"],
+  ["Ionic", "#c89834"],
+  ["React Native", "#68b737"],
+  ["Cloud AWS", "#ed773c"],
+  ["PHP", "#e56b50"],
+  [".NET", "#ec345d"],
+  ["Java", "#df3b32"],
+  ["Android", "#9e2850"],
+  ["iOS", "#102d70"],
+  ["Flutter", "#ff7800"],
+  ["Azure GCP", "#a348aa"],
+];
+
+const integrations = [
+  ["Discord", "#7c59e8"],
+  ["Mocha", "#222222"],
+  ["Pinterest", "#e31b23"],
+  ["Reddit", "#ff4f14"],
+  ["Snapchat", "#f5d94e"],
+  ["X", "#111111"],
+  ["YouTube Music", "#ef1d25"],
+  ["YouTube", "#ff1717"],
+  ["Zapier", "#ff4f12"],
+  ["FileMaker", "#2f80ed"],
+  ["Zoho", "#e5532d"],
+  ["AWS", "#f6a400"],
+  ["Flutter", "#38aaf4"],
+  ["React", "#59c5e8"],
+  ["Node", "#3b9658"],
+  ["API", "#005b96"],
+];
+
+const blogPosts = [
+  [
+    "Strategy",
+    "June 20, 2025",
+    "Why your business needs a thoughtful digital roadmap",
+    founderImage,
+  ],
+  [
+    "Planning",
+    "June 20, 2025",
+    "From goals to delivery: turning vision into measurable progress",
+    teamImage,
+  ],
+  ["Technology", "June 20, 2025", "Five ways modern teams can build better software", projectImage],
+  ["Growth", "June 20, 2025", "Digital transformation for service-based businesses", founderImage],
+] as const;
+
+const testimonials = [
+  [
+    "Vasudha Bhushan",
+    "Manager, Software Technology & Engineering",
+    "We recently had the pleasure of outsourcing our application development to Naethra, and we are extremely satisfied with the results.",
+    founderImage,
+  ],
+  [
+    "Steve Chun",
+    "Howard Investments Inc., New York",
+    "Naethra continues to do great work for us. We look forward to additional development of our custom application.",
+    teamImage,
+  ],
+  [
+    "Sandeep Shah",
+    "Director, Rajdeep Automation",
+    "Their professionalism, detailed explanations, and commitment made the whole website development experience a pleasure.",
+    projectImage,
+  ],
+  [
+    "Shazad Din",
+    "Boro Blinds, Middlesbrough",
+    "These guys are FileMaker experts. They really know their stuff and deliver dependable results.",
+    founderImage,
+  ],
+] as const;
 
 function Logo({ inverse = false }: { inverse?: boolean }) {
   return (
@@ -142,6 +225,14 @@ function Eyebrow({ children, inverse = false }: { children: string; inverse?: bo
 function Index() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [contactSubmitted, setContactSubmitted] = useState(false);
+  const [testimonialIndex, setTestimonialIndex] = useState(0);
+  const activeTestimonial = testimonials[testimonialIndex] ?? testimonials[0];
+
+  const handleContactSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setContactSubmitted(true);
+  };
 
   useEffect(() => {
     const revealElements = document.querySelectorAll<HTMLElement>("[data-reveal]");
@@ -180,7 +271,7 @@ function Index() {
             ))}
           </nav>
           <a href="#contact" className="button button-orange header-cta">
-            30 mins meeting <ArrowUpRight size={16} />
+            30 mins meeting <HugeiconsIcon icon={ArrowUpRight01Icon} size={16} />
           </a>
           <button
             type="button"
@@ -189,7 +280,11 @@ function Index() {
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
           >
-            {menuOpen ? <X size={20} /> : <Menu size={20} />}
+            {menuOpen ? (
+              <HugeiconsIcon icon={Cancel01Icon} size={20} />
+            ) : (
+              <HugeiconsIcon icon={Menu01Icon} size={20} />
+            )}
           </button>
         </div>
         {menuOpen && (
@@ -197,11 +292,11 @@ function Index() {
             {navItems.map(([label, href]) => (
               <a key={label} href={href} onClick={() => setMenuOpen(false)}>
                 {label}
-                <ArrowUpRight size={18} />
+                <HugeiconsIcon icon={ArrowUpRight01Icon} size={18} />
               </a>
             ))}
             <a href="#contact" className="button button-orange" onClick={() => setMenuOpen(false)}>
-              30 mins meeting <ArrowRight size={16} />
+              30 mins meeting <HugeiconsIcon icon={ArrowRight01Icon} size={16} />
             </a>
           </nav>
         )}
@@ -220,10 +315,10 @@ function Index() {
             </p>
             <div className="hero-actions">
               <a href="#contact" className="button button-orange">
-                Schedule a 30-minute meeting <ArrowUpRight size={17} />
+                Schedule a 30-minute meeting <HugeiconsIcon icon={ArrowUpRight01Icon} size={17} />
               </a>
               <a href="#work" className="text-link">
-                Explore our services <ArrowRight size={16} />
+                Explore our services <HugeiconsIcon icon={ArrowRight01Icon} size={16} />
               </a>
             </div>
           </div>
@@ -238,20 +333,20 @@ function Index() {
               <div className="hero-image-glow" />
             </div>
             <div className="hero-note hero-note-top">
-              <Sparkles size={16} />
+              <HugeiconsIcon icon={SparklesIcon} size={16} />
               <span>Ideas into systems</span>
             </div>
             <div className="hero-note hero-note-bottom">
               <span className="status-dot" />
               <span>Shipping with intent</span>
-              <ArrowUpRight size={15} />
+              <HugeiconsIcon icon={ArrowUpRight01Icon} size={15} />
             </div>
           </div>
         </div>
         <div className="hero-bottom site-container" data-reveal="fade-up">
           <span>Web · Mobile · UX/UI · FileMaker · Enterprise applications</span>
           <span className="hero-scroll">
-            <ChevronDown size={16} /> Scroll to explore
+            <HugeiconsIcon icon={ArrowDown01Icon} size={16} /> Scroll to explore
           </span>
         </div>
       </section>
@@ -318,13 +413,85 @@ function Index() {
               >
                 <div className="service-card-top">
                   <span>{number}</span>
-                  <Icon size={22} strokeWidth={1.7} />
+                  <HugeiconsIcon icon={Icon} size={22} strokeWidth={1.7} />
                 </div>
                 <h3>{title}</h3>
                 <p>{body}</p>
-                <ArrowUpRight className="service-arrow" size={19} />
+                <HugeiconsIcon className="service-arrow" icon={ArrowUpRight01Icon} size={19} />
               </article>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="integration-section section">
+        <div className="site-container">
+          <div className="integration-heading" data-reveal="fade-up">
+            <div className="integration-pill">
+              <span className="integration-pill-dot" /> Current technology stack
+            </div>
+            <h2>
+              Your entire tech stack — <em>fully connected.</em>
+            </h2>
+            <p>
+              Integrate your favorite apps and build workflows that move data, trigger actions, and
+              keep everything in sync.
+            </p>
+            <a href="#contact" className="button button-orange">
+              Start a conversation <HugeiconsIcon icon={ArrowUpRight01Icon} size={16} />
+            </a>
+          </div>
+          <div
+            className="integration-orbit"
+            data-reveal="scale-in"
+            aria-label="Current technology stack orbit"
+          >
+            <div className="orbit-ring orbit-ring-outer" />
+            <div className="orbit-ring orbit-ring-inner" />
+            <div className="orbit-loader">
+              <span />
+            </div>
+            <div className="orbit-core">
+              <span>N</span>
+              <strong>Naethra</strong>
+            </div>
+            {integrations.map(([label, color], index) => (
+              <span
+                key={label}
+                className="orbit-app"
+                style={
+                  {
+                    "--orbit-angle": `${index * 22.5}deg`,
+                    "--orbit-color": color,
+                    "--orbit-delay": `${index * 60}ms`,
+                  } as CSSProperties
+                }
+                title={label}
+              >
+                {label === "YouTube Music" ? "YT Music" : label}
+              </span>
+            ))}
+          </div>
+        </div>
+        <div className="tech-stack-band" data-reveal="fade-up">
+          <div className="site-container">
+            <div className="tech-stack-intro">
+              <Eyebrow inverse>Current technology stack</Eyebrow>
+              <p>Flexible by design. Proven in delivery.</p>
+            </div>
+            <div className="tech-stack-grid">
+              {techStack.map(([label, color], index) => (
+                <span
+                  key={label}
+                  className="tech-tile"
+                  style={
+                    { "--tile-color": color, "--tile-delay": `${index * 40}ms` } as CSSProperties
+                  }
+                >
+                  {label}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -341,7 +508,7 @@ function Index() {
               around your needs, and stay with you through delivery, maintenance, and support.
             </p>
             <a href="#contact" className="button button-light">
-              Schedule a 30-minute meeting <ArrowUpRight size={16} />
+              Schedule a 30-minute meeting <HugeiconsIcon icon={ArrowUpRight01Icon} size={16} />
             </a>
           </div>
           <div className="process-list">
@@ -369,7 +536,7 @@ function Index() {
                         : "Maintenance, DevOps, and support services help you get the most from your investment."}
                   </p>
                 </div>
-                <MoveUpRight size={18} />
+                <HugeiconsIcon icon={ArrowUpRight01Icon} size={18} />
               </div>
             ))}
           </div>
@@ -386,7 +553,7 @@ function Index() {
               </h2>
             </div>
             <a href="#contact" className="text-link">
-              View all projects <ArrowRight size={16} />
+              View all projects <HugeiconsIcon icon={ArrowRight01Icon} size={16} />
             </a>
           </div>
           <div className="work-grid">
@@ -400,7 +567,7 @@ function Index() {
               <div className="work-caption">
                 <span>Healthcare / Web and mobile application</span>
                 <h3>Digital experiences built around real users.</h3>
-                <ArrowUpRight size={20} />
+                <HugeiconsIcon icon={ArrowUpRight01Icon} size={20} />
               </div>
             </article>
             <article className="work-card" data-reveal="fade-up" data-reveal-delay="1">
@@ -413,7 +580,7 @@ function Index() {
               <div className="work-caption">
                 <span>Advisory / Enterprise application</span>
                 <h3>Technology that makes work easier.</h3>
-                <ArrowUpRight size={20} />
+                <HugeiconsIcon icon={ArrowUpRight01Icon} size={20} />
               </div>
             </article>
           </div>
@@ -470,7 +637,7 @@ function Index() {
             </div>
             <div className="about-help">
               <span className="about-help-icon">
-                <Users size={22} />
+                <HugeiconsIcon icon={UserGroupIcon} size={22} />
               </span>
               <div>
                 <span>Need help?</span>
@@ -478,25 +645,98 @@ function Index() {
               </div>
             </div>
             <div className="about-proof">
-              <Check size={16} />
+              <HugeiconsIcon icon={CheckmarkCircle02Icon} size={16} />
               <span>Experienced developers, tailored delivery, dependable support.</span>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="quote-section">
-        <div className="site-container quote-layout" data-reveal="fade-up">
-          <Quote size={38} className="quote-icon" />
-          <blockquote>
-            “We recently had the pleasure of outsourcing our application development to Naethra, and
-            we are extremely satisfied with the results.”
-          </blockquote>
-          <div className="quote-author">
-            <span>VB</span>
+      <section id="insights" className="section insights-section">
+        <div className="site-container">
+          <div className="insights-heading" data-reveal="fade-up">
             <div>
-              <strong>Vasudha Bhushan</strong>
-              <small>Vasudha Bhushan · Manager, Software Technology &amp; Engineering</small>
+              <Eyebrow>Our blog</Eyebrow>
+              <h2>Insights &amp; Ideas</h2>
+              <p>
+                Fresh perspectives on business growth, innovation, leadership, and operational
+                efficiency.
+              </p>
+            </div>
+            <a
+              href="mailto:info@naethra.com?subject=Naethra%20insights"
+              className="button button-dark"
+            >
+              See all blog <HugeiconsIcon icon={ArrowUpRight01Icon} size={17} />
+            </a>
+          </div>
+          <div className="insights-grid">
+            {blogPosts.map(([category, date, title, image], index) => (
+              <a
+                href="#contact"
+                className="insight-card"
+                key={title}
+                data-reveal="fade-up"
+                data-reveal-delay={String((index % 2) + 1)}
+              >
+                <img src={image} alt="" width={1200} height={1104} />
+                <div className="insight-card-copy">
+                  <div className="insight-meta">
+                    <span>{category}</span>
+                    <time>{date}</time>
+                  </div>
+                  <h3>{title}</h3>
+                </div>
+                <HugeiconsIcon className="insight-arrow" icon={ArrowUpRight01Icon} size={19} />
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="quote-section">
+        <div className="site-container testimonial-layout" data-reveal="fade-up">
+          <div className="testimonial-visual">
+            <img
+              src={activeTestimonial[3]}
+              alt={`${activeTestimonial[0]} testimonial portrait`}
+              width={1200}
+              height={1104}
+            />
+            <div className="testimonial-avatars" role="tablist" aria-label="Customer testimonials">
+              {testimonials.map(([name, , , image], index) => (
+                <button
+                  type="button"
+                  key={name}
+                  className={`testimonial-avatar ${index === testimonialIndex ? "is-active" : ""}`}
+                  onClick={() => setTestimonialIndex(index)}
+                  role="tab"
+                  aria-selected={index === testimonialIndex}
+                  aria-label={`Read testimonial from ${name}`}
+                >
+                  <img src={image} alt="" width={1200} height={1104} />
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="testimonial-copy">
+            <Eyebrow>Testimonial</Eyebrow>
+            <h2>
+              Reviews from our <em>customers.</em>
+            </h2>
+            <HugeiconsIcon icon={QuoteDownIcon} size={48} className="quote-icon" />
+            <blockquote>“{activeTestimonial[2]}”</blockquote>
+            <div className="quote-author">
+              <span>
+                {activeTestimonial[0]
+                  .split(" ")
+                  .map((part) => part[0])
+                  .join("")}
+              </span>
+              <div>
+                <strong>{activeTestimonial[0]}</strong>
+                <small>{activeTestimonial[1]}</small>
+              </div>
             </div>
           </div>
         </div>
@@ -504,25 +744,80 @@ function Index() {
 
       <section id="contact" className="contact-section">
         <div className="site-container contact-layout">
-          <div data-reveal="fade-up">
-            <Eyebrow inverse>Request a free demo today</Eyebrow>
-            <h2>Let&apos;s build your next application.</h2>
+          <div className="contact-intro" data-reveal="fade-up">
+            <Eyebrow>Contact us</Eyebrow>
+            <h2>Get in touch</h2>
             <p>
-              Tell us what you need to build, improve, or connect. Schedule a 30-minute meeting and
-              get a clear next step from our team.
+              Technology is constantly evolving, shaping the way we live and work. It encompasses
+              innovation, automation, and connectivity driving progress.
             </p>
+            <div className="contact-details">
+              <a
+                href="https://maps.google.com/?q=Viswanathapuram+Main+Road+Kodambakkam+Chennai"
+                className="contact-detail-card"
+              >
+                <HugeiconsIcon icon={Location01Icon} size={22} />
+                <span>Address</span>
+                <strong>
+                  Viswanathapuram Main Road
+                  <br />
+                  Kodambakkam, Chennai
+                </strong>
+              </a>
+              <a href="mailto:info@naethra.com" className="contact-detail-card">
+                <HugeiconsIcon icon={Mail01Icon} size={22} />
+                <span>E-mail</span>
+                <strong>info@naethra.com</strong>
+              </a>
+            </div>
           </div>
-          <div className="contact-actions" data-reveal="fade-up" data-reveal-delay="1">
-            <a href="mailto:info@naethra.com" className="contact-email">
-              info@naethra.com <ArrowUpRight size={22} />
-            </a>
-            <a href="tel:+914435003204" className="contact-phone">
-              +91 44 3500 3204
-            </a>
-            <a href="mailto:info@naethra.com" className="button button-light">
-              Schedule a 30-minute meeting <ArrowRight size={16} />
-            </a>
-          </div>
+          <form
+            className="contact-form"
+            onSubmit={handleContactSubmit}
+            data-reveal="fade-up"
+            data-reveal-delay="1"
+          >
+            <h3>Send a message</h3>
+            <div className="contact-form-grid">
+              <label>
+                <span className="sr-only">Your name</span>
+                <input name="name" type="text" placeholder="Your Name" required />
+              </label>
+              <label>
+                <span className="sr-only">Your email</span>
+                <input name="email" type="email" placeholder="Your Email" required />
+              </label>
+              <label>
+                <span className="sr-only">Your number</span>
+                <input name="phone" type="tel" placeholder="Your Number" />
+              </label>
+              <label>
+                <span className="sr-only">Choose a reason</span>
+                <select name="reason" defaultValue="">
+                  <option value="" disabled>
+                    Choose a Reason
+                  </option>
+                  <option>Web application</option>
+                  <option>Mobile application</option>
+                  <option>FileMaker development</option>
+                  <option>Support and maintenance</option>
+                </select>
+              </label>
+            </div>
+            <label className="contact-message">
+              <span className="sr-only">Your message</span>
+              <textarea name="message" placeholder="Message here.." rows={4} required />
+            </label>
+            <button type="submit" className="button button-blue">
+              {contactSubmitted ? "Message ready to send" : "Send a message"}{" "}
+              <HugeiconsIcon icon={Message01Icon} size={18} />
+            </button>
+            {contactSubmitted && (
+              <p className="contact-success" role="status">
+                Thanks. We&apos;ll get back to you at the earliest.
+              </p>
+            )}
+          </form>
         </div>
       </section>
 
