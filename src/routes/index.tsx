@@ -54,11 +54,18 @@ const navItems = [
   ["Mobile", "#mobile"],
   ["Web App", "#web-app"],
   ["Portfolio", "#work"],
-  ["Services", "#services"],
+  ["Services", "#integration"],
   ["FileMaker", "#filemaker"],
   ["About Us", "#about"],
   ["Contact Us", "#contact"],
 ];
+
+const serviceMenuItems = [
+  ["Content Management System", "#integration"],
+  ["Custom Web Publishing", "#filemaker"],
+  ["Dot Net Application", "#web-app"],
+  ["AWS & Cloud Support", "#integration"],
+] as const;
 
 const services = [
   [
@@ -153,10 +160,17 @@ const valuedClients = [
 ];
 
 const recentProjects = [
-  [projectImage, "Team collaborating on a software project"],
-  [teamImage, "Product team reviewing a digital experience"],
-  [projectImage, "Team presenting project analytics"],
-  [founderImage, "Technology team working together"],
+  [projectImage, "Team collaborating on a software project", "Business Development", "Digital Marketing"],
+  [teamImage, "Product team reviewing a digital experience", "Finance strategy", "Finance"],
+  [projectImage, "Team presenting project analytics", "Process optimization", "Operations"],
+  [founderImage, "Technology team working together", "Marketing research", "Growth"],
+] as const;
+
+const consultingServices = [
+  [founderImage, "Business strategy"],
+  [teamImage, "Process optimization"],
+  [projectImage, "Financial advisory"],
+  [projectImage, "Marketing Research"],
 ] as const;
 
 const testimonials = [
@@ -212,6 +226,7 @@ function Eyebrow({ children, inverse = false }: { children: string; inverse?: bo
 
 function Index() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [servicesOpen, setServicesOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [contactSubmitted, setContactSubmitted] = useState(false);
   const [testimonialIndex, setTestimonialIndex] = useState(0);
@@ -246,18 +261,41 @@ function Index() {
     };
   }, []);
 
+  useEffect(() => {
+    const rotation = window.setInterval(() => {
+      setTestimonialIndex((index) => (index + 1) % testimonials.length);
+    }, 5000);
+    return () => window.clearInterval(rotation);
+  }, []);
+
   return (
     <main id="top" className="site-page">
       <header className={`site-header ${isScrolled ? "is-scrolled" : ""}`}>
         <div className="site-container header-inner">
           <Logo />
-          <nav className="desktop-nav" aria-label="Primary navigation">
-            {navItems.map(([label, href]) => (
-              <a key={label} href={href}>
-                {label}
-              </a>
-            ))}
+          <nav className="desktop-nav theme-nav" aria-label="Primary navigation">
+            {navItems.map(([label, href]) =>
+              label === "Services" ? (
+                <div className="nav-dropdown" key={label}>
+                  <a className="nav-services-link" href={href} aria-haspopup="true">
+                    {label}<span className="nav-chevron" aria-hidden="true" />
+                  </a>
+                  <div className="nav-dropdown-menu">
+                    {serviceMenuItems.map(([itemLabel, itemHref]) => (
+                      <a key={itemLabel} href={itemHref}>{itemLabel}</a>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <a className={label === "About Us" ? "nav-about-link" : undefined} key={label} href={href}>
+                  {label}
+                </a>
+              ),
+            )}
           </nav>
+          <a href="#contact" className="button button-orange header-cta">
+            <span>30 mins meeting</span><i aria-hidden="true">›</i>
+          </a>
           <button
             type="button"
             className="menu-button"
@@ -275,10 +313,31 @@ function Index() {
         {menuOpen && (
           <nav className="mobile-nav" aria-label="Mobile navigation">
             {navItems.map(([label, href]) => (
-              <a key={label} href={href} onClick={() => setMenuOpen(false)}>
-                {label}
-                <HugeiconsIcon icon={ArrowUpRight01Icon} size={18} />
-              </a>
+              label === "Services" ? (
+                <div className="mobile-nav-group" key={label}>
+                  <button
+                    className="mobile-nav-services-toggle"
+                    type="button"
+                    aria-expanded={servicesOpen}
+                    onClick={() => setServicesOpen((open) => !open)}
+                  >
+                    {label}
+                    <span aria-hidden="true">{servicesOpen ? "−" : "+"}</span>
+                  </button>
+                  {servicesOpen && <div className="mobile-nav-submenu">
+                    {serviceMenuItems.map(([itemLabel, itemHref]) => (
+                      <a key={itemLabel} href={itemHref} onClick={() => setMenuOpen(false)}>
+                        {itemLabel}
+                      </a>
+                    ))}
+                  </div>}
+                </div>
+              ) : (
+                <a key={label} href={href} onClick={() => setMenuOpen(false)}>
+                  {label}
+                  <HugeiconsIcon icon={ArrowUpRight01Icon} size={18} />
+                </a>
+              )
             ))}
           </nav>
         )}
@@ -309,7 +368,7 @@ function Index() {
               <a href="#services">▦ <span>Product</span></a>
             </nav>
             <a className="sentinel-cta" href="#contact">
-              <span>Get free plan</span><b>›</b>
+              <span>30 mins meeting</span><b>›</b>
             </a>
             <button
               className="sentinel-menu-button"
@@ -325,7 +384,7 @@ function Index() {
             <nav className="sentinel-mobile-menu" aria-label="ConSentinel mobile navigation">
               <a href="#top" onClick={() => setMenuOpen(false)}>Explore</a>
               <a href="#services" onClick={() => setMenuOpen(false)}>Product</a>
-              <a href="#contact" onClick={() => setMenuOpen(false)}>Get free plan</a>
+              <a href="#contact" onClick={() => setMenuOpen(false)}>30 mins meeting</a>
             </nav>
           )}
           <div className="sentinel-main">
@@ -337,12 +396,6 @@ function Index() {
                 <span>Secure the Sphere. Protect What Matters.</span>
               </div>
             </div>
-            <aside className="sentinel-panel">
-              <div className="sentinel-panel-top"><span>AI-Driven</span><i /><b>◈</b></div>
-              <p>Cloud<br />Infrastructure<br />Protection</p>
-              <div className="sentinel-scale"><span>1K</span><span>10K</span><span>50K</span><span>100K</span></div>
-              <div className="sentinel-track"><i /></div>
-            </aside>
           </div>
           <div className="sentinel-bottom">
             <div className="sentinel-stats">
@@ -352,7 +405,7 @@ function Index() {
             </div>
             <a className="sentinel-meet" href="#contact">
               <img alt="" src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260912_105822_bf7c2d53-9957-4521-bbbf-7c1ab7a70130.png" />
-              <b>Meet Sentinel</b><span>›</span>
+              <b>Meet Sentinel</b><span aria-hidden="true">›</span>
             </a>
           </div>
         </div>
@@ -389,51 +442,29 @@ function Index() {
 
       <section id="services" className="section section-services">
         <div className="site-container">
-          <div className="section-heading split-heading" data-reveal="fade-up">
+          <div className="services-heading" data-reveal="fade-up">
             <div>
-              <h2>
-                One capable team for every <em>digital need.</em>
-              </h2>
+              <Eyebrow>What we offer</Eyebrow>
+              <h2>Our core consulting services</h2>
             </div>
-            <p>
-              Tailored solutions for businesses that need dependable technology, a flexible delivery
-              partner, and a product that keeps creating value after launch.
-            </p>
+            <p>We provide tailored consulting solutions to help businesses overcome challenges, seize opportunities, and achieve sustainable growth.</p>
           </div>
           <div className="services-grid">
-            {services.map(([title, body, Icon], index) => (
-              <article
-                key={title}
-                id={
-                  title === "Cross-platform mobile apps"
-                    ? "mobile"
-                    : title === "Web & enterprise applications"
-                      ? "web-app"
-                      : title === "Claris FileMaker development"
-                        ? "filemaker"
-                        : undefined
-                }
-                className="service-card"
-                data-reveal="fade-up"
-                data-reveal-delay={String((index % 3) + 1)}
-              >
-                <div className="service-card-top">
-                  <HugeiconsIcon icon={Icon} size={22} strokeWidth={1.7} />
-                </div>
-                <h3>{title}</h3>
-                <p>{body}</p>
-                <HugeiconsIcon className="service-arrow" icon={ArrowUpRight01Icon} size={19} />
+            {consultingServices.map(([image, label], index) => (
+              <article className="service-card" key={label} data-reveal="fade-up" data-reveal-delay={String(index + 1)}>
+                <img src={image} alt={label} width={1200} height={1104} />
+                <span>{label}</span>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="integration-section section">
+      <section id="integration" className="integration-section section">
         <div className="site-container">
           <div className="integration-heading" data-reveal="fade-up">
             <div className="integration-pill">
-              <span className="integration-pill-dot" /> Integration <HugeiconsIcon icon={ArrowRight01Icon} size={13} />
+              <span className="integration-pill-dot" /> Technology Stack <HugeiconsIcon icon={ArrowRight01Icon} size={13} />
             </div>
             <h2>
               Your entire tech stack —<br /> <em>fully connected.</em>
@@ -446,7 +477,7 @@ function Index() {
           <div
             className="integration-orbit"
             data-reveal="scale-in"
-            aria-label="Connected technology integrations"
+            aria-label="Technology stack integrations"
           >
             <div className="arc-line arc-line-outer" aria-hidden="true" />
             <div className="arc-line arc-line-inner" aria-hidden="true" />
@@ -538,9 +569,14 @@ function Index() {
             </h2>
           </div>
           <div className="work-grid">
-            {recentProjects.map(([image, alt], index) => (
+            {recentProjects.map(([image, alt, title, category], index) => (
               <article className="work-card" key={alt} data-reveal="fade-up" data-reveal-delay={String((index % 3) + 1)}>
                 <img src={image} alt={alt} width={1200} height={1104} />
+                <div className="work-hover-content">
+                  <span>{category}</span>
+                  <h3>{title}</h3>
+                </div>
+                <span className="work-hover-arrow" aria-hidden="true">↗</span>
               </article>
             ))}
           </div>
@@ -692,12 +728,7 @@ function Index() {
             <HugeiconsIcon icon={QuoteDownIcon} size={48} className="quote-icon" />
             <blockquote>“{activeTestimonial[2]}”</blockquote>
             <div className="quote-author">
-              <span>
-                {activeTestimonial[0]
-                  .split(" ")
-                  .map((part) => part[0])
-                  .join("")}
-              </span>
+              <span className="quote-author-avatar">{activeTestimonial[0].slice(0, 1)}</span>
               <div>
                 <strong>{activeTestimonial[0]}</strong>
                 <small>{activeTestimonial[1]}</small>
@@ -820,16 +851,6 @@ function Index() {
               <span className="footer-contact-icon"><HugeiconsIcon icon={Mail01Icon} size={17} /></span>
               <div><span>Email</span><strong>info@naethra.com</strong></div>
             </div>
-          </div>
-          <div className="footer-newsletter">
-            <h3>Newsletter</h3>
-            <p>Technology is constantly evolving, shaping the way we live and work.</p>
-            <form className="newsletter-form" onSubmit={(event) => event.preventDefault()}>
-              <label className="sr-only" htmlFor="footer-email">Your email</label>
-              <input id="footer-email" type="email" placeholder="Your email..." required />
-              <button type="submit" aria-label="Subscribe"><HugeiconsIcon icon={ArrowUpRight01Icon} size={18} /></button>
-            </form>
-            <small>It only takes 2 minutes to complete.</small>
           </div>
           <div className="footer-copy">
             <span>© 2026 Naethra Technologies</span>
