@@ -40,6 +40,7 @@ import {
   Cloud as CloudIconLucide,
 } from "lucide-react";
 import IntegrationSection from "@/components/IntegrationSection";
+import { JarvisArcReactor, openJarvis } from "@/components/JarvisArcReactor";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -392,9 +393,20 @@ function Index() {
               ),
             )}
           </nav>
-          <a href="#contact" className="button button-orange header-cta">
-            <span>30 mins meeting</span><i aria-hidden="true">›</i>
-          </a>
+          <div className="flex items-center gap-x-2.5">
+            <button
+              type="button"
+              onClick={openJarvis}
+              className="flex items-center gap-x-2 rounded-full border border-[#005b96]/30 bg-[#e8edf6] px-3.5 py-1.5 text-xs font-bold text-[#005b96] transition-all hover:bg-[#d9e3f2] hover:scale-105 active:scale-95 shadow-sm"
+              title="Launch Jarvis AI Assistant"
+            >
+              <JarvisArcReactor size={26} label="J" />
+              <span className="hidden xs:inline">JARVIS AI</span>
+            </button>
+            <a href="#contact" className="button button-orange header-cta">
+              <span>30 mins meeting</span><i aria-hidden="true">›</i>
+            </a>
+          </div>
           <button
             type="button"
             className="menu-button"
@@ -411,6 +423,20 @@ function Index() {
         </div>
         {menuOpen && (
           <nav className="mobile-nav" aria-label="Mobile navigation">
+            <button
+              type="button"
+              onClick={() => {
+                setMenuOpen(false);
+                openJarvis();
+              }}
+              className="flex w-full items-center justify-between rounded-xl bg-[#e8edf6] p-3 text-left font-bold text-[#005b96] border border-[#005b96]/20 shadow-sm"
+            >
+              <div className="flex items-center gap-x-3">
+                <JarvisArcReactor size={32} label="J" />
+                <span>Launch JARVIS AI</span>
+              </div>
+              <HugeiconsIcon icon={ArrowUpRight01Icon} size={18} />
+            </button>
             {navItems.map(([label, href]) => (
               label === "Services" ? (
                 <div className="mobile-nav-group" key={label}>
