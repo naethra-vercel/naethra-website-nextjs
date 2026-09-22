@@ -92,6 +92,15 @@
 .trust-grid strong { font-family: var(--font-display); font-size: 2.8rem; font-weight: 500; letter-spacing: -0.06em; }
 .trust-grid strong span { color: var(--orange); }
 .trust-grid div > span { color: rgb(255 255 255 / 0.62); font-size: 0.7rem; }
+.client-strip { background: var(--paper); padding-block: 2.2rem 3.2rem; }
+.client-strip-inner { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 2rem; }
+.client-strip .eyebrow { white-space: nowrap; }
+.client-logo-window { overflow: hidden; border-radius: 1.35rem; background: var(--blue-soft); padding: 2.2rem 0; }
+.client-logo-track { display: flex; width: max-content; align-items: center; animation: client-marquee 28s linear infinite; }
+.client-logo-window:hover .client-logo-track { animation-play-state: paused; }
+.client-logo { display: inline-flex; min-width: 12rem; align-items: center; justify-content: center; color: var(--ink); font-family: var(--font-display); font-size: clamp(1rem, 1.7vw, 1.45rem); font-weight: 700; letter-spacing: -0.04em; text-align: center; white-space: nowrap; }
+.client-logo:nth-child(2n) { font-family: var(--font-body); font-weight: 600; letter-spacing: 0.01em; }
+.client-logo:nth-child(3n) { text-transform: uppercase; letter-spacing: 0.08em; }
 .section { padding-block: clamp(6rem, 11vw, 10rem); }
 .section-heading { margin-bottom: 4rem; }
 .split-heading { display: grid; grid-template-columns: 1.05fr 0.75fr; align-items: end; gap: 3rem; }
@@ -260,6 +269,7 @@
 [data-reveal-delay="2"] { transition-delay: 160ms; }
 [data-reveal-delay="3"] { transition-delay: 230ms; }
 @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(0.3rem); } }
+@keyframes client-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 @keyframes orbit-spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
 @keyframes orbit-app-in { from { opacity: 0; transform: rotate(var(--orbit-angle)) translateY(calc(-1 * var(--orbit-radius))) rotate(calc(-1 * var(--orbit-angle))) scale(0.5); } to { opacity: 1; transform: rotate(var(--orbit-angle)) translateY(calc(-1 * var(--orbit-radius))) rotate(calc(-1 * var(--orbit-angle))) scale(1); } }
 @keyframes tile-in { to { opacity: 1; transform: rotate(45deg) scale(0.72); } }
@@ -317,6 +327,9 @@
   .trust-grid { grid-template-columns: repeat(2, 1fr); gap: 1.4rem; }
   .trust-grid div { border-right: 0; }
   .trust-grid strong { font-size: 2.2rem; }
+  .client-strip-inner { grid-template-columns: 1fr; gap: 1rem; }
+  .client-logo-window { margin-inline: -0.5rem; }
+  .client-logo { min-width: 9rem; font-size: 0.95rem; }
   .split-heading { grid-template-columns: 1fr; gap: 1.5rem; }
   .section-heading { margin-bottom: 2.5rem; }
   .services-grid, .work-grid { grid-template-columns: 1fr; }

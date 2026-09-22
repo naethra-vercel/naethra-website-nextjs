@@ -172,6 +172,14 @@ const blogPosts = [
   ["Growth", "June 20, 2025", "Digital transformation for service-based businesses", founderImage],
 ] as const;
 
+const valuedClients = [
+  "Namanama",
+  "Sabine Surveyors",
+  "AECO Energy",
+  "Rajdeep Automation",
+  "Boro Blinds",
+];
+
 const testimonials = [
   [
     "Vasudha Bhushan",
@@ -376,6 +384,21 @@ function Index() {
               24<span>/7</span>
             </strong>
             <span>long-term support</span>
+          </div>
+        </div>
+      </section>
+
+      <section className="client-strip" aria-label="Our valued clients" data-reveal="fade-up">
+        <div className="site-container client-strip-inner">
+          <Eyebrow>Our valued clients</Eyebrow>
+          <div className="client-logo-window">
+            <div className="client-logo-track">
+              {[...valuedClients, ...valuedClients].map((client, index) => (
+                <span className="client-logo" key={`${client}-${index}`}>
+                  {client}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
       </section>
