@@ -263,13 +263,30 @@
 .button-blue:hover { background: var(--blue-deep); }
 .contact-success { margin: 1rem 0 0; color: var(--blue); font-size: 0.78rem; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
-.site-footer { background: var(--ink); color: var(--white); padding-block: 3rem; }
-.footer-grid { display: grid; grid-template-columns: 1.3fr 1fr auto; align-items: end; gap: 2rem; }
-.footer-grid p { margin: 1rem 0 0; color: rgb(255 255 255 / 0.45); font-size: 0.72rem; }
-.footer-address span { color: var(--green); font-size: 0.65rem; font-weight: 700; text-transform: uppercase; }
-.footer-address p { margin-top: 0.6rem; line-height: 1.6; }
-.footer-links { display: flex; gap: 1.25rem; color: rgb(255 255 255 / 0.6); font-size: 0.72rem; }
-.footer-copy { grid-column: 1 / -1; border-top: 1px solid rgb(255 255 255 / 0.14); padding-top: 1rem; color: rgb(255 255 255 / 0.35); font-size: 0.65rem; }
+.site-footer { background: #100803; color: var(--white); padding-block: 3rem 1.5rem; }
+.footer-map-wrap { padding-bottom: 3rem; }
+.footer-map { display: block; width: 100%; height: 10rem; border: 0; filter: grayscale(0.8) contrast(0.9) brightness(1.2); border-radius: 0.75rem; }
+.footer-grid { display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: clamp(2rem, 7vw, 7rem); }
+.footer-brand .brand-logo { width: 8.5rem; }
+.footer-grid p { max-width: 17rem; margin: 1.3rem 0 0; color: rgb(255 255 255 / 0.82); font-size: 0.75rem; line-height: 1.7; }
+.footer-socials { display: flex; gap: 0.65rem; margin-top: 1.2rem; }
+.footer-socials a { display: grid; width: 1.8rem; height: 1.8rem; place-items: center; border-radius: 50%; background: #382218; color: var(--white); font-size: 0.72rem; font-weight: 700; transition: background 180ms ease, transform 180ms ease; }
+.footer-socials a:hover { background: var(--blue); transform: translateY(-2px); }
+.footer-address h3, .footer-newsletter h3 { margin: 0 0 1.45rem; font-family: var(--font-display); font-size: 1.1rem; font-weight: 600; }
+.footer-contact-row { display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 1.15rem; }
+.footer-contact-icon { display: grid; width: 1.75rem; height: 1.75rem; flex: 0 0 auto; place-items: center; border-radius: 50%; background: #382218; color: var(--white); }
+.footer-contact-row div > span { display: block; color: rgb(255 255 255 / 0.8); font-size: 0.68rem; }
+.footer-contact-row strong { display: block; margin-top: 0.35rem; color: var(--white); font-size: 0.75rem; line-height: 1.45; }
+.footer-newsletter p { margin: 0 0 1.25rem; }
+.newsletter-form { display: flex; align-items: center; height: 2.7rem; border: 1px solid rgb(255 255 255 / 0.8); border-radius: 999px; padding-left: 0.9rem; }
+.newsletter-form input { min-width: 0; flex: 1; border: 0; outline: 0; background: transparent; color: var(--white); font: inherit; font-size: 0.72rem; }
+.newsletter-form input::placeholder { color: var(--white); }
+.newsletter-form button { display: grid; width: 2.35rem; height: 2.35rem; margin-right: 0.15rem; place-items: center; border: 0; border-radius: 50%; background: #5069ed; color: var(--white); cursor: pointer; }
+.footer-newsletter small { display: block; margin: 0.45rem 0 0.2rem 0.55rem; color: rgb(255 255 255 / 0.75); font-size: 0.56rem; }
+.footer-copy { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-top: 1px solid rgb(255 255 255 / 0.2); margin-top: 2rem; padding-top: 1.2rem; color: var(--white); font-size: 0.65rem; }
+.footer-links { display: flex; gap: 1.5rem; color: var(--white); }
+.footer-links a { transition: color 180ms ease; }
+.footer-links a:hover { color: var(--green); }
 
 [data-reveal] { opacity: 0; transform: translateY(1.5rem); transition: opacity 700ms cubic-bezier(.2,.8,.2,1), transform 700ms cubic-bezier(.2,.8,.2,1); }
 [data-reveal="hero"] { transform: translateY(2rem); transition-duration: 900ms; }
@@ -357,8 +374,11 @@
   .process-item { grid-template-columns: 2.5rem 1fr auto; }
   .process-item h3 { font-size: 1.4rem; }
   .quote-layout blockquote { font-size: 2.3rem; }
-  .footer-grid { grid-template-columns: 1fr 1fr; }
-  .footer-links { flex-direction: column; gap: 0.65rem; }
+  .footer-map-wrap { padding-bottom: 2rem; }
+  .footer-map { height: 8rem; }
+  .footer-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  .footer-copy { align-items: flex-start; flex-direction: column; }
+  .footer-links { flex-wrap: wrap; gap: 0.65rem 1rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {

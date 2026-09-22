@@ -778,25 +778,59 @@ function Index() {
       </section>
 
       <footer className="site-footer">
+        <div className="site-container footer-map-wrap">
+          <iframe
+            className="footer-map"
+            title="Naethra Technologies location"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3886.810857592566!2d80.2267234!3d13.047708300000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a5266f74b625631%3A0xdf28fa08eca396b9!2sNaethra%20Technologies%20Private%20Limited!5e0!3m2!1sen!2sin!4v1790084108341!5m2!1sen!2sin"
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          />
+        </div>
         <div className="site-container footer-grid">
-          <div>
+          <div className="footer-brand">
             <Logo inverse />
-            <p>Comprehensive full-stack development outsourcing.</p>
+            <p>Technology is constantly evolving, shaping the way we live and work. It encompasses innovation, automation, and connectivity.</p>
+            <div className="footer-socials" aria-label="Social links">
+              <a href="#contact" aria-label="Facebook">f</a>
+              <a href="#contact" aria-label="X">X</a>
+              <a href="#contact" aria-label="LinkedIn">in</a>
+              <a href="#contact" aria-label="Pinterest">p</a>
+            </div>
           </div>
           <div className="footer-address">
-            <span>Visit us</span>
-            <p>
-              Viswanathapuram Main Road
-              <br />
-              Kodambakkam, Chennai
-            </p>
+            <h3>Contact</h3>
+            <div className="footer-contact-row">
+              <span className="footer-contact-icon"><HugeiconsIcon icon={Location01Icon} size={17} /></span>
+              <div><span>Address</span><strong>Viswanathapuram Main Road,<br />Kodambakkam, Chennai</strong></div>
+            </div>
+            <div className="footer-contact-row">
+              <span className="footer-contact-icon"><HugeiconsIcon icon={SmartPhone01Icon} size={17} /></span>
+              <div><span>Phone Number</span><strong>+91 44 3500 3204</strong></div>
+            </div>
+            <div className="footer-contact-row">
+              <span className="footer-contact-icon"><HugeiconsIcon icon={Mail01Icon} size={17} /></span>
+              <div><span>Email</span><strong>info@naethra.com</strong></div>
+            </div>
           </div>
-          <div className="footer-links">
-            <a href="#services">Services</a>
-            <a href="#work">Work</a>
-            <a href="#contact">Contact</a>
+          <div className="footer-newsletter">
+            <h3>Newsletter</h3>
+            <p>Technology is constantly evolving, shaping the way we live and work.</p>
+            <form className="newsletter-form" onSubmit={(event) => event.preventDefault()}>
+              <label className="sr-only" htmlFor="footer-email">Your email</label>
+              <input id="footer-email" type="email" placeholder="Your email..." required />
+              <button type="submit" aria-label="Subscribe"><HugeiconsIcon icon={ArrowUpRight01Icon} size={18} /></button>
+            </form>
+            <small>It only takes 2 minutes to complete.</small>
           </div>
-          <span className="footer-copy">© 2026 Naethra Technologies</span>
+          <div className="footer-copy">
+            <span>© 2026 Naethra Technologies</span>
+            <div className="footer-links">
+              <a href="#contact">Terms &amp; Condition</a>
+              <a href="#contact">Privacy Policy</a>
+              <a href="#contact">Contact Us</a>
+            </div>
+          </div>
         </div>
       </footer>
     </main>
