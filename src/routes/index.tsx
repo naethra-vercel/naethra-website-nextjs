@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  ArrowDown01Icon,
   ArrowRight01Icon,
   ArrowUpRight01Icon,
   Cancel01Icon,
@@ -64,37 +63,31 @@ const navItems = [
 
 const services = [
   [
-    "01",
     "Web & enterprise applications",
     "Outsource web applications, enterprise systems, UX/UI planning, and usability testing to an experienced delivery team.",
     Globe02Icon,
   ],
   [
-    "02",
     "Cross-platform mobile apps",
     "Build mobile applications with Ionic Framework, Cordova, Flutter, or the native approach your product requires.",
     SmartPhone01Icon,
   ],
   [
-    "03",
     "User interface & graphic design",
     "Responsive, mobile-first design concepts that make your product easier and more enjoyable to use.",
     PaletteIcon,
   ],
   [
-    "04",
     "Claris FileMaker development",
     "FileMaker integration, database development, WebDirect, Custom Web Publishing, and custom application development.",
     Database02Icon,
   ],
   [
-    "05",
     "Content management systems",
     "Powerful CMS solutions with PHP, WordPress, Joomla, and Magento for teams that need to publish and grow.",
     CloudIcon,
   ],
   [
-    "06",
     "Zoho & cloud applications",
     "Quickly build and deploy cloud applications with Zoho Creator, plus maintenance and support for existing systems.",
     UserGroupIcon,
@@ -117,23 +110,6 @@ const process = [
     "Improve",
     "After launch, we stay close to the product and help it become more valuable over time.",
   ],
-];
-
-const techStack = [
-  ["Angular", "#5550a8"],
-  ["React", "#d94c7b"],
-  ["Node.js", "#198c5c"],
-  ["JavaScript", "#3d6db5"],
-  ["Ionic", "#c89834"],
-  ["React Native", "#68b737"],
-  ["Cloud AWS", "#ed773c"],
-  ["PHP", "#e56b50"],
-  [".NET", "#ec345d"],
-  ["Java", "#df3b32"],
-  ["Android", "#9e2850"],
-  ["iOS", "#102d70"],
-  ["Flutter", "#ff7800"],
-  ["Azure GCP", "#a348aa"],
 ];
 
 const integrations = [
@@ -278,9 +254,6 @@ function Index() {
               </a>
             ))}
           </nav>
-          <a href="#contact" className="button button-orange header-cta">
-            30 mins meeting <HugeiconsIcon icon={ArrowUpRight01Icon} size={16} />
-          </a>
           <button
             type="button"
             className="menu-button"
@@ -303,9 +276,6 @@ function Index() {
                 <HugeiconsIcon icon={ArrowUpRight01Icon} size={18} />
               </a>
             ))}
-            <a href="#contact" className="button button-orange" onClick={() => setMenuOpen(false)}>
-              30 mins meeting <HugeiconsIcon icon={ArrowRight01Icon} size={16} />
-            </a>
           </nav>
         )}
       </header>
@@ -313,7 +283,6 @@ function Index() {
       <section className="hero-section">
         <div className="site-container hero-layout">
           <div className="hero-copy" data-reveal="hero">
-            <Eyebrow>Naethra Technologies · Full-stack development outsourcing</Eyebrow>
             <h1>
               Comprehensive full-stack <em>development outsourcing.</em>
             </h1>
@@ -321,14 +290,6 @@ function Index() {
               Mastering web, mobile native, and cross-platform applications with the experience to
               build, improve, and support the software your business depends on.
             </p>
-            <div className="hero-actions">
-              <a href="#contact" className="button button-orange">
-                Schedule a 30-minute meeting <HugeiconsIcon icon={ArrowUpRight01Icon} size={17} />
-              </a>
-              <a href="#work" className="text-link">
-                Explore our services <HugeiconsIcon icon={ArrowRight01Icon} size={16} />
-              </a>
-            </div>
           </div>
           <div className="hero-visual" data-reveal="image">
             <div className="hero-image-frame">
@@ -350,12 +311,6 @@ function Index() {
               <HugeiconsIcon icon={ArrowUpRight01Icon} size={15} />
             </div>
           </div>
-        </div>
-        <div className="hero-bottom site-container" data-reveal="fade-up">
-          <span>Web · Mobile · UX/UI · FileMaker · Enterprise applications</span>
-          <span className="hero-scroll">
-            <HugeiconsIcon icon={ArrowDown01Icon} size={16} /> Scroll to explore
-          </span>
         </div>
       </section>
 
@@ -388,26 +343,10 @@ function Index() {
         </div>
       </section>
 
-      <section className="client-strip" aria-label="Our valued clients" data-reveal="fade-up">
-        <div className="site-container client-strip-inner">
-          <Eyebrow>Our valued clients</Eyebrow>
-          <div className="client-logo-window">
-            <div className="client-logo-track">
-              {[...valuedClients, ...valuedClients].map((client, index) => (
-                <span className="client-logo" key={`${client}-${index}`}>
-                  {client}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
       <section id="services" className="section section-services">
         <div className="site-container">
           <div className="section-heading split-heading" data-reveal="fade-up">
             <div>
-              <Eyebrow>Our major software development services</Eyebrow>
               <h2>
                 One capable team for every <em>digital need.</em>
               </h2>
@@ -418,7 +357,7 @@ function Index() {
             </p>
           </div>
           <div className="services-grid">
-            {services.map(([number, title, body, Icon], index) => (
+            {services.map(([title, body, Icon], index) => (
               <article
                 key={title}
                 id={
@@ -435,7 +374,6 @@ function Index() {
                 data-reveal-delay={String((index % 3) + 1)}
               >
                 <div className="service-card-top">
-                  <span>{number}</span>
                   <HugeiconsIcon icon={Icon} size={22} strokeWidth={1.7} />
                 </div>
                 <h3>{title}</h3>
@@ -451,70 +389,53 @@ function Index() {
         <div className="site-container">
           <div className="integration-heading" data-reveal="fade-up">
             <div className="integration-pill">
-              <span className="integration-pill-dot" /> Current technology stack
+              <span className="integration-pill-dot" /> Integration <HugeiconsIcon icon={ArrowRight01Icon} size={13} />
             </div>
             <h2>
-              Your entire tech stack — <em>fully connected.</em>
+              Your entire tech stack —<br /> <em>fully connected.</em>
             </h2>
             <p>
               Integrate your favorite apps and build workflows that move data, trigger actions, and
-              keep everything in sync.
+              keep everything in sync — automatically.
             </p>
-            <a href="#contact" className="button button-orange">
-              Start a conversation <HugeiconsIcon icon={ArrowUpRight01Icon} size={16} />
-            </a>
           </div>
           <div
             className="integration-orbit"
             data-reveal="scale-in"
-            aria-label="Current technology stack orbit"
+            aria-label="Connected technology integrations"
           >
-            <div className="orbit-ring orbit-ring-outer" />
-            <div className="orbit-ring orbit-ring-inner" />
-            <div className="orbit-loader">
-              <span />
+            <div className="arc-line arc-line-outer" aria-hidden="true" />
+            <div className="arc-line arc-line-inner" aria-hidden="true" />
+            <div className="arc-anchor arc-anchor-left">
+              <span>×</span>
             </div>
-            <div className="orbit-core">
-              <span>N</span>
-              <strong>Naethra</strong>
+            <div className="arc-anchor arc-anchor-right">
+              <span>×</span>
             </div>
-            {integrations.map(([label, color], index) => (
-              <span
-                key={label}
-                className="orbit-app"
-                style={
-                  {
-                    "--orbit-angle": `${index * 22.5}deg`,
-                    "--orbit-color": color,
-                    "--orbit-delay": `${index * 60}ms`,
-                  } as CSSProperties
-                }
-                title={label}
-              >
-                {label === "YouTube Music" ? "YT Music" : label}
-              </span>
-            ))}
-          </div>
-        </div>
-        <div className="tech-stack-band" data-reveal="fade-up">
-          <div className="site-container">
-            <div className="tech-stack-intro">
-              <Eyebrow inverse>Current technology stack</Eyebrow>
-              <p>Flexible by design. Proven in delivery.</p>
-            </div>
-            <div className="tech-stack-grid">
-              {techStack.map(([label, color], index) => (
-                <span
-                  key={label}
-                  className="tech-tile"
-                  style={
-                    { "--tile-color": color, "--tile-delay": `${index * 40}ms` } as CSSProperties
-                  }
-                >
-                  {label}
-                </span>
+            <div className="orbit-track">
+              {[0, 1].map((set) => (
+                <div className="orbit-set" key={set} aria-hidden={set === 1}>
+                  {integrations.map(([label, color], index) => (
+                    <span
+                      key={`${label}-${set}`}
+                      className="orbit-app"
+                      style={
+                        {
+                          "--orbit-color": color,
+                          "--orbit-index": index,
+                        } as CSSProperties
+                      }
+                      title={label}
+                    >
+                      {label === "YouTube Music" ? "YT Music" : label}
+                    </span>
+                  ))}
+                </div>
               ))}
             </div>
+            <a href="#contact" className="button integration-cta">
+              Start free <HugeiconsIcon icon={ArrowUpRight01Icon} size={16} />
+            </a>
           </div>
         </div>
       </section>
@@ -530,9 +451,6 @@ function Index() {
               Our experienced developers understand the latest web and mobile technologies, work
               around your needs, and stay with you through delivery, maintenance, and support.
             </p>
-            <a href="#contact" className="button button-light">
-              Schedule a 30-minute meeting <HugeiconsIcon icon={ArrowUpRight01Icon} size={16} />
-            </a>
           </div>
           <div className="process-list">
             {process.map(([number, title], index) => (
@@ -670,6 +588,21 @@ function Index() {
             <div className="about-proof">
               <HugeiconsIcon icon={CheckmarkCircle02Icon} size={16} />
               <span>Experienced developers, tailored delivery, dependable support.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="client-strip" aria-label="Our valued clients" data-reveal="fade-up">
+        <div className="site-container client-strip-inner">
+          <div className="client-logo-window">
+            <Eyebrow>Our valued clients</Eyebrow>
+            <div className="client-logo-track">
+              {[...valuedClients, ...valuedClients].map((client, index) => (
+                <span className="client-logo" key={`${client}-${index}`}>
+                  {client}
+                </span>
+              ))}
             </div>
           </div>
         </div>
