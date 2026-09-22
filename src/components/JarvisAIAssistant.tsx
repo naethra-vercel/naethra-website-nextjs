@@ -12,6 +12,12 @@ import {
   Delete02Icon,
   Message01Icon,
   HeadphonesIcon,
+  ActivityIcon,
+  Globe02Icon,
+  CpuIcon,
+  ShieldCheckIcon,
+  RadarIcon,
+  Settings01Icon,
 } from "@hugeicons/core-free-icons";
 
 interface Message {
@@ -32,18 +38,24 @@ Be helpful, concise, articulate, and intelligent in your responses. Keep spoken 
 
 export function JarvisAIAssistant() {
   const [isOpen, setIsOpen] = useState(false);
-  const [mode, setMode] = useState<"audio" | "text">("audio");
+  const [mode, setMode] = useState<"hud" | "text">("hud");
   const [apiKey, setApiKey] = useState<string>("");
   const [showKeyModal, setShowKeyModal] = useState(false);
   const [tempKeyInput, setTempKeyInput] = useState("");
   const [hasSpeechSupport, setHasSpeechSupport] = useState<boolean>(true);
   const [audioPermission, setAudioPermission] = useState<"prompt" | "granted" | "denied">("prompt");
+  const [soundEnabled, setSoundEnabled] = useState(true);
+
+  // System Hardware Stats (Animated telemetry)
+  const [cpuUsage, setCpuUsage] = useState(32);
+  const [memUsage, setMemUsage] = useState(48);
+  const [netUsage, setNetUsage] = useState(87);
 
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
       sender: "jarvis",
-      text: "Greetings. I am Jarvis, your Naethra AI assistant. How may I assist you with our technology stack or services today?",
+      text: "Greetings. I am Jarvis, your Naethra AI assistant. All primary systems online. How may I assist you today?",
       timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     },
   ]);
@@ -54,10 +66,82 @@ export function JarvisAIAssistant() {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [ttsMuted, setTtsMuted] = useState(false);
   const [transcriptText, setTranscriptText] = useState("");
+  const [activeSystemAction, setActiveSystemAction] = useState<string | null>(null);
 
   const chatBottomRef = useRef<HTMLDivElement>(null);
   const audioInputRef = useRef<HTMLInputElement>(null);
   const recognitionRef = useRef<any>(null);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+
+  // Web Audio Synth Sound Effects for Futuristic Sci-Fi UI
+  const playHudSound = (type: "activate" | "beep" | "scan" | "complete") => {
+    if (!soundEnabled || typeof window === "undefined") return;
+    try {
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioCtx) return;
+      if (!audioCtxRef.current) {
+        audioCtxRef.current = new AudioCtx();
+      }
+      const ctx = audioCtxRef.current;
+      if (ctx.state === "suspended") {
+        ctx.resume();
+      }
+
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      const now = ctx.currentTime;
+
+      if (type === "activate") {
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(440, now);
+        osc.frequency.exponentialRampToValueAtTime(880, now + 0.15);
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.linearRampToValueAtTime(0.01, now + 0.18);
+        osc.start(now);
+        osc.stop(now + 0.18);
+      } else if (type === "beep") {
+        osc.type = "triangle";
+        osc.frequency.setValueAtTime(784, now);
+        gain.gain.setValueAtTime(0.06, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+        osc.start(now);
+        osc.stop(now + 0.08);
+      } else if (type === "scan") {
+        osc.type = "sawtooth";
+        osc.frequency.setValueAtTime(300, now);
+        osc.frequency.linearRampToValueAtTime(1200, now + 0.3);
+        gain.gain.setValueAtTime(0.03, now);
+        gain.gain.linearRampToValueAtTime(0.001, now + 0.3);
+        osc.start(now);
+        osc.stop(now + 0.3);
+      } else if (type === "complete") {
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(523.25, now);
+        osc.frequency.setValueAtTime(659.25, now + 0.08);
+        osc.frequency.setValueAtTime(783.99, now + 0.16);
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.linearRampToValueAtTime(0.001, now + 0.3);
+        osc.start(now);
+        osc.stop(now + 0.3);
+      }
+    } catch (e) {
+      console.warn("Web Audio sound playback error:", e);
+    }
+  };
+
+  // Telemetry fluctuation effect to make the HUD feel alive
+  useEffect(() => {
+    if (!isOpen) return;
+    const interval = setInterval(() => {
+      setCpuUsage(30 + Math.floor(Math.random() * 8));
+      setMemUsage(46 + Math.floor(Math.random() * 5));
+      setNetUsage(85 + Math.floor(Math.random() * 6));
+    }, 2500);
+    return () => clearInterval(interval);
+  }, [isOpen]);
 
   // Request explicit microphone permission via navigator.mediaDevices.getUserMedia
   const requestAudioPermission = async (): Promise<boolean> => {
@@ -67,7 +151,6 @@ export function JarvisAIAssistant() {
     }
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      // Stop tracks immediately so mic light turns off until STT starts
       stream.getTracks().forEach((track) => track.stop());
       setAudioPermission("granted");
       return true;
@@ -138,18 +221,25 @@ export function JarvisAIAssistant() {
       return;
     }
 
-    window.speechSynthesis.cancel(); // Stop any active speech
+    window.speechSynthesis.cancel(); // Stop active speech
 
-    const cleanText = text.replace(/[*_#`~]/g, ""); // Strip markdown formatting
+    const cleanText = text.replace(/[*_#`~]/g, "");
     const utterance = new SpeechSynthesisUtterance(cleanText);
-    utterance.rate = 1.0;
-    utterance.pitch = 1.0;
+    utterance.rate = 1.05;
+    utterance.pitch = 0.95; // Slightly deeper Jarvis pitch
 
-    // Pick a natural English voice if available
     const voices = window.speechSynthesis.getVoices();
-    const preferredVoice = voices.find(
-      (v) => v.lang.startsWith("en") && (v.name.includes("Natural") || v.name.includes("Google") || v.name.includes("Samantha"))
-    ) || voices.find((v) => v.lang.startsWith("en"));
+    const preferredVoice =
+      voices.find(
+        (v) =>
+          v.lang.startsWith("en") &&
+          (v.name.includes("Daniel") ||
+            v.name.includes("Oliver") ||
+            v.name.includes("Arthur") ||
+            v.name.includes("Google UK English Male") ||
+            v.name.includes("Natural") ||
+            v.name.includes("Samantha"))
+      ) || voices.find((v) => v.lang.startsWith("en"));
 
     if (preferredVoice) {
       utterance.voice = preferredVoice;
@@ -164,17 +254,16 @@ export function JarvisAIAssistant() {
 
   // Toggle Voice Recognition
   const toggleListening = async () => {
+    playHudSound("beep");
     if (isListening) {
       recognitionRef.current?.stop();
       setIsListening(false);
     } else {
       if (!recognitionRef.current) {
-        // Fallback for Firefox and unsupported STT browsers: focus audio mode text input
         audioInputRef.current?.focus();
         return;
       }
 
-      // Explicitly request microphone audio permission first
       if (audioPermission !== "granted") {
         const granted = await requestAudioPermission();
         if (!granted) return;
@@ -191,8 +280,28 @@ export function JarvisAIAssistant() {
     }
   };
 
+  // System Action Button Trigger (Systems, Analyze, Track, Optimize, Secure)
+  const triggerSystemAction = (actionName: string, speechMessage: string) => {
+    playHudSound("scan");
+    setActiveSystemAction(actionName);
+    setTimeout(() => {
+      setActiveSystemAction(null);
+      playHudSound("complete");
+    }, 1500);
+
+    const jarvisMessage: Message = {
+      id: Date.now().toString(),
+      sender: "jarvis",
+      text: speechMessage,
+      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+    };
+    setMessages((prev) => [...prev, jarvisMessage]);
+    speakText(speechMessage);
+  };
+
   // Save API Key
   const handleSaveKey = () => {
+    playHudSound("complete");
     const trimmed = tempKeyInput.trim();
     setApiKey(trimmed);
     localStorage.setItem("gemini_api_key", trimmed);
@@ -209,6 +318,8 @@ export function JarvisAIAssistant() {
       return;
     }
 
+    playHudSound("activate");
+
     const userMessage: Message = {
       id: Date.now().toString(),
       sender: "user",
@@ -222,7 +333,6 @@ export function JarvisAIAssistant() {
     setIsLoading(true);
 
     try {
-      // Build past history for Gemini multi-turn conversation
       const contents = [
         {
           role: "user",
@@ -230,7 +340,7 @@ export function JarvisAIAssistant() {
         },
         {
           role: "model",
-          parts: [{ text: "Understood. I am Jarvis, Naethra AI assistant." }],
+          parts: [{ text: "Understood. Primary systems operational. I am Jarvis." }],
         },
         ...messages.map((msg) => ({
           role: msg.sender === "user" ? "user" : "model",
@@ -261,7 +371,7 @@ export function JarvisAIAssistant() {
       const data = await response.json();
       const replyText =
         data.candidates?.[0]?.content?.parts?.[0]?.text ||
-        "I've processed your request. How else can Naethra help you?";
+        "All telemetry verified. How else can Naethra assist your technical stack?";
 
       const jarvisMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -271,9 +381,9 @@ export function JarvisAIAssistant() {
       };
 
       setMessages((prev) => [...prev, jarvisMessage]);
+      playHudSound("complete");
 
-      // Speak response aloud if in audio mode or speech enabled
-      if (mode === "audio" || !ttsMuted) {
+      if (mode === "hud" || !ttsMuted) {
         speakText(replyText);
       }
     } catch (err: any) {
@@ -281,7 +391,7 @@ export function JarvisAIAssistant() {
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         sender: "jarvis",
-        text: `Error connecting to Gemini API: ${err.message || "Invalid API Key or network issue"}. Please verify your API key in settings.`,
+        text: `Diagnostic Alert: ${err.message || "Invalid API Key or network offline"}. Please verify your API key configuration.`,
         timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       };
       setMessages((prev) => [...prev, errorMessage]);
@@ -297,16 +407,18 @@ export function JarvisAIAssistant() {
 
   return (
     <>
-      {/* Floating Jarvis AI Logo Trigger Button on Page (Clean Logo, No BG, No Shadow, No Green Dot) */}
+      {/* Floating Arc Reactor Core Trigger Button */}
       <div className="fixed bottom-6 right-6 z-50">
         <button
           type="button"
-          onClick={() => setIsOpen(true)}
+          onClick={() => {
+            playHudSound("activate");
+            setIsOpen(true);
+          }}
           className="group relative flex size-14 items-center justify-center rounded-full bg-transparent p-1 transition-all duration-300 hover:scale-110"
-          aria-label="Open Jarvis AI Assistant"
-          title="Open Jarvis AI Assistant"
+          aria-label="Activate Jarvis HUD System"
+          title="Activate Jarvis HUD System"
         >
-          {/* Jarvis Arc Reactor Core Logo */}
           <div className="relative flex items-center justify-center size-full rounded-full bg-transparent p-1 overflow-hidden">
             <svg viewBox="0 0 100 100" className="size-full text-sky-400">
               <circle
@@ -342,135 +454,351 @@ export function JarvisAIAssistant() {
         </button>
       </div>
 
-      {/* Full-Screen Jarvis AI Overlay */}
+      {/* Full-Screen Stark JARVIS Sci-Fi HUD Interface */}
       {isOpen && (
-        <div className="fixed inset-0 z-[10000] flex flex-col bg-[#060c1a] text-slate-100 font-sans backdrop-blur-3xl overflow-hidden animate-in fade-in duration-300">
-          {/* Header Bar */}
-          <header className="flex h-20 items-center justify-between border-b border-slate-800/80 px-6 lg:px-12 bg-slate-950/60">
-            {/* Left Brand Title */}
+        <div className="fixed inset-0 z-[10000] flex flex-col bg-[#030712] text-cyan-400 font-mono overflow-hidden select-none animate-in fade-in duration-300">
+          {/* Subtle Cybernetic Grid Scanline & Radial Overlay Background */}
+          <div
+            className="absolute inset-0 pointer-events-none opacity-20"
+            style={{
+              backgroundImage:
+                "linear-gradient(to right, #0284c7 1px, transparent 1px), linear-gradient(to bottom, #0284c7 1px, transparent 1px)",
+              backgroundSize: "40px 40px",
+            }}
+          />
+          <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-cyan-900/20 via-slate-950/80 to-slate-950" />
+
+          {/* Top HUD Header Bar */}
+          <header className="relative z-10 flex h-16 items-center justify-between border-b border-cyan-500/30 px-4 lg:px-8 bg-slate-950/80 backdrop-blur-md">
+            {/* System Status Brand Header */}
             <div className="flex items-center gap-x-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-900 border border-sky-400/40 p-1.5 shadow-lg shadow-sky-500/20">
-                <svg viewBox="0 0 100 100" className="size-full">
-                  <circle cx="50" cy="50" r="44" fill="none" stroke="#38bdf8" strokeWidth="4" strokeDasharray="8 6" className="animate-spin" style={{ transformOrigin: "center", animationDuration: "14s" }} />
-                  <polygon points="50,18 78,68 22,68" fill="none" stroke="#818cf8" strokeWidth="5" strokeLinejoin="round" />
+              <div className="flex size-9 items-center justify-center rounded-lg border border-cyan-400/50 bg-cyan-950/40 text-cyan-300 shadow-[0_0_15px_rgba(56,189,248,0.3)]">
+                <svg viewBox="0 0 100 100" className="size-6">
+                  <circle cx="50" cy="50" r="44" fill="none" stroke="#38bdf8" strokeWidth="5" strokeDasharray="8 6" className="animate-spin" style={{ transformOrigin: "center", animationDuration: "14s" }} />
+                  <polygon points="50,18 78,68 22,68" fill="none" stroke="#fbbf24" strokeWidth="6" strokeLinejoin="round" />
                   <circle cx="50" cy="50" r="14" fill="#38bdf8" />
                 </svg>
               </div>
               <div>
-                <h1 className="text-xl font-bold tracking-tight text-white flex items-center gap-x-2 font-mono">
-                  JARVIS <span className="rounded bg-sky-500/20 px-2 py-0.5 text-xs text-sky-400 font-mono">v2.5</span>
-                </h1>
-                <p className="text-xs text-slate-400 font-sans">Naethra Intelligence & Voice Assistant</p>
+                <div className="flex items-center gap-2">
+                  <span className="text-lg font-extrabold tracking-wider text-cyan-200">JARVIS</span>
+                  <span className="rounded border border-cyan-500/40 bg-cyan-500/10 px-1.5 py-0.5 text-[10px] text-cyan-300 font-bold">
+                    SYSTEM ACTIVE
+                  </span>
+                </div>
+                <p className="text-[10px] text-cyan-600 tracking-widest uppercase">STARK TACTICAL INTERFACE • NAETHRA AI</p>
               </div>
             </div>
 
-            {/* Mode Switcher & Control Buttons */}
-            <div className="flex items-center gap-x-3 sm:gap-x-4">
-              {/* Audio / Text Mode Switcher */}
-              <div className="flex items-center rounded-full border border-slate-700/80 bg-slate-900/80 p-1">
+            {/* Mode & Sound Controls */}
+            <div className="flex items-center gap-x-2 sm:gap-x-4">
+              {/* HUD / Text Mode Toggle */}
+              <div className="flex items-center rounded-md border border-cyan-500/40 bg-slate-900/90 p-1">
                 <button
                   type="button"
-                  onClick={() => setMode("audio")}
-                  className={`flex items-center gap-x-2 rounded-full px-4 py-1.5 text-xs font-semibold transition-all ${
-                    mode === "audio"
-                      ? "bg-sky-500 text-white shadow-md shadow-sky-500/30"
-                      : "text-slate-400 hover:text-white"
+                  onClick={() => {
+                    playHudSound("beep");
+                    setMode("hud");
+                  }}
+                  className={`flex items-center gap-x-1.5 rounded px-3 py-1 text-xs font-semibold tracking-wider transition-all ${
+                    mode === "hud"
+                      ? "bg-cyan-500/30 text-cyan-200 border border-cyan-400/60 shadow-[0_0_10px_rgba(56,189,248,0.4)]"
+                      : "text-slate-400 hover:text-cyan-300"
                   }`}
                 >
-                  <HugeiconsIcon icon={HeadphonesIcon} size={15} />
-                  <span>Audio Mode</span>
+                  <HugeiconsIcon icon={RadarIcon} size={14} />
+                  <span>HUD MODE</span>
                 </button>
                 <button
                   type="button"
-                  onClick={() => setMode("text")}
-                  className={`flex items-center gap-x-2 rounded-full px-4 py-1.5 text-xs font-semibold transition-all ${
+                  onClick={() => {
+                    playHudSound("beep");
+                    setMode("text");
+                  }}
+                  className={`flex items-center gap-x-1.5 rounded px-3 py-1 text-xs font-semibold tracking-wider transition-all ${
                     mode === "text"
-                      ? "bg-sky-500 text-white shadow-md shadow-sky-500/30"
-                      : "text-slate-400 hover:text-white"
+                      ? "bg-cyan-500/30 text-cyan-200 border border-cyan-400/60 shadow-[0_0_10px_rgba(56,189,248,0.4)]"
+                      : "text-slate-400 hover:text-cyan-300"
                   }`}
                 >
-                  <HugeiconsIcon icon={Message01Icon} size={15} />
-                  <span>Text Mode</span>
+                  <HugeiconsIcon icon={Message01Icon} size={14} />
+                  <span>LOG CHAT</span>
                 </button>
               </div>
 
-              {/* Speech Mute Toggle */}
+              {/* Sound SFX Toggle */}
+              <button
+                type="button"
+                onClick={() => {
+                  setSoundEnabled(!soundEnabled);
+                  if (!soundEnabled) playHudSound("beep");
+                }}
+                className={`flex size-9 items-center justify-center rounded border transition-all ${
+                  soundEnabled
+                    ? "border-cyan-500/40 bg-cyan-950/30 text-cyan-300 hover:border-cyan-400"
+                    : "border-slate-800 bg-slate-900 text-slate-500"
+                }`}
+                title={soundEnabled ? "Disable UI Sound Effects" : "Enable UI Sound Effects"}
+              >
+                <HugeiconsIcon icon={Settings01Icon} size={16} />
+              </button>
+
+              {/* TTS Mute Button */}
               <button
                 type="button"
                 onClick={() => {
                   if (isSpeaking) window.speechSynthesis?.cancel();
                   setTtsMuted(!ttsMuted);
                 }}
-                className={`flex h-10 w-10 items-center justify-center rounded-full border border-slate-700 transition-colors ${
-                  ttsMuted ? "bg-red-500/20 text-red-400 border-red-500/40" : "bg-slate-900 text-slate-300 hover:text-white"
+                className={`flex size-9 items-center justify-center rounded border transition-colors ${
+                  ttsMuted
+                    ? "border-red-500/50 bg-red-950/40 text-red-400"
+                    : "border-cyan-500/40 bg-cyan-950/30 text-cyan-300 hover:border-cyan-400"
                 }`}
-                title={ttsMuted ? "Unmute Voice" : "Mute Voice"}
+                title={ttsMuted ? "Unmute Voice Output" : "Mute Voice Output"}
               >
-                <HugeiconsIcon icon={ttsMuted ? VolumeOffIcon : VolumeHighIcon} size={18} />
+                <HugeiconsIcon icon={ttsMuted ? VolumeOffIcon : VolumeHighIcon} size={16} />
               </button>
 
-              {/* Gemini API Key Settings */}
-              <button
-                type="button"
-                onClick={() => setShowKeyModal(true)}
-                className={`flex items-center gap-x-2 rounded-full border px-3.5 py-2 text-xs font-semibold transition-all ${
-                  apiKey
-                    ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-400"
-                    : "border-amber-500/50 bg-amber-500/10 text-amber-300 animate-pulse"
-                }`}
-              >
-                <HugeiconsIcon icon={Key01Icon} size={15} />
-                <span className="hidden sm:inline">{apiKey ? "API Key Set" : "Add Gemini Key"}</span>
-              </button>
-
-              {/* Close Button */}
+              {/* API Key Modal Button */}
               <button
                 type="button"
                 onClick={() => {
+                  playHudSound("beep");
+                  setShowKeyModal(true);
+                }}
+                className={`flex items-center gap-x-1.5 rounded border px-3 py-1.5 text-xs font-semibold tracking-wider transition-all ${
+                  apiKey
+                    ? "border-emerald-500/40 bg-emerald-950/30 text-emerald-400"
+                    : "border-amber-500/60 bg-amber-950/40 text-amber-300 animate-pulse"
+                }`}
+              >
+                <HugeiconsIcon icon={Key01Icon} size={14} />
+                <span className="hidden sm:inline">{apiKey ? "KEY LOADED" : "SET API KEY"}</span>
+              </button>
+
+              {/* Exit HUD Close Button */}
+              <button
+                type="button"
+                onClick={() => {
+                  playHudSound("beep");
                   if (isSpeaking) window.speechSynthesis?.cancel();
                   setIsOpen(false);
                 }}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-700 bg-slate-900 text-slate-400 transition-colors hover:bg-slate-800 hover:text-white"
-                aria-label="Close Jarvis"
+                className="flex size-9 items-center justify-center rounded border border-cyan-500/30 bg-slate-900 text-cyan-400 transition-colors hover:border-red-500/60 hover:text-red-400"
+                aria-label="Close HUD Interface"
               >
-                <HugeiconsIcon icon={Cancel01Icon} size={20} />
+                <HugeiconsIcon icon={Cancel01Icon} size={18} />
               </button>
             </div>
           </header>
 
-          {/* Main Content Area: Audio Mode vs Text Mode */}
-          <main className="relative flex flex-1 flex-col overflow-hidden">
-            {mode === "audio" ? (
-              /* AUDIO MODE INTERFACE */
-              <div className="flex flex-1 flex-col items-center justify-center px-4 py-8 text-center max-w-3xl mx-auto w-full">
-                {/* Glowing Interactive Cybernetic Arc Core Visualizer */}
-                <div className="relative mb-10 flex items-center justify-center">
-                  {/* Outer Pulsing Aura */}
-                  <div
-                    className={`absolute size-[340px] rounded-full bg-gradient-to-r from-sky-500/25 via-indigo-500/25 to-cyan-500/25 blur-3xl transition-all duration-700 ${
-                      isSpeaking ? "scale-125 opacity-100 animate-pulse" : isListening ? "scale-110 opacity-80" : "scale-100 opacity-40"
-                    }`}
-                  />
-                  
-                  {/* Outer Precision Rotating Sci-Fi Gyro Rings */}
-                  <div className="absolute size-[280px] rounded-full border border-sky-400/40 border-dashed animate-spin" style={{ animationDuration: "25s" }} />
-                  <div className="absolute size-[230px] rounded-full border border-indigo-500/50 animate-spin" style={{ animationDuration: "14s", animationDirection: "reverse" }} />
+          {/* Main Full-Screen Content Area */}
+          <main className="relative z-10 flex flex-1 flex-col overflow-hidden p-4 lg:p-6">
+            {mode === "hud" ? (
+              /* IMAGE 1 FULL SCI-FI STARK HUD LAYOUT */
+              <div className="grid flex-1 grid-cols-1 gap-4 lg:grid-cols-12 lg:grid-rows-12 h-full overflow-y-auto lg:overflow-hidden">
+                
+                {/* ================= LEFT COLUMN WIDGETS ================= */}
+                <div className="lg:col-span-3 lg:row-span-12 flex flex-col gap-4 justify-between">
+                  {/* TOP LEFT: GLOBAL SCAN & GLOBE WIDGET */}
+                  <div className="rounded-xl border border-cyan-500/30 bg-slate-950/70 p-4 backdrop-blur-md shadow-[0_0_20px_rgba(6,182,212,0.1)]">
+                    <div className="flex items-center justify-between border-b border-cyan-500/30 pb-2 mb-3">
+                      <div className="flex items-center gap-2">
+                        <HugeiconsIcon icon={Globe02Icon} size={16} className="text-cyan-400" />
+                        <span className="text-xs font-bold tracking-widest text-cyan-300 uppercase">GLOBAL SCAN</span>
+                      </div>
+                      <span className="text-[10px] text-cyan-500 font-mono animate-pulse">● LIVE</span>
+                    </div>
 
-                  {/* Core Futuristic Arc Reactor Orb Button */}
-                  <button
-                    type="button"
-                    onClick={toggleListening}
-                    className={`group relative flex size-[160px] cursor-pointer items-center justify-center rounded-full bg-slate-950 border-2 border-sky-400/60 p-4 shadow-[0_0_50px_rgba(56,189,248,0.4)] transition-all duration-500 ${
-                      isListening
-                        ? "scale-110 border-amber-400 shadow-[0_0_70px_rgba(251,191,36,0.6)] ring-4 ring-amber-400/30"
-                        : isSpeaking
-                        ? "scale-105 border-sky-300 shadow-[0_0_70px_rgba(56,189,248,0.7)]"
-                        : "hover:scale-105 hover:border-sky-300"
-                    }`}
-                  >
-                    {/* Inner Cybernetic Core SVG */}
-                    <div className="relative flex flex-col items-center justify-center size-full">
-                      <svg viewBox="0 0 100 100" className="size-20 text-sky-400">
+                    {/* SVG 3D Wireframe Globe Animation */}
+                    <div className="relative my-2 flex items-center justify-center h-32 overflow-hidden">
+                      <svg viewBox="0 0 100 100" className="size-28 text-cyan-400 opacity-90 animate-spin" style={{ animationDuration: "20s" }}>
+                        <circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="3 3" />
+                        <ellipse cx="50" cy="50" rx="42" ry="18" fill="none" stroke="currentColor" strokeWidth="1.2" />
+                        <ellipse cx="50" cy="50" rx="18" ry="42" fill="none" stroke="currentColor" strokeWidth="1.2" />
+                        <line x1="8" y1="50" x2="92" y2="50" stroke="currentColor" strokeWidth="1" strokeDasharray="4 2" />
+                        <line x1="50" y1="8" x2="50" y2="92" stroke="currentColor" strokeWidth="1" strokeDasharray="4 2" />
+                        <circle cx="28" cy="38" r="2" fill="#fbbf24" className="animate-ping" />
+                        <circle cx="72" cy="62" r="2" fill="#38bdf8" className="animate-ping" />
+                      </svg>
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent pointer-events-none" />
+                    </div>
+
+                    <div className="space-y-1.5 text-[10px] tracking-wider font-mono text-cyan-400">
+                      <div className="flex justify-between border-b border-cyan-900/40 pb-1">
+                        <span className="text-slate-400">SATELLITE</span>
+                        <span className="text-emerald-400 font-bold">ONLINE</span>
+                      </div>
+                      <div className="flex justify-between border-b border-cyan-900/40 pb-1">
+                        <span className="text-slate-400">WEATHER</span>
+                        <span className="text-cyan-300">STABLE</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-400">THREAT LEVEL</span>
+                        <span className="text-emerald-400 font-bold">NONE</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* MIDDLE LEFT: HARDWARE & POWER METRICS */}
+                  <div className="rounded-xl border border-cyan-500/30 bg-slate-950/70 p-4 backdrop-blur-md shadow-[0_0_20px_rgba(6,182,212,0.1)] flex-1 flex flex-col justify-center">
+                    <div className="flex items-center gap-4 mb-4">
+                      {/* 100% POWER Circular Arc Gauge */}
+                      <div className="relative flex items-center justify-center size-20">
+                        <svg viewBox="0 0 100 100" className="size-full">
+                          <circle cx="50" cy="50" r="40" fill="none" stroke="#0f172a" strokeWidth="8" />
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="40"
+                            fill="none"
+                            stroke="#38bdf8"
+                            strokeWidth="8"
+                            strokeDasharray="251.2"
+                            strokeDashoffset="0"
+                            className="transition-all duration-700"
+                          />
+                        </svg>
+                        <div className="absolute flex flex-col items-center justify-center text-center">
+                          <span className="text-sm font-black text-cyan-200">100%</span>
+                          <span className="text-[8px] tracking-widest text-cyan-500 uppercase">POWER</span>
+                        </div>
+                      </div>
+
+                      <div className="flex-1 space-y-2">
+                        <div>
+                          <div className="flex justify-between text-[10px] text-cyan-300 mb-1">
+                            <span>CPU</span>
+                            <span>{cpuUsage}%</span>
+                          </div>
+                          <div className="h-1.5 w-full rounded-full bg-slate-900 overflow-hidden border border-cyan-500/30">
+                            <div className="h-full bg-cyan-400 transition-all duration-500" style={{ width: `${cpuUsage}%` }} />
+                          </div>
+                        </div>
+
+                        <div>
+                          <div className="flex justify-between text-[10px] text-cyan-300 mb-1">
+                            <span>MEMORY</span>
+                            <span>{memUsage}%</span>
+                          </div>
+                          <div className="h-1.5 w-full rounded-full bg-slate-900 overflow-hidden border border-cyan-500/30">
+                            <div className="h-full bg-indigo-400 transition-all duration-500" style={{ width: `${memUsage}%` }} />
+                          </div>
+                        </div>
+
+                        <div>
+                          <div className="flex justify-between text-[10px] text-cyan-300 mb-1">
+                            <span>NETWORK</span>
+                            <span>{netUsage}%</span>
+                          </div>
+                          <div className="h-1.5 w-full rounded-full bg-slate-900 overflow-hidden border border-cyan-500/30">
+                            <div className="h-full bg-amber-400 transition-all duration-500" style={{ width: `${netUsage}%` }} />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* BOTTOM LEFT: MARK XLVI SUIT SCHEMATIC */}
+                  <div className="rounded-xl border border-cyan-500/30 bg-slate-950/70 p-4 backdrop-blur-md shadow-[0_0_20px_rgba(6,182,212,0.1)]">
+                    <div className="flex items-center justify-between border-b border-cyan-500/30 pb-2 mb-2">
+                      <span className="text-xs font-bold tracking-widest text-cyan-300 uppercase">MARK XLVI SCHEMATIC</span>
+                      <span className="text-[10px] text-amber-400 font-mono">STARK-V8</span>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      {/* Wireframe Armor Silhouette */}
+                      <div className="relative size-24 flex items-center justify-center">
+                        <svg viewBox="0 0 100 120" className="size-full text-cyan-400 opacity-80">
+                          {/* Head */}
+                          <polygon points="50,10 62,24 38,24" fill="none" stroke="currentColor" strokeWidth="1.5" />
+                          {/* Chest & Arc Reactor */}
+                          <polygon points="30,30 70,30 62,60 38,60" fill="none" stroke="currentColor" strokeWidth="1.5" />
+                          <circle cx="50" cy="44" r="6" fill="#38bdf8" className="animate-pulse" />
+                          {/* Shoulders & Arms */}
+                          <line x1="30" y1="30" x2="15" y2="60" stroke="currentColor" strokeWidth="1.5" />
+                          <line x1="70" y1="30" x2="85" y2="60" stroke="currentColor" strokeWidth="1.5" />
+                          {/* Legs */}
+                          <line x1="40" y1="60" x2="35" y2="105" stroke="currentColor" strokeWidth="1.5" />
+                          <line x1="60" y1="60" x2="65" y2="105" stroke="currentColor" strokeWidth="1.5" />
+                        </svg>
+                      </div>
+
+                      <div className="space-y-1.5 text-[10px] font-mono">
+                        <div className="flex items-center gap-1 text-emerald-400">
+                          <span>●</span>
+                          <span>SYSTEMS ONLINE</span>
+                        </div>
+                        <div className="flex items-center gap-1 text-amber-300">
+                          <span>●</span>
+                          <span>ARMOR STANDBY</span>
+                        </div>
+                        <div className="flex items-center gap-1 text-slate-500">
+                          <span>○</span>
+                          <span>WEAPONS OFFLINE</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* ================= CENTER COLUMN: ARC REACTOR & HUD CORE ================= */}
+                <div className="lg:col-span-6 lg:row-span-12 flex flex-col justify-between items-center relative py-2">
+                  
+                  {/* Laser Scanning Overlay Line during AI thinking/loading */}
+                  {isLoading && (
+                    <div className="absolute inset-x-0 h-1 bg-cyan-400/80 shadow-[0_0_15px_#38bdf8] animate-bounce z-30" />
+                  )}
+
+                  {/* CENTER CONCENTRIC ROTATING HUD RINGS & CORE BUTTON */}
+                  <div className="relative my-auto flex items-center justify-center w-full max-w-lg aspect-square">
+                    
+                    {/* Outer Ambient Radial Glow */}
+                    <div
+                      className={`absolute size-[380px] rounded-full bg-gradient-to-r from-cyan-500/20 via-sky-500/20 to-amber-500/20 blur-3xl transition-all duration-700 ${
+                        isSpeaking ? "scale-125 opacity-100 animate-pulse" : isListening ? "scale-110 opacity-90" : "scale-100 opacity-50"
+                      }`}
+                    />
+
+                    {/* Ring 1: Outer Counter-Clockwise Segmented Ring */}
+                    <div
+                      className="absolute size-[360px] rounded-full border border-cyan-400/30 border-dashed animate-spin pointer-events-none"
+                      style={{ animationDuration: "35s", animationDirection: "reverse" }}
+                    />
+
+                    {/* Ring 2: Middle Amber/Gold Clockwise Segmented Arc Ring */}
+                    <div
+                      className="absolute size-[300px] rounded-full border-2 border-amber-400/40 border-t-transparent border-b-transparent animate-spin pointer-events-none"
+                      style={{ animationDuration: "18s" }}
+                    />
+
+                    {/* Ring 3: Inner Precision Reticle & Compass Ticks */}
+                    <div
+                      className="absolute size-[240px] rounded-full border border-cyan-400/60 animate-spin pointer-events-none"
+                      style={{ animationDuration: "12s", animationDirection: "reverse" }}
+                    />
+
+                    {/* Crosshair Target Guidelines */}
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <div className="w-full h-[1px] bg-cyan-500/20" />
+                      <div className="h-full w-[1px] bg-cyan-500/20 absolute" />
+                    </div>
+
+                    {/* Interactive Center Arc Reactor Core Button */}
+                    <button
+                      type="button"
+                      onClick={toggleListening}
+                      className={`group relative size-[160px] rounded-full bg-slate-950 border-2 border-cyan-400/80 p-4 shadow-[0_0_60px_rgba(56,189,248,0.5)] transition-all duration-500 cursor-pointer flex flex-col items-center justify-center ${
+                        isListening
+                          ? "scale-110 border-amber-400 shadow-[0_0_80px_rgba(251,191,36,0.7)] ring-4 ring-amber-400/30"
+                          : isSpeaking
+                          ? "scale-105 border-cyan-300 shadow-[0_0_80px_rgba(56,189,248,0.8)]"
+                          : "hover:scale-105 hover:border-cyan-200"
+                      }`}
+                    >
+                      {/* Arc Core SVG */}
+                      <svg viewBox="0 0 100 100" className="size-20 text-cyan-400">
                         <circle
                           cx="50"
                           cy="50"
@@ -480,146 +808,307 @@ export function JarvisAIAssistant() {
                           strokeWidth="3"
                           strokeDasharray="6 4"
                           className="animate-spin"
-                          style={{ transformOrigin: "center", animationDuration: "12s" }}
+                          style={{ transformOrigin: "center", animationDuration: "10s" }}
                         />
                         <polygon
                           points="50,18 78,68 22,68"
                           fill="none"
-                          stroke="url(#orb-core-grad)"
-                          strokeWidth="4.5"
+                          stroke="url(#core-arc-grad)"
+                          strokeWidth="5"
                           strokeLinejoin="round"
                         />
-                        <circle cx="50" cy="50" r="12" fill="url(#orb-core-glow)" />
+                        <polygon
+                          points="50,82 22,32 78,32"
+                          fill="none"
+                          stroke="url(#core-arc-grad)"
+                          strokeWidth="3"
+                          strokeLinejoin="round"
+                          opacity="0.7"
+                        />
+                        <circle cx="50" cy="50" r="12" fill="url(#core-arc-glow)" />
                         <circle cx="50" cy="50" r="5" fill="#ffffff" />
                         <defs>
-                          <linearGradient id="orb-core-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <linearGradient id="core-arc-grad" x1="0%" y1="0%" x2="100%" y2="100%">
                             <stop offset="0%" stopColor="#38bdf8" />
-                            <stop offset="50%" stopColor="#818cf8" />
+                            <stop offset="50%" stopColor="#fbbf24" />
                             <stop offset="100%" stopColor="#06b6d4" />
                           </linearGradient>
-                          <radialGradient id="orb-core-glow">
+                          <radialGradient id="core-arc-glow">
                             <stop offset="0%" stopColor="#ffffff" />
                             <stop offset="40%" stopColor="#38bdf8" />
-                            <stop offset="80%" stopColor="#1e3a8a" />
+                            <stop offset="80%" stopColor="#0284c7" />
+                            <stop offset="100%" stopColor="#0f172a" />
                           </radialGradient>
                         </defs>
                       </svg>
-                      <span className="text-[10px] font-black tracking-widest text-sky-200 uppercase mt-1 drop-shadow font-mono">
-                        {isListening ? "Listening" : isSpeaking ? "Speaking" : "Tap to Speak"}
+                      <span className="text-[11px] font-black tracking-widest text-cyan-200 uppercase mt-1 drop-shadow">
+                        {isListening ? "LISTENING" : isSpeaking ? "SPEAKING" : "JARVIS"}
                       </span>
-                    </div>
-                  </button>
-                </div>
-
-                {/* Subtitle / Status Display */}
-                <div className="w-full space-y-4">
-                  <div className="min-h-[50px] flex items-center justify-center px-4">
-                    {isLoading ? (
-                      <div className="flex items-center justify-center gap-x-2 text-sky-400 font-medium">
-                        <span className="inline-block size-2 rounded-full bg-sky-400 animate-ping" />
-                        <span>Jarvis is thinking...</span>
-                      </div>
-                    ) : isListening ? (
-                      <p className="text-lg font-medium text-sky-300 italic">
-                        &quot;{transcriptText || "Listening to your voice..."}&quot;
-                      </p>
-                    ) : (
-                      <p className="text-base text-slate-300 font-medium leading-relaxed">
-                        {messages[messages.length - 1]?.text || "Ask Jarvis anything about Naethra — voice audio response will play out loud."}
-                      </p>
-                    )}
+                    </button>
                   </div>
 
-                  {audioPermission === "denied" && (
-                    <div className="inline-flex items-center gap-x-3 rounded-full bg-red-500/10 border border-red-500/30 px-4 py-1.5 text-xs text-red-300">
-                      <span>🎙️ Microphone permission denied. Allow mic access in browser or click below:</span>
+                  {/* BOTTOM HEXAGONAL PROMPT DISPLAY & INPUT BANNER */}
+                  <div className="w-full space-y-3">
+                    {/* Live Subtitle / Voice Output Box */}
+                    <div className="min-h-[56px] rounded-xl border border-cyan-500/40 bg-slate-950/80 px-6 py-3 flex items-center justify-center text-center shadow-[0_0_20px_rgba(6,182,212,0.15)]">
+                      {isLoading ? (
+                        <div className="flex items-center gap-3 text-cyan-300 font-bold tracking-wider">
+                          <span className="size-2 rounded-full bg-cyan-400 animate-ping" />
+                          <span>NEURAL MATRIX PROCESSING...</span>
+                        </div>
+                      ) : isListening ? (
+                        <p className="text-base font-semibold text-amber-300 italic tracking-wide">
+                          &quot;{transcriptText || "Listening for command..."}&quot;
+                        </p>
+                      ) : (
+                        <p className="text-sm font-semibold text-cyan-100 tracking-wide leading-relaxed">
+                          {messages[messages.length - 1]?.text || "HOW CAN I HELP YOU?"}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Integrated Sci-Fi Command Line Form */}
+                    <form
+                      onSubmit={handleFormSubmit}
+                      className="flex items-center gap-2 rounded-xl border border-cyan-500/50 bg-slate-950/90 p-2 focus-within:border-cyan-300 focus-within:shadow-[0_0_20px_rgba(56,189,248,0.3)] transition-all"
+                    >
                       <button
                         type="button"
-                        onClick={requestAudioPermission}
-                        className="rounded-full bg-red-500/20 hover:bg-red-500/30 px-3 py-0.5 font-bold text-red-200 transition-colors"
+                        onClick={toggleListening}
+                        className={`flex size-10 shrink-0 items-center justify-center rounded-lg border transition-all ${
+                          isListening
+                            ? "border-amber-400 bg-amber-950/50 text-amber-300 animate-pulse"
+                            : "border-cyan-500/30 bg-slate-900 text-cyan-400 hover:border-cyan-300"
+                        }`}
+                        title="Voice Microphone"
                       >
-                        Grant Permission
+                        <HugeiconsIcon icon={isListening ? MicOff01Icon : Mic01Icon} size={18} />
+                      </button>
+
+                      <input
+                        ref={audioInputRef}
+                        type="text"
+                        value={inputText}
+                        onChange={(e) => setInputText(e.target.value)}
+                        placeholder="ASK JARVIS ANYTHING ABOUT NAETHRA..."
+                        className="flex-1 bg-transparent px-3 py-2 text-xs text-cyan-100 placeholder-cyan-700 tracking-wider font-mono focus:outline-none"
+                      />
+
+                      <button
+                        type="submit"
+                        disabled={!inputText.trim() || isLoading}
+                        className="flex size-10 shrink-0 items-center justify-center rounded-lg border border-cyan-400/60 bg-cyan-500/20 text-cyan-200 hover:bg-cyan-500/40 disabled:opacity-30 transition-all shadow-[0_0_10px_rgba(56,189,248,0.3)]"
+                      >
+                        <HugeiconsIcon icon={SentIcon} size={18} />
+                      </button>
+                    </form>
+
+                    {/* Quick Voice Prompt Chips */}
+                    <div className="flex flex-wrap items-center justify-center gap-2 text-[10px]">
+                      <button
+                        type="button"
+                        onClick={() => handleSendMessage("What core services does Naethra offer?")}
+                        className="rounded border border-cyan-500/30 bg-slate-900/90 px-3 py-1 text-cyan-300 hover:border-cyan-400 hover:text-white transition-all"
+                      >
+                        ⚡ CORE SERVICES
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleSendMessage("Tell me about your mobile app stack")}
+                        className="rounded border border-cyan-500/30 bg-slate-900/90 px-3 py-1 text-cyan-300 hover:border-cyan-400 hover:text-white transition-all"
+                      >
+                        📱 MOBILE APP STACK
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleSendMessage("What FileMaker database solutions do you provide?")}
+                        className="rounded border border-cyan-500/30 bg-slate-900/90 px-3 py-1 text-cyan-300 hover:border-cyan-400 hover:text-white transition-all"
+                      >
+                        📊 FILEMAKER DB
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleSendMessage("Describe your AWS DevOps & Cloud maintenance capabilities")}
+                        className="rounded border border-cyan-500/30 bg-slate-900/90 px-3 py-1 text-cyan-300 hover:border-cyan-400 hover:text-white transition-all"
+                      >
+                        ☁️ AWS DEVOPS
                       </button>
                     </div>
-                  )}
-
-                  {!hasSpeechSupport && (
-                    <div className="inline-flex items-center gap-x-2 rounded-full bg-amber-500/10 border border-amber-500/20 px-3.5 py-1 text-xs text-amber-300">
-                      <span>🎙️ Audio Response Mode Active: Type below or tap a quick prompt — Jarvis speaks back aloud!</span>
-                    </div>
-                  )}
-
-                  {/* Integrated Audio Input Form (Supported in all browsers including Firefox) */}
-                  <form
-                    onSubmit={(e: FormEvent) => {
-                      e.preventDefault();
-                      handleSendMessage();
-                    }}
-                    className="flex items-center gap-x-2 w-full max-w-xl mx-auto rounded-2xl border border-slate-800 bg-slate-900/80 p-2 backdrop-blur-md focus-within:border-sky-500/60 transition-all shadow-lg"
-                  >
-                    <input
-                      ref={audioInputRef}
-                      type="text"
-                      value={inputText}
-                      onChange={(e) => setInputText(e.target.value)}
-                      placeholder={hasSpeechSupport ? "Speak or type your question..." : "Ask Jarvis anything (voice answers aloud)..."}
-                      className="flex-1 bg-transparent px-4 py-2 text-sm text-white placeholder-slate-500 focus:outline-none"
-                    />
-                    <button
-                      type="submit"
-                      disabled={!inputText.trim() || isLoading}
-                      className="flex size-10 items-center justify-center rounded-xl bg-sky-500 text-white shadow-md hover:bg-sky-400 disabled:opacity-40 transition-all"
-                    >
-                      <HugeiconsIcon icon={SentIcon} size={18} />
-                    </button>
-                  </form>
-
-                  {/* Audio Controls & Quick Voice Prompts */}
-                  <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
-                    <button
-                      type="button"
-                      onClick={() => handleSendMessage("What core services does Naethra offer?")}
-                      className="rounded-full border border-slate-800 bg-slate-900/90 px-3.5 py-1.5 text-xs text-slate-300 hover:border-sky-500/50 hover:text-white transition-all"
-                    >
-                      💡 Core services
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleSendMessage("Tell me about your mobile app capabilities")}
-                      className="rounded-full border border-slate-800 bg-slate-900/90 px-3.5 py-1.5 text-xs text-slate-300 hover:border-sky-500/50 hover:text-white transition-all"
-                    >
-                      📱 Mobile apps
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleSendMessage("What FileMaker development services do you provide?")}
-                      className="rounded-full border border-slate-800 bg-slate-900/90 px-3.5 py-1.5 text-xs text-slate-300 hover:border-sky-500/50 hover:text-white transition-all"
-                    >
-                      ⚡ FileMaker expertise
-                    </button>
                   </div>
                 </div>
+
+                {/* ================= RIGHT COLUMN WIDGETS ================= */}
+                <div className="lg:col-span-3 lg:row-span-12 flex flex-col gap-4 justify-between">
+                  {/* TOP RIGHT: JARVIS AUDIO WAVEFORM VISUALIZER */}
+                  <div className="rounded-xl border border-cyan-500/30 bg-slate-950/70 p-4 backdrop-blur-md shadow-[0_0_20px_rgba(6,182,212,0.1)]">
+                    <div className="flex items-center justify-between border-b border-cyan-500/30 pb-2 mb-3">
+                      <div className="flex items-center gap-2">
+                        <HugeiconsIcon icon={Mic01Icon} size={16} className="text-cyan-400" />
+                        <span className="text-xs font-bold tracking-widest text-cyan-300 uppercase">JARVIS AUDIO</span>
+                      </div>
+                      <span className="text-[10px] text-amber-400 font-mono">
+                        {isListening ? "LISTENING..." : isSpeaking ? "SPEAKING..." : "STANDBY"}
+                      </span>
+                    </div>
+
+                    {/* Animated Multi-Bar Frequency Sound Waves */}
+                    <div className="flex items-center justify-center gap-1.5 h-20 my-2 px-2">
+                      {[40, 75, 30, 90, 60, 100, 45, 80, 50, 95, 35, 70].map((h, idx) => (
+                        <div
+                          key={idx}
+                          className={`w-1.5 rounded-full transition-all duration-300 ${
+                            isSpeaking
+                              ? "bg-cyan-400 animate-pulse"
+                              : isListening
+                              ? "bg-amber-400 animate-bounce"
+                              : "bg-cyan-900/60"
+                          }`}
+                          style={{
+                            height: isSpeaking || isListening ? `${Math.max(20, Math.round(h * Math.random()))}%` : "20%",
+                            animationDelay: `${idx * 0.08}s`,
+                          }}
+                        />
+                      ))}
+                    </div>
+
+                    <div className="text-[10px] text-slate-400 text-center font-mono">
+                      AUDIO SPECTRUM SENSORS ACTIVE
+                    </div>
+                  </div>
+
+                  {/* MIDDLE RIGHT: SYSTEM ACTION COMMAND PANEL */}
+                  <div className="rounded-xl border border-cyan-500/30 bg-slate-950/70 p-4 backdrop-blur-md shadow-[0_0_20px_rgba(6,182,212,0.1)] flex-1 flex flex-col justify-center space-y-2">
+                    <span className="text-[10px] font-bold tracking-widest text-cyan-400 uppercase mb-1 block border-b border-cyan-500/30 pb-1">
+                      SYSTEM CONTROLS
+                    </span>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        triggerSystemAction("SYSTEMS", "Running full diagnostic scan on all Naethra application modules. Systems operating at peak efficiency.")
+                      }
+                      className={`w-full rounded border px-3 py-2 text-left text-xs font-bold tracking-wider transition-all flex items-center justify-between ${
+                        activeSystemAction === "SYSTEMS"
+                          ? "border-cyan-300 bg-cyan-500/30 text-white shadow-[0_0_15px_rgba(56,189,248,0.5)]"
+                          : "border-cyan-500/30 bg-slate-900/90 text-cyan-300 hover:border-cyan-400 hover:bg-cyan-950/40"
+                      }`}
+                    >
+                      <span>[ SYSTEMS ]</span>
+                      <HugeiconsIcon icon={CpuIcon} size={14} />
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        triggerSystemAction("ANALYZE", "Analyzing technology stack performance. React 19, TypeScript, and Tailwind CSS compiled without bottlenecks.")
+                      }
+                      className={`w-full rounded border px-3 py-2 text-left text-xs font-bold tracking-wider transition-all flex items-center justify-between ${
+                        activeSystemAction === "ANALYZE"
+                          ? "border-cyan-300 bg-cyan-500/30 text-white shadow-[0_0_15px_rgba(56,189,248,0.5)]"
+                          : "border-cyan-500/30 bg-slate-900/90 text-cyan-300 hover:border-cyan-400 hover:bg-cyan-950/40"
+                      }`}
+                    >
+                      <span>[ ANALYZE ]</span>
+                      <HugeiconsIcon icon={ActivityIcon} size={14} />
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        triggerSystemAction("TRACK", "Tracking user interaction telemetry. Speech recognition and voice synthesis links established.")
+                      }
+                      className={`w-full rounded border px-3 py-2 text-left text-xs font-bold tracking-wider transition-all flex items-center justify-between ${
+                        activeSystemAction === "TRACK"
+                          ? "border-cyan-300 bg-cyan-500/30 text-white shadow-[0_0_15px_rgba(56,189,248,0.5)]"
+                          : "border-cyan-500/30 bg-slate-900/90 text-cyan-300 hover:border-cyan-400 hover:bg-cyan-950/40"
+                      }`}
+                    >
+                      <span>[ TRACK ]</span>
+                      <HugeiconsIcon icon={RadarIcon} size={14} />
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        triggerSystemAction("OPTIMIZE", "Optimizing memory cache and response latency. Ready for multi-modal queries.")
+                      }
+                      className={`w-full rounded border px-3 py-2 text-left text-xs font-bold tracking-wider transition-all flex items-center justify-between ${
+                        activeSystemAction === "OPTIMIZE"
+                          ? "border-cyan-300 bg-cyan-500/30 text-white shadow-[0_0_15px_rgba(56,189,248,0.5)]"
+                          : "border-cyan-500/30 bg-slate-900/90 text-cyan-300 hover:border-cyan-400 hover:bg-cyan-950/40"
+                      }`}
+                    >
+                      <span>[ OPTIMIZE ]</span>
+                      <HugeiconsIcon icon={Settings01Icon} size={14} />
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        triggerSystemAction("SECURE", "Security protocols enforced. Local API key encryption active.")
+                      }
+                      className={`w-full rounded border px-3 py-2 text-left text-xs font-bold tracking-wider transition-all flex items-center justify-between ${
+                        activeSystemAction === "SECURE"
+                          ? "border-cyan-300 bg-cyan-500/30 text-white shadow-[0_0_15px_rgba(56,189,248,0.5)]"
+                          : "border-cyan-500/30 bg-slate-900/90 text-cyan-300 hover:border-cyan-400 hover:bg-cyan-950/40"
+                      }`}
+                    >
+                      <span>[ SECURE ]</span>
+                      <HugeiconsIcon icon={ShieldCheckIcon} size={14} />
+                    </button>
+                  </div>
+
+                  {/* BOTTOM RIGHT: TARGET RADAR & GEO COORDINATES */}
+                  <div className="rounded-xl border border-cyan-500/30 bg-slate-950/70 p-4 backdrop-blur-md shadow-[0_0_20px_rgba(6,182,212,0.1)]">
+                    <div className="flex items-center justify-between border-b border-cyan-500/30 pb-2 mb-2">
+                      <span className="text-xs font-bold tracking-widest text-cyan-300 uppercase">TARGET RADAR</span>
+                      <span className="text-[10px] text-emerald-400 font-mono">SWEEPING</span>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      {/* 360 Sweep Radar Scope */}
+                      <div className="relative size-20 rounded-full border border-cyan-500/40 bg-slate-950 flex items-center justify-center overflow-hidden">
+                        <div className="absolute inset-0 border border-cyan-500/20 rounded-full" />
+                        <div className="absolute inset-2 border border-cyan-500/20 rounded-full" />
+                        <div className="w-full h-[1px] bg-cyan-500/30" />
+                        <div className="h-full w-[1px] bg-cyan-500/30 absolute" />
+                        {/* Radar Sweep Line */}
+                        <div
+                          className="absolute inset-0 bg-[conic-gradient(from_0deg,#38bdf8_0deg,transparent_60deg)] animate-spin opacity-70"
+                          style={{ animationDuration: "4s", transformOrigin: "center" }}
+                        />
+                        <circle cx="65%" cy="35%" r="2" fill="#fbbf24" className="absolute animate-ping" />
+                      </div>
+
+                      <div className="space-y-1 text-[10px] font-mono text-cyan-300 text-right">
+                        <div>40.7128° N</div>
+                        <div>74.0060° W</div>
+                        <div className="text-amber-400 font-bold">EARTH</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
               </div>
             ) : (
               /* TEXT CHAT MODE INTERFACE */
-              <div className="flex flex-1 flex-col overflow-hidden px-4 py-6 max-w-4xl mx-auto w-full">
-                {/* Chat Messages Stream */}
-                <div className="flex-1 overflow-y-auto space-y-4 pr-2 scrollbar-thin scrollbar-thumb-slate-700">
+              <div className="flex flex-1 flex-col overflow-hidden p-4 max-w-4xl mx-auto w-full">
+                <div className="flex-1 overflow-y-auto space-y-4 pr-2 scrollbar-thin scrollbar-thumb-cyan-700">
                   {messages.map((msg) => (
                     <div
                       key={msg.id}
                       className={`flex flex-col ${msg.sender === "user" ? "items-end" : "items-start"}`}
                     >
-                      <div className="flex items-center gap-x-2 text-[10px] text-slate-400 mb-1 px-1">
-                        <span>{msg.sender === "user" ? "You" : "Jarvis AI"}</span>
+                      <div className="flex items-center gap-x-2 text-[10px] text-cyan-500 mb-1 px-1 font-mono">
+                        <span>{msg.sender === "user" ? "YOU" : "JARVIS AI"}</span>
                         <span>•</span>
                         <span>{msg.timestamp}</span>
                       </div>
                       <div
-                        className={`max-w-[85%] rounded-2xl px-5 py-3.5 text-sm leading-relaxed ${
+                        className={`max-w-[85%] rounded-xl px-5 py-3.5 text-xs leading-relaxed font-sans ${
                           msg.sender === "user"
-                            ? "bg-gradient-to-r from-sky-600 to-indigo-600 text-white rounded-tr-none shadow-md"
-                            : "bg-slate-900/90 border border-slate-800 text-slate-200 rounded-tl-none shadow-sm"
+                            ? "bg-gradient-to-r from-cyan-600 to-sky-700 text-white rounded-tr-none shadow-[0_0_15px_rgba(56,189,248,0.3)]"
+                            : "bg-slate-950 border border-cyan-500/40 text-cyan-100 rounded-tl-none shadow-sm"
                         }`}
                       >
                         {msg.text}
@@ -627,23 +1116,22 @@ export function JarvisAIAssistant() {
                     </div>
                   ))}
                   {isLoading && (
-                    <div className="flex items-center gap-2 text-xs text-sky-400 bg-slate-900/60 border border-slate-800/80 px-4 py-3 rounded-2xl w-fit">
-                      <span className="size-2 rounded-full bg-sky-400 animate-ping" />
-                      <span>Jarvis is formulating response...</span>
+                    <div className="flex items-center gap-2 text-xs text-cyan-300 bg-slate-950 border border-cyan-500/40 px-4 py-3 rounded-xl w-fit font-mono">
+                      <span className="size-2 rounded-full bg-cyan-400 animate-ping" />
+                      <span>JARVIS IS PROCESSING QUERY...</span>
                     </div>
                   )}
                   <div ref={chatBottomRef} />
                 </div>
 
-                {/* Text Form Input */}
-                <form onSubmit={handleFormSubmit} className="mt-4 flex items-center gap-x-2 pt-2 border-t border-slate-800">
+                <form onSubmit={handleFormSubmit} className="mt-4 flex items-center gap-x-2 pt-2 border-t border-cyan-500/30">
                   <button
                     type="button"
                     onClick={toggleListening}
-                    className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border transition-colors ${
+                    className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border transition-all ${
                       isListening
-                        ? "bg-red-500/20 text-red-400 border-red-500/50 animate-pulse"
-                        : "bg-slate-900 border-slate-800 text-slate-400 hover:text-white"
+                        ? "bg-amber-950/40 text-amber-300 border-amber-500 animate-pulse"
+                        : "bg-slate-950 border-cyan-500/30 text-cyan-400 hover:border-cyan-300"
                     }`}
                     title="Voice Input"
                   >
@@ -655,13 +1143,13 @@ export function JarvisAIAssistant() {
                     value={inputText}
                     onChange={(e) => setInputText(e.target.value)}
                     placeholder="Ask Jarvis anything about Naethra..."
-                    className="flex-1 rounded-2xl border border-slate-800 bg-slate-900 px-5 py-3.5 text-sm text-white placeholder-slate-500 focus:border-sky-500 focus:outline-none"
+                    className="flex-1 rounded-xl border border-cyan-500/40 bg-slate-950 px-5 py-3.5 text-xs text-cyan-100 placeholder-cyan-700 focus:border-cyan-300 focus:outline-none font-mono"
                   />
 
                   <button
                     type="submit"
                     disabled={!inputText.trim() || isLoading}
-                    className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-sky-500 text-white transition-all hover:bg-sky-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-cyan-500/30 border border-cyan-400/60 text-cyan-200 transition-all hover:bg-cyan-500/50 disabled:opacity-40"
                   >
                     <HugeiconsIcon icon={SentIcon} size={20} />
                   </button>
@@ -674,36 +1162,36 @@ export function JarvisAIAssistant() {
 
       {/* Gemini API Key Modal Dialog */}
       {showKeyModal && (
-        <div className="fixed inset-0 z-[10010] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-in fade-in duration-200">
-          <div className="w-full max-w-md rounded-3xl border border-slate-800 bg-slate-950 p-6 text-white shadow-2xl space-y-5">
+        <div className="fixed inset-0 z-[10010] flex items-center justify-center bg-black/85 backdrop-blur-md p-4 animate-in fade-in duration-200 font-mono">
+          <div className="w-full max-w-md rounded-2xl border border-cyan-500/50 bg-slate-950 p-6 text-cyan-200 shadow-[0_0_40px_rgba(6,182,212,0.3)] space-y-5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-x-2">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/20 text-amber-400">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/40">
                   <HugeiconsIcon icon={Key01Icon} size={20} />
                 </div>
-                <h3 className="text-lg font-bold">Configure Gemini API Key</h3>
+                <h3 className="text-sm font-bold tracking-wider">CONFIGURE GEMINI API KEY</h3>
               </div>
               <button
                 type="button"
                 onClick={() => setShowKeyModal(false)}
-                className="text-slate-400 hover:text-white"
+                className="text-cyan-500 hover:text-white"
               >
                 <HugeiconsIcon icon={Cancel01Icon} size={18} />
               </button>
             </div>
 
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Enter your Google Gemini API key to enable live voice &amp; text AI responses. Your key is stored locally in your browser.
+            <p className="text-xs text-slate-400 leading-relaxed font-sans">
+              Enter your Google Gemini API key to activate live voice & text intelligence. The key is securely stored in your local browser storage.
             </p>
 
             <div className="space-y-2">
-              <label className="text-xs font-semibold text-slate-300">Gemini API Key</label>
+              <label className="text-[10px] font-bold tracking-wider text-cyan-300 uppercase">GEMINI API KEY</label>
               <input
                 type="password"
                 value={tempKeyInput}
                 onChange={(e) => setTempKeyInput(e.target.value)}
                 placeholder="AIzaSy..."
-                className="w-full rounded-xl border border-slate-800 bg-slate-900 px-4 py-3 text-sm text-white focus:border-amber-500 focus:outline-none"
+                className="w-full rounded-lg border border-cyan-500/40 bg-slate-900 px-4 py-3 text-xs text-white focus:border-cyan-300 focus:outline-none"
               />
             </div>
 
@@ -712,7 +1200,7 @@ export function JarvisAIAssistant() {
                 href="https://aistudio.google.com/app/apikey"
                 target="_blank"
                 rel="noreferrer"
-                className="text-xs text-sky-400 hover:underline"
+                className="text-[11px] text-cyan-400 hover:underline font-sans"
               >
                 Get free key from AI Studio ↗
               </a>
@@ -724,16 +1212,16 @@ export function JarvisAIAssistant() {
                     setApiKey("");
                     setTempKeyInput("");
                   }}
-                  className="rounded-xl border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs font-semibold text-red-400 hover:bg-red-500/20"
+                  className="rounded-lg border border-red-500/40 bg-red-950/30 px-3 py-2 text-xs font-bold text-red-400 hover:bg-red-950/50"
                 >
                   <HugeiconsIcon icon={Delete02Icon} size={15} />
                 </button>
                 <button
                   type="button"
                   onClick={handleSaveKey}
-                  className="rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 px-5 py-2 text-xs font-bold text-white hover:opacity-90"
+                  className="rounded-lg border border-cyan-400/60 bg-cyan-500/30 px-5 py-2 text-xs font-bold text-cyan-100 hover:bg-cyan-500/50 shadow-[0_0_15px_rgba(56,189,248,0.4)]"
                 >
-                  Save Key
+                  SAVE KEY
                 </button>
               </div>
             </div>
