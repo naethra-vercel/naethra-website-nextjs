@@ -1,0 +1,4 @@
+- [ ] Move the Putech homepage into a feature-based folder structure
+- [ ] Add reusable loading, error, and empty presentation states for media/content
+- [ ] Add render-performance hints while preserving the current visual design
+- [ ] Validate build, preview behavior, and desktop/mobile overflow
