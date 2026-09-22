@@ -37,8 +37,9 @@ import {
   Monitor,
   FileCode,
   Laptop,
-  Cloud as CloudLucide,
+  Cloud as CloudIconLucide,
 } from "lucide-react";
+import IntegrationSection from "@/components/IntegrationSection";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -71,7 +72,7 @@ const navItems = [
   ["Mobile", "#mobile"],
   ["Web App", "#web-app"],
   ["Portfolio", "#work"],
-  ["Services", "#integration"],
+  ["Services", "#services"],
   ["FileMaker", "#filemaker"],
   ["About Us", "#about"],
   ["Contact Us", "#contact"],
@@ -266,7 +267,7 @@ const offerServices = [
     title: "Cloud Solutions",
     description:
       "Cloud computing is the delivery of computing services—including servers, storage, databases, networking, software...",
-    icon: CloudLucide,
+    icon: CloudIconLucide,
     image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1000&q=80",
   },
 ];
@@ -578,104 +579,6 @@ function Index() {
         </div>
       </section>
 
-      <section id="integration" className="integration-section section">
-        <div className="site-container">
-          <div className="integration-heading" data-reveal="fade-up">
-            <div className="integration-pill">
-              <span className="integration-pill-dot" /> Technology Stack <HugeiconsIcon icon={ArrowRight01Icon} size={13} />
-            </div>
-            <h2>
-              Your entire tech stack —<br /> <em>fully connected.</em>
-            </h2>
-            <p>
-              Integrate your favorite apps and build workflows that move data, trigger actions, and
-              keep everything in sync — automatically.
-            </p>
-          </div>
-          <div
-            className="integration-orbit"
-            data-reveal="scale-in"
-            aria-label="Technology stack integrations"
-          >
-            <div className="arc-line arc-line-outer" aria-hidden="true" />
-            <div className="arc-line arc-line-inner" aria-hidden="true" />
-            <div className="arc-anchor arc-anchor-left">
-              <span>×</span>
-            </div>
-            <div className="arc-anchor arc-anchor-right">
-              <span>×</span>
-            </div>
-            <div className="orbit-track">
-              {[0, 1].map((set) => (
-                <div className="orbit-set" key={set} aria-hidden={set === 1}>
-                  {integrations.map(([label, color], index) => (
-                    <span
-                      key={`${label}-${set}`}
-                      className="orbit-app"
-                      style={
-                        {
-                          "--orbit-color": color,
-                          "--orbit-index": index,
-                        } as CSSProperties
-                      }
-                      title={label}
-                    >
-                      {label === "YouTube Music" ? "YT Music" : label}
-                    </span>
-                  ))}
-                </div>
-              ))}
-            </div>
-            <a href="#contact" className="button integration-cta">
-              Start free <HugeiconsIcon icon={ArrowUpRight01Icon} size={16} />
-            </a>
-          </div>
-        </div>
-      </section>
-
-      <section id="process" className="section process-section">
-        <div className="site-container process-layout">
-          <div data-reveal="fade-up">
-            <Eyebrow inverse>Why Naethra Technologies</Eyebrow>
-            <h2>
-              You make real things. We make them <em>happen.</em>
-            </h2>
-            <p>
-              Our experienced developers understand the latest web and mobile technologies, work
-              around your needs, and stay with you through delivery, maintenance, and support.
-            </p>
-          </div>
-          <div className="process-list">
-            {process.map(([title], index) => (
-              <div
-                className="process-item"
-                key={title}
-                data-reveal="fade-up"
-                data-reveal-delay={String(index + 1)}
-              >
-                <div>
-                  <h3>
-                    {title === "Understand"
-                      ? "Tailored solutions"
-                      : title === "Make"
-                        ? "Agile delivery"
-                        : "Ongoing support"}
-                  </h3>
-                  <p>
-                    {title === "Understand"
-                      ? "We understand your requirements and shape the right web, mobile, or custom data solution for your business."
-                      : title === "Make"
-                        ? "Our agile team adapts quickly as the product takes shape, keeping quality and communication visible."
-                        : "Maintenance, DevOps, and support services help you get the most from your investment."}
-                  </p>
-                </div>
-                <HugeiconsIcon icon={ArrowUpRight01Icon} size={18} />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <section id="work" className="section work-section">
         <div className="site-container">
           <div className="recent-heading" data-reveal="fade-up">
@@ -700,6 +603,8 @@ function Index() {
           </div>
         </div>
       </section>
+
+      <IntegrationSection />
 
       <section id="about" className="section about-section">
         <div className="site-container about-layout">
