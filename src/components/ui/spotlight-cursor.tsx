@@ -9,6 +9,7 @@ export interface SpotlightConfig {
   spotlightIntensity?: number;
   fadeSpeed?: number;
   glowColor?: string;
+  themeShadowColor?: string;
   pulseSpeed?: number;
 }
 
@@ -21,7 +22,8 @@ export function useSpotlightEffect(config: SpotlightConfig = {}) {
     spotlightSize = 250,
     spotlightIntensity = 0.35,
     fadeSpeed = 0.15,
-    glowColor = "0, 110, 220",
+    glowColor = "56, 189, 248",
+    themeShadowColor = "0, 91, 150",
     pulseSpeed = 2000,
   } = config;
 
@@ -66,6 +68,36 @@ export function useSpotlightEffect(config: SpotlightConfig = {}) {
       setIsHovered(false);
     };
 
+    const checkIsLightBg = (x: number, y: number): boolean => {
+      if (typeof document === "undefined" || x < 0 || y < 0) return true;
+      const el = document.elementFromPoint(x, y);
+      if (!el) return true;
+
+      // Dark containers
+      const darkContainer = el.closest(
+        ".hero-section, .process-section, .trust-strip, .site-footer, .quote-section, .bg-slate-900, .bg-black"
+      );
+      if (darkContainer) return false;
+
+      // Inspect background color luminance
+      let current: HTMLElement | null = el as HTMLElement;
+      while (current && current !== document.body) {
+        const bg = window.getComputedStyle(current).backgroundColor;
+        if (bg && bg !== "transparent" && bg !== "rgba(0, 0, 0, 0)") {
+          const match = bg.match(/\d+/g);
+          if (match && match[0] && match[1] && match[2]) {
+            const r = parseInt(match[0], 10);
+            const g = parseInt(match[1], 10);
+            const b = parseInt(match[2], 10);
+            const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
+            return luminance > 120;
+          }
+        }
+        current = current.parentElement;
+      }
+      return true;
+    };
+
     const render = () => {
       if (!canvas || !ctx) return;
 
@@ -82,6 +114,7 @@ export function useSpotlightEffect(config: SpotlightConfig = {}) {
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+      const isLight = checkIsLightBg(spotlightPos.current.x, spotlightPos.current.y);
       const pulseScale =
         1 + 0.06 * Math.sin((Date.now() / pulseSpeed) * Math.PI * 2);
       const currentSpotlightSize = spotlightSize * pulseScale;
@@ -95,9 +128,17 @@ export function useSpotlightEffect(config: SpotlightConfig = {}) {
         currentSpotlightSize
       );
 
-      gradient.addColorStop(0, `rgba(${glowColor}, ${spotlightIntensity})`);
-      gradient.addColorStop(0.4, `rgba(${glowColor}, ${spotlightIntensity * 0.4})`);
-      gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
+      if (isLight) {
+        // On light background, draw theme brand shadow glow (#005b96)
+        gradient.addColorStop(0, `rgba(${themeShadowColor}, 0.22)`);
+        gradient.addColorStop(0.4, `rgba(${themeShadowColor}, 0.08)`);
+        gradient.addColorStop(1, "rgba(0, 91, 150, 0)");
+      } else {
+        // On dark background, draw bright spotlight glow
+        gradient.addColorStop(0, `rgba(${glowColor}, ${spotlightIntensity})`);
+        gradient.addColorStop(0.4, `rgba(${glowColor}, ${spotlightIntensity * 0.4})`);
+        gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
+      }
 
       ctx.fillStyle = gradient;
       ctx.beginPath();
@@ -125,7 +166,7 @@ export function useSpotlightEffect(config: SpotlightConfig = {}) {
         cancelAnimationFrame(animationFrame.current);
       }
     };
-  }, [spotlightSize, spotlightIntensity, fadeSpeed, glowColor, pulseSpeed]);
+  }, [spotlightSize, spotlightIntensity, fadeSpeed, glowColor, themeShadowColor, pulseSpeed]);
 
   return canvasRef;
 }
@@ -138,7 +179,8 @@ export const SpotlightCursor = ({
   const spotlightConfig = {
     spotlightSize: 240,
     spotlightIntensity: 0.35,
-    glowColor: "0, 110, 220",
+    glowColor: "56, 189, 248",
+    themeShadowColor: "0, 91, 150",
     ...config,
   };
 
@@ -147,7 +189,7 @@ export const SpotlightCursor = ({
   return (
     <canvas
       ref={canvasRef}
-      className={`fixed top-0 left-0 pointer-events-none z-[9999] w-full h-full mix-blend-screen ${className}`}
+      className={`fixed top-0 left-0 pointer-events-none z-[9999] w-full h-full ${className}`}
       {...rest}
     />
   );

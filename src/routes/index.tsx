@@ -890,11 +890,12 @@ function Index() {
             </div>
           </div>
           <div className="footer-copy">
-            <span>© 2026 Naethra Technologies</span>
+            <span>2026 © Copyrights <strong>Naethra Technologies</strong></span>
             <div className="footer-links">
-              <a href="#contact">Terms &amp; Condition</a>
-              <a href="#contact">Privacy Policy</a>
               <a href="#contact">Contact Us</a>
+              <a href="#contact">Terms and Conditions</a>
+              <a href="#contact">Privacy Policy</a>
+              <a href="#contact">Disclaimer and Notification</a>
             </div>
           </div>
         </div>
