@@ -28,6 +28,17 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  Smartphone,
+  Flag,
+  Presentation,
+  TrendingUp,
+  LayoutGrid,
+  Monitor,
+  FileCode,
+  Laptop,
+  Cloud as CloudLucide,
+} from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -188,6 +199,77 @@ const consultingServices = [
   [projectImage, "Financial advisory"],
   [projectImage, "Marketing Research"],
 ] as const;
+
+const offerServices = [
+  // Top Row
+  {
+    title: "iOS, Android And Hybrid Mobility Applications",
+    description:
+      "Our first mobile app project was delivered 2 years ago and since then mobile applications have been the fastest growing part..",
+    icon: Smartphone,
+    image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=1000&q=80",
+  },
+  {
+    title: "Website Development",
+    description:
+      "Our skilled and experienced development team offers a rich set of possible technology and user interface solutions, whatever your needs .Some areas where we've done work...",
+    icon: Flag,
+    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1000&q=80",
+  },
+  {
+    title: "Content Management System",
+    description:
+      "We work on a number of open source Content Management Systems (CMS), which can be easily downloaded by anyone...",
+    icon: Presentation,
+    image: "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=1000&q=80",
+  },
+
+  // Middle Row
+  {
+    title: "Java/J2ee Applications",
+    description:
+      "Our Java Competency Center solutions help your company fundamentally improve the way it builds software solutions using JEE..",
+    icon: TrendingUp,
+    image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1000&q=80",
+  },
+  {
+    title: "Php/Mysql Applications",
+    description:
+      "PHP is a widely-used general-purpose scripting language that is especially suited for Web development...",
+    icon: LayoutGrid,
+    image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1000&q=80",
+  },
+  {
+    title: ".Net Applications",
+    description:
+      "Naethra provides full-cycle development services in Microsoft .NET to Independent Software Vendors (ISVs), product...",
+    icon: Monitor,
+    image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1000&q=80",
+  },
+
+  // Bottom Row
+  {
+    title: "FileMaker Development",
+    description:
+      "We have over 100 person years experience in FileMaker skills. Our developers are certified FM developers and.",
+    icon: FileCode,
+    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1000&q=80",
+  },
+  {
+    title: "Custom Web Publishing With PHP(CWP)",
+    description:
+      "With our Filemaker-to-Web solution, you can offer controlled public access to your data, while it remains connected...",
+    icon: Laptop,
+    image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1000&q=80",
+  },
+  {
+    title: "Cloud Solutions",
+    description:
+      "Cloud computing is the delivery of computing services—including servers, storage, databases, networking, software...",
+    icon: CloudLucide,
+    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1000&q=80",
+  },
+];
 
 const testimonials = [
   [
@@ -466,12 +548,32 @@ function Index() {
             <p>We provide tailored consulting solutions to help businesses overcome challenges, seize opportunities, and achieve sustainable growth.</p>
           </div>
           <div className="services-grid">
-            {consultingServices.map(([image, label], index) => (
-              <article className="service-card" key={label} data-reveal="fade-up" data-reveal-delay={String(index + 1)}>
-                <img src={image} alt={label} width={1200} height={1104} />
-                <span>{label}</span>
-              </article>
-            ))}
+            {offerServices.map((service, index) => {
+              const Icon = service.icon;
+              return (
+                <article
+                  className="service-card"
+                  key={service.title}
+                  data-reveal="fade-up"
+                  data-reveal-delay={String((index % 3) + 1)}
+                >
+                  <img
+                    src={service.image}
+                    alt={service.title}
+                    width={1000}
+                    height={750}
+                    loading="lazy"
+                  />
+                  <div className="service-card-content">
+                    <span className="service-icon-badge">
+                      <Icon className="w-5 h-5 stroke-[2]" />
+                    </span>
+                    <h3 className="service-card-title">{service.title}</h3>
+                    <p className="service-card-desc">{service.description}</p>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </div>
       </section>
