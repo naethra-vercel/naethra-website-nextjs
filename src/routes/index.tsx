@@ -11,7 +11,6 @@ import {
   Location01Icon,
   Mail01Icon,
   Menu01Icon,
-  Message01Icon,
   PaletteIcon,
   QuoteDownIcon,
   SmartPhone01Icon,
@@ -96,17 +95,14 @@ const services = [
 
 const process = [
   [
-    "01",
     "Understand",
     "We listen first, map the real problem, and create a clear plan your team can believe in.",
   ],
   [
-    "02",
     "Make",
     "Small, senior teams turn the plan into a useful product with visible progress at every step.",
   ],
   [
-    "03",
     "Improve",
     "After launch, we stay close to the product and help it become more valuable over time.",
   ],
@@ -156,6 +152,13 @@ const valuedClients = [
   "Boro Blinds",
 ];
 
+const recentProjects = [
+  [projectImage, "Team collaborating on a software project"],
+  [teamImage, "Product team reviewing a digital experience"],
+  [projectImage, "Team presenting project analytics"],
+  [founderImage, "Technology team working together"],
+] as const;
+
 const testimonials = [
   [
     "Vasudha Bhushan",
@@ -200,8 +203,9 @@ function Logo({ inverse = false }: { inverse?: boolean }) {
 function Eyebrow({ children, inverse = false }: { children: string; inverse?: boolean }) {
   return (
     <div className={`eyebrow ${inverse ? "eyebrow-inverse" : ""}`}>
-      <span />
-      {children}
+      <span className="eyebrow-mark">+</span>
+      <span className="eyebrow-label">{children}</span>
+      <span className="eyebrow-mark">+</span>
     </div>
   );
 }
@@ -453,14 +457,13 @@ function Index() {
             </p>
           </div>
           <div className="process-list">
-            {process.map(([number, title], index) => (
+            {process.map(([title], index) => (
               <div
                 className="process-item"
                 key={title}
                 data-reveal="fade-up"
                 data-reveal-delay={String(index + 1)}
               >
-                <span>{number}</span>
                 <div>
                   <h3>
                     {title === "Understand"
@@ -486,44 +489,20 @@ function Index() {
 
       <section id="work" className="section work-section">
         <div className="site-container">
-          <div className="section-heading split-heading" data-reveal="fade-up">
-            <div>
-              <Eyebrow>Portfolio</Eyebrow>
-              <h2>
-                Custom software that <em>works for people.</em>
-              </h2>
-            </div>
-            <a href="#contact" className="text-link">
-              View all projects <HugeiconsIcon icon={ArrowRight01Icon} size={16} />
-            </a>
+          <div className="recent-heading" data-reveal="fade-up">
+            <Eyebrow>Recent Projects</Eyebrow>
+            <h2>
+              Explore the Recent Works
+              <br />
+              We Have Done!
+            </h2>
           </div>
           <div className="work-grid">
-            <article className="work-card work-card-large" data-reveal="fade-up">
-              <img
-                src={projectImage}
-                alt="Product team reviewing an app experience"
-                width={1200}
-                height={1504}
-              />
-              <div className="work-caption">
-                <span>Healthcare / Web and mobile application</span>
-                <h3>Digital experiences built around real users.</h3>
-                <HugeiconsIcon icon={ArrowUpRight01Icon} size={20} />
-              </div>
-            </article>
-            <article className="work-card" data-reveal="fade-up" data-reveal-delay="1">
-              <img
-                src={founderImage}
-                alt="Founder working with a technology team"
-                width={1200}
-                height={1104}
-              />
-              <div className="work-caption">
-                <span>Advisory / Enterprise application</span>
-                <h3>Technology that makes work easier.</h3>
-                <HugeiconsIcon icon={ArrowUpRight01Icon} size={20} />
-              </div>
-            </article>
+            {recentProjects.map(([image, alt], index) => (
+              <article className="work-card" key={alt} data-reveal="fade-up" data-reveal-delay={String((index % 3) + 1)}>
+                <img src={image} alt={alt} width={1200} height={1104} />
+              </article>
+            ))}
           </div>
         </div>
       </section>
@@ -576,15 +555,6 @@ function Index() {
               <span>Revolutionizing reality through technology. Tech it to the next level.</span>
               <span>Tech-savvy lives, brighter tomorrows. Connect. Create. Transform.</span>
             </div>
-            <div className="about-help">
-              <span className="about-help-icon">
-                <HugeiconsIcon icon={UserGroupIcon} size={22} />
-              </span>
-              <div>
-                <span>Need help?</span>
-                <strong>+91 44 3500 3204</strong>
-              </div>
-            </div>
             <div className="about-proof">
               <HugeiconsIcon icon={CheckmarkCircle02Icon} size={16} />
               <span>Experienced developers, tailored delivery, dependable support.</span>
@@ -593,10 +563,9 @@ function Index() {
         </div>
       </section>
 
-      <section className="client-strip" aria-label="Our valued clients" data-reveal="fade-up">
+      <section className="client-strip" aria-label="Client logos" data-reveal="fade-up">
         <div className="site-container client-strip-inner">
           <div className="client-logo-window">
-            <Eyebrow>Our valued clients</Eyebrow>
             <div className="client-logo-track">
               {[...valuedClients, ...valuedClients].map((client, index) => (
                 <span className="client-logo" key={`${client}-${index}`}>
@@ -765,8 +734,7 @@ function Index() {
               <textarea name="message" placeholder="Message here.." rows={4} required />
             </label>
             <button type="submit" className="button button-blue">
-              {contactSubmitted ? "Message ready to send" : "Send a message"}{" "}
-              <HugeiconsIcon icon={Message01Icon} size={18} />
+              {contactSubmitted ? "Message ready to send" : "Send a message"}
             </button>
             {contactSubmitted && (
               <p className="contact-success" role="status">
