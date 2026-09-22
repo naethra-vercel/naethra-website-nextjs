@@ -340,11 +340,11 @@
 .footer-brand .brand-logo { width: 8.5rem; }
 .footer-grid p { max-width: 17rem; margin: 1.3rem 0 0; color: rgb(255 255 255 / 0.82); font-size: 0.75rem; line-height: 1.7; }
 .footer-socials { display: flex; gap: 0.65rem; margin-top: 1.2rem; }
-.footer-socials a { display: grid; width: 1.8rem; height: 1.8rem; place-items: center; border-radius: 50%; background: #382218; color: var(--white); font-size: 0.72rem; font-weight: 700; transition: background 180ms ease, transform 180ms ease; }
-.footer-socials a:hover { background: var(--blue); transform: translateY(-2px); }
+.footer-socials a { display: grid; width: 1.8rem; height: 1.8rem; place-items: center; border-radius: 50%; background: #005b96; color: var(--white); font-size: 0.72rem; font-weight: 700; transition: background 180ms ease, transform 180ms ease; }
+.footer-socials a:hover { background: #0077c5; transform: translateY(-2px); }
 .footer-address h3, .footer-newsletter h3 { margin: 0 0 1.45rem; font-family: var(--font-display); font-size: 1.1rem; font-weight: 600; }
 .footer-contact-row { display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 1.15rem; }
-.footer-contact-icon { display: grid; width: 1.75rem; height: 1.75rem; flex: 0 0 auto; place-items: center; border-radius: 50%; background: #382218; color: var(--white); }
+.footer-contact-icon { display: grid; width: 1.75rem; height: 1.75rem; flex: 0 0 auto; place-items: center; border-radius: 50%; background: #005b96; color: var(--white); }
 .footer-contact-row div > span { display: block; color: rgb(255 255 255 / 0.8); font-size: 0.68rem; }
 .footer-contact-row strong { display: block; margin-top: 0.35rem; color: var(--white); font-size: 0.75rem; line-height: 1.45; }
 .footer-newsletter p { margin: 0 0 1.25rem; }

@@ -32,18 +32,18 @@ export function ScrollToTopButton() {
       <button
         type="button"
         onClick={scrollToTop}
-        className="group flex items-center gap-x-2 rounded-full border border-[#005b96]/30 bg-white px-5 py-2.5 text-xs font-bold text-[#005b96] shadow-lg backdrop-blur-md transition-all duration-300 hover:bg-[#005b96] hover:text-white hover:border-[#005b96] hover:shadow-xl hover:scale-105 active:scale-95"
+        className="group flex items-center gap-x-2 rounded-full border border-[#005b96]/30 bg-white px-3.5 py-1.5 text-xs font-bold text-[#005b96] shadow-md backdrop-blur-md transition-all duration-300 hover:bg-[#005b96] hover:text-white hover:border-[#005b96] hover:shadow-lg hover:scale-105 active:scale-95"
         aria-label="Scroll to top"
         title="Scroll to top"
       >
-        <span className="flex size-6 items-center justify-center rounded-full bg-[#e8edf6] text-[#005b96] group-hover:bg-white/20 group-hover:text-white transition-all">
+        <span className="flex size-5 items-center justify-center rounded-full bg-[#e8edf6] text-[#005b96] group-hover:bg-white/20 group-hover:text-white transition-all">
           <HugeiconsIcon
             icon={ArrowUp01Icon}
-            size={16}
-            className="transition-transform duration-300 group-hover:-translate-y-0.5"
+            size={14}
+            className="animate-bounce transition-transform duration-300 group-hover:-translate-y-1"
           />
         </span>
-        <span className="tracking-wide uppercase font-sans">Scroll to Top</span>
+        <span className="tracking-wide uppercase font-sans text-[11px]">Scroll to Top</span>
       </button>
     </div>
   );
