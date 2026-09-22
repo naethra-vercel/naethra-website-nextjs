@@ -22,6 +22,12 @@ import { type CSSProperties, type FormEvent, useEffect, useState } from "react";
 import founderImage from "@/assets/putech-founder.jpg";
 import projectImage from "@/assets/putech-project.jpg";
 import teamImage from "@/assets/putech-team.jpg";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -152,11 +158,21 @@ const blogPosts = [
 ] as const;
 
 const valuedClients = [
-  "Namanama",
-  "Sabine Surveyors",
-  "AECO Energy",
-  "Rajdeep Automation",
-  "Boro Blinds",
+  { name: "Chemtools", logo: "https://naethra.com/wp-content/uploads/2023/04/Chemtools.webp" },
+  { name: "Namanama", logo: "https://naethra.com/wp-content/uploads/2023/02/namanama-Logo.jpeg" },
+  { name: "Sabine Surveyors", logo: "https://naethra.com/wp-content/uploads/2023/04/Sabine-Surveyors.webp" },
+  { name: "Shingda", logo: "https://naethra.com/wp-content/uploads/2023/04/shingda.webp" },
+  { name: "Fyrepower", logo: "https://naethra.com/wp-content/uploads/2023/02/New-fyrepower-logo-copy.png" },
+  { name: "CURA Emergency Services", logo: "https://naethra.com/wp-content/uploads/2023/04/CURA-Emergency-Services.webp" },
+  { name: "Expat Aircon Services", logo: "https://naethra.com/wp-content/uploads/2023/02/EXPAT-AIRCON-SERVICES.png" },
+  { name: "Sauna Specialist", logo: "https://naethra.com/wp-content/uploads/2023/04/Sauna_Specialist_Logo.png" },
+  { name: "Syndeo", logo: "https://naethra.com/wp-content/uploads/2023/02/Syndeo.jpg" },
+  { name: "Sabine", logo: "https://naethra.com/wp-content/uploads/2023/04/Sabine.png" },
+  { name: "OEG", logo: "https://naethra.com/wp-content/uploads/2023/02/OEG-logo.svg" },
+  { name: "Mahathri", logo: "https://naethra.com/wp-content/uploads/2023/04/Mahathri-Logo.webp" },
+  { name: "MacPros", logo: "https://naethra.com/wp-content/uploads/2023/04/MacPros_Logo_med_white.webp" },
+  { name: "IRITS", logo: "https://naethra.com/wp-content/uploads/2023/04/IRITS-logo.webp" },
+  { name: "AARMS", logo: "https://naethra.com/wp-content/uploads/2023/02/AARMS.png" },
 ];
 
 const recentProjects = [
@@ -642,13 +658,27 @@ function Index() {
       <section className="client-strip" aria-label="Client logos" data-reveal="fade-up">
         <div className="site-container client-strip-inner">
           <div className="client-logo-window">
-            <div className="client-logo-track">
-              {[...valuedClients, ...valuedClients].map((client, index) => (
-                <span className="client-logo" key={`${client}-${index}`}>
-                  {client}
-                </span>
-              ))}
-            </div>
+            <TooltipProvider delayDuration={100}>
+              <div className="client-logo-track">
+                {[...valuedClients, ...valuedClients].map((client, index) => (
+                  <Tooltip key={`${client.name}-${index}`}>
+                    <TooltipTrigger asChild>
+                      <div className="client-logo cursor-pointer">
+                        <img
+                          src={client.logo}
+                          alt={client.name}
+                          className="client-logo-img"
+                          loading="lazy"
+                        />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="font-sans font-semibold text-xs bg-slate-900 text-white border border-slate-700/80 shadow-xl px-3 py-1.5 rounded-lg z-50">
+                      {client.name}
+                    </TooltipContent>
+                  </Tooltip>
+                ))}
+              </div>
+            </TooltipProvider>
           </div>
         </div>
       </section>
