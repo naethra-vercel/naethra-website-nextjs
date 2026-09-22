@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SpotlightCursor } from "@/components/ui/spotlight-cursor";
 import { SmoothScroll } from "@/components/ui/smooth-scroll";
+import { JarvisAIAssistant } from "@/components/JarvisAIAssistant";
 
 function NotFoundComponent() {
   return (
@@ -123,6 +124,7 @@ function RootComponent() {
         <SpotlightCursor />
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
+        <JarvisAIAssistant />
       </SmoothScroll>
     </QueryClientProvider>
   );
