@@ -655,34 +655,6 @@ function Index() {
 
       <IntegrationSection />
 
-      <section className="client-strip" aria-label="Client logos" data-reveal="fade-up">
-        <div className="site-container client-strip-inner">
-          <div className="client-logo-window">
-            <TooltipProvider delayDuration={100}>
-              <div className="client-logo-track">
-                {[...valuedClients, ...valuedClients].map((client, index) => (
-                  <Tooltip key={`${client.name}-${index}`}>
-                    <TooltipTrigger asChild>
-                      <div className="client-logo cursor-pointer">
-                        <img
-                          src={client.logo}
-                          alt={client.name}
-                          className="client-logo-img"
-                          loading="lazy"
-                        />
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent side="top" className="font-sans font-semibold text-xs bg-slate-900 text-white border border-slate-700/80 shadow-xl px-3 py-1.5 rounded-lg z-50">
-                      {client.name}
-                    </TooltipContent>
-                  </Tooltip>
-                ))}
-              </div>
-            </TooltipProvider>
-          </div>
-        </div>
-      </section>
-
       <section id="insights" className="section insights-section">
         <div className="site-container">
           <div className="insights-heading" data-reveal="fade-up">
@@ -721,6 +693,34 @@ function Index() {
                 <HugeiconsIcon className="insight-arrow" icon={ArrowUpRight01Icon} size={19} />
               </a>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="client-strip" aria-label="Client logos" data-reveal="fade-up">
+        <div className="site-container client-strip-inner">
+          <div className="client-logo-window">
+            <TooltipProvider delayDuration={100}>
+              <div className="client-logo-track">
+                {[...valuedClients, ...valuedClients].map((client, index) => (
+                  <Tooltip key={`${client.name}-${index}`}>
+                    <TooltipTrigger asChild>
+                      <div className="client-logo cursor-pointer">
+                        <img
+                          src={client.logo}
+                          alt={client.name}
+                          className="client-logo-img"
+                          loading="lazy"
+                        />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="font-sans font-semibold text-xs bg-slate-900 text-white border border-slate-700/80 shadow-xl px-3 py-1.5 rounded-lg z-50">
+                      {client.name}
+                    </TooltipContent>
+                  </Tooltip>
+                ))}
+              </div>
+            </TooltipProvider>
           </div>
         </div>
       </section>

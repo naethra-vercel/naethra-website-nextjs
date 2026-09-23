@@ -1,5 +1,12 @@
 import React from "react";
 
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
 const INTEGRATIONS = [
   {
     name: "Angular",
@@ -54,8 +61,12 @@ const INTEGRATIONS = [
     icon: "https://api.iconify.design/logos:aws.svg",
   },
   {
-    name: "Azure GCP",
+    name: "Azure",
     icon: "https://api.iconify.design/logos:azure-icon.svg",
+  },
+  {
+    name: "Google Cloud",
+    icon: "https://api.iconify.design/logos:google-cloud.svg",
   },
   {
     name: "FileMaker",
@@ -122,40 +133,49 @@ export default function IntegrationSection() {
 
       {/* Orbit Circle forming U-shaped smiling arc line passing through app icons */}
       <div className="absolute top-[-440px] sm:top-[-540px] left-1/2 -translate-x-1/2 size-[850px] sm:size-[1050px] rounded-full border border-gray-300/80 shadow-inner animate-orbit-spin pointer-events-none z-10">
-        {orbitItems.map((item, index) => {
-          const totalItems = orbitItems.length;
-          const angle = (360 / totalItems) * index;
+        <TooltipProvider delayDuration={100}>
+          {orbitItems.map((item, index) => {
+            const totalItems = orbitItems.length;
+            const angle = (360 / totalItems) * index;
 
-          return (
-            <div
-              key={index}
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-              style={{
-                transform: `rotate(${angle}deg)`,
-              }}
-            >
-              <div className="translate-y-[425px] sm:translate-y-[525px]">
-                <div
-                  style={{
-                    transform: `rotate(-${angle}deg)`,
-                  }}
-                >
+            return (
+              <div
+                key={index}
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                style={{
+                  transform: `rotate(${angle}deg)`,
+                }}
+              >
+                <div className="translate-y-[425px] sm:translate-y-[525px]">
                   <div
-                    className="animate-icon-counter-spin pointer-events-auto flex size-13 sm:size-15 items-center justify-center rounded-full bg-white p-2.5 sm:p-3 shadow-lg border border-gray-100 hover:scale-120 transition-transform cursor-pointer"
-                    title={item.name}
+                    style={{
+                      transform: `rotate(-${angle}deg)`,
+                    }}
                   >
-                    <img
-                      src={item.icon}
-                      alt={item.name}
-                      className="size-7 sm:size-8 object-contain"
-                      loading="lazy"
-                    />
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="animate-icon-counter-spin pointer-events-auto flex size-13 sm:size-15 items-center justify-center rounded-full bg-white p-2.5 sm:p-3 shadow-lg border border-gray-100 hover:scale-120 transition-transform cursor-pointer">
+                          <img
+                            src={item.icon}
+                            alt={item.name}
+                            className="size-7 sm:size-8 object-contain"
+                            loading="lazy"
+                          />
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent
+                        side="top"
+                        className="font-sans font-semibold text-xs bg-slate-900 text-white border border-slate-700/80 shadow-xl px-3 py-1.5 rounded-lg z-50"
+                      >
+                        {item.name}
+                      </TooltipContent>
+                    </Tooltip>
                   </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </TooltipProvider>
       </div>
     </section>
   );
