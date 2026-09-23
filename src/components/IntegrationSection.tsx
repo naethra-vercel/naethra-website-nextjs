@@ -71,8 +71,7 @@ const INTEGRATIONS = [
   {
     name: "FileMaker",
     icon: "https://cdn.simpleicons.org/claris/007AFF",
-  },
-];
+  }];
 
 export default function IntegrationSection() {
   // Repeating list to populate full circular orbit

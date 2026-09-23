@@ -779,15 +779,15 @@ function Index() {
             </p>
             <div className="contact-details">
               <a
-                href="https://maps.google.com/?q=Viswanathapuram+Main+Road+Kodambakkam+Chennai"
+                href="https://maps.google.com/?q=37%2C+Viswanathapuram+Main+Rd%2C+Azeez+Nagar%2C+Kodambakkam%2C+Chennai%2C+Tamil+Nadu+600024"
                 className="contact-detail-card"
               >
                 <HugeiconsIcon icon={Location01Icon} size={22} />
                 <span>Address</span>
                 <strong>
-                  Viswanathapuram Main Road
+                  37, Viswanathapuram Main Rd,
                   <br />
-                  Kodambakkam, Chennai
+                  Azeez Nagar, Kodambakkam, Chennai, Tamil Nadu 600024
                 </strong>
               </a>
               <a href="mailto:info@naethra.com" className="contact-detail-card">
@@ -871,7 +871,7 @@ function Index() {
             <h3>Contact</h3>
             <div className="footer-contact-row">
               <span className="footer-contact-icon"><HugeiconsIcon icon={Location01Icon} size={17} /></span>
-              <div><span>Address</span><strong>Viswanathapuram Main Road,<br />Kodambakkam, Chennai</strong></div>
+              <div><span>Address</span><strong>37, Viswanathapuram Main Rd,<br />Azeez Nagar, Kodambakkam,<br />Chennai, Tamil Nadu 600024</strong></div>
             </div>
             <div className="footer-contact-row">
               <span className="footer-contact-icon"><HugeiconsIcon icon={SmartPhone01Icon} size={17} /></span>
