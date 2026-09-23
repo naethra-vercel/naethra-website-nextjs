@@ -40,7 +40,7 @@ import {
   Cloud as CloudIconLucide,
 } from "lucide-react";
 import IntegrationSection from "@/components/IntegrationSection";
-import { JarvisArcReactor, openJarvis } from "@/components/JarvisArcReactor";
+import { openNaethraAssistant } from "@/components/NaethraAIAssistant";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -393,20 +393,9 @@ function Index() {
               ),
             )}
           </nav>
-          <div className="flex items-center gap-x-2.5">
-            <button
-              type="button"
-              onClick={openJarvis}
-              className="flex items-center gap-x-2 rounded-full border border-[#005b96]/30 bg-[#e8edf6] px-3.5 py-1.5 text-xs font-bold text-[#005b96] transition-all hover:bg-[#d9e3f2] hover:scale-105 active:scale-95 shadow-sm"
-              title="Launch Jarvis AI Assistant"
-            >
-              <JarvisArcReactor size={26} label="J" />
-              <span className="hidden xs:inline">JARVIS AI</span>
-            </button>
-            <a href="#contact" className="button button-orange header-cta">
-              <span>30 mins meeting</span><i aria-hidden="true">›</i>
-            </a>
-          </div>
+          <a href="#contact" className="button button-orange header-cta">
+            <span>30 mins meeting</span><i aria-hidden="true">›</i>
+          </a>
           <button
             type="button"
             className="menu-button"
@@ -423,20 +412,6 @@ function Index() {
         </div>
         {menuOpen && (
           <nav className="mobile-nav" aria-label="Mobile navigation">
-            <button
-              type="button"
-              onClick={() => {
-                setMenuOpen(false);
-                openJarvis();
-              }}
-              className="flex w-full items-center justify-between rounded-xl bg-[#e8edf6] p-3 text-left font-bold text-[#005b96] border border-[#005b96]/20 shadow-sm"
-            >
-              <div className="flex items-center gap-x-3">
-                <JarvisArcReactor size={32} label="J" />
-                <span>Launch JARVIS AI</span>
-              </div>
-              <HugeiconsIcon icon={ArrowUpRight01Icon} size={18} />
-            </button>
             {navItems.map(([label, href]) => (
               label === "Services" ? (
                 <div className="mobile-nav-group" key={label}>
@@ -477,7 +452,7 @@ function Index() {
           playsInline
           preload="auto"
           poster="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260912_105822_bf7c2d53-9957-4521-bbbf-7c1ab7a70130.png"
-          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260912_105953_21ad8049-9088-4a00-bad3-aee6b5575a2b.mp4"
+          src="https://automation-saas-ns-next.vercel.app/videos/hero-video.mp4"
           aria-hidden="true"
         />
         <div className="sentinel-tint" />
@@ -514,23 +489,15 @@ function Index() {
           )}
           <div className="sentinel-main">
             <div className="sentinel-copy">
-              <p className="sentinel-eyebrow">Your digital infrastructure</p>
-              <h1>Smarter Security<br />Starts Here</h1>
+              <h1>Comprehensive Full Stack<br className="hidden sm:inline" /> Development Outsourcing</h1>
               <div className="sentinel-tagrow">
-                <span className="sentinel-play" aria-hidden="true">▶</span>
-                <span>Secure the Sphere. Protect What Matters.</span>
+                <span>Mastering Web, Mobile Native, and Cross-Platform Applications</span>
               </div>
             </div>
           </div>
-          <div className="sentinel-bottom">
-            <div className="sentinel-stats">
-              <div><strong>112+</strong><span>Countries<br />Protected<br />Globally</span></div>
-              <i aria-hidden="true" />
-              <div><strong>55K+</strong><span>Clients<br />Secured</span></div>
-            </div>
+          <div className="sentinel-bottom flex justify-center w-full">
             <a className="sentinel-meet" href="#contact">
-              <img alt="" src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260912_105822_bf7c2d53-9957-4521-bbbf-7c1ab7a70130.png" />
-              <b>Meet Sentinel</b><span aria-hidden="true">›</span>
+              <b>Get in touch</b><span aria-hidden="true">›</span>
             </a>
           </div>
         </div>
@@ -561,6 +528,62 @@ function Index() {
               24<span>/7</span>
             </strong>
             <span>long-term support</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="about" className="section about-section">
+        <div className="site-container about-layout">
+          <div className="about-visual" data-reveal="image">
+            <div className="about-image about-image-tall">
+              <img
+                src={founderImage}
+                alt="Naethra team member working on a digital product"
+                width={1200}
+                height={1104}
+              />
+            </div>
+            <div className="about-image about-image-small">
+              <img
+                src={teamImage}
+                alt="Naethra colleagues collaborating in a modern office"
+                width={1408}
+                height={1008}
+              />
+            </div>
+            <div className="about-image about-image-wide">
+              <img
+                src={projectImage}
+                alt="Naethra team discussing a software project"
+                width={1200}
+                height={1504}
+              />
+            </div>
+            <div className="about-stat">
+              <strong>
+                2k<span>+</span>
+              </strong>
+              <span>Projects completed</span>
+            </div>
+          </div>
+          <div className="about-copy" data-reveal="fade-up" data-reveal-delay="1">
+            <Eyebrow>About us</Eyebrow>
+            <h2>
+              Innovate. Integrate. <em>Elevate tech.</em>
+            </h2>
+            <p>
+              Technology is constantly evolving, shaping the way we live and work. It encompasses
+              innovation, automation, and connectivity, driving progress for businesses everywhere.
+            </p>
+            <div className="about-statements">
+              <span>Tech forward. Future ready. Your tomorrow, enhanced today.</span>
+              <span>Revolutionizing reality through technology. Tech it to the next level.</span>
+              <span>Tech-savvy lives, brighter tomorrows. Connect. Create. Transform.</span>
+            </div>
+            <div className="about-proof">
+              <HugeiconsIcon icon={CheckmarkCircle02Icon} size={16} />
+              <span>Experienced developers, tailored delivery, dependable support.</span>
+            </div>
           </div>
         </div>
       </section>
@@ -631,62 +654,6 @@ function Index() {
       </section>
 
       <IntegrationSection />
-
-      <section id="about" className="section about-section">
-        <div className="site-container about-layout">
-          <div className="about-visual" data-reveal="image">
-            <div className="about-image about-image-tall">
-              <img
-                src={founderImage}
-                alt="Naethra team member working on a digital product"
-                width={1200}
-                height={1104}
-              />
-            </div>
-            <div className="about-image about-image-small">
-              <img
-                src={teamImage}
-                alt="Naethra colleagues collaborating in a modern office"
-                width={1408}
-                height={1008}
-              />
-            </div>
-            <div className="about-image about-image-wide">
-              <img
-                src={projectImage}
-                alt="Naethra team discussing a software project"
-                width={1200}
-                height={1504}
-              />
-            </div>
-            <div className="about-stat">
-              <strong>
-                2k<span>+</span>
-              </strong>
-              <span>Projects completed</span>
-            </div>
-          </div>
-          <div className="about-copy" data-reveal="fade-up" data-reveal-delay="1">
-            <Eyebrow>About us</Eyebrow>
-            <h2>
-              Innovate. Integrate. <em>Elevate tech.</em>
-            </h2>
-            <p>
-              Technology is constantly evolving, shaping the way we live and work. It encompasses
-              innovation, automation, and connectivity, driving progress for businesses everywhere.
-            </p>
-            <div className="about-statements">
-              <span>Tech forward. Future ready. Your tomorrow, enhanced today.</span>
-              <span>Revolutionizing reality through technology. Tech it to the next level.</span>
-              <span>Tech-savvy lives, brighter tomorrows. Connect. Create. Transform.</span>
-            </div>
-            <div className="about-proof">
-              <HugeiconsIcon icon={CheckmarkCircle02Icon} size={16} />
-              <span>Experienced developers, tailored delivery, dependable support.</span>
-            </div>
-          </div>
-        </div>
-      </section>
 
       <section className="client-strip" aria-label="Client logos" data-reveal="fade-up">
         <div className="site-container client-strip-inner">
@@ -916,7 +883,7 @@ function Index() {
             </div>
           </div>
           <div className="footer-copy">
-            <span>2026 © Copyrights <strong>Naethra Technologies</strong></span>
+            <span>2026 © Copyrights <strong>Naethra Technologies</strong> | Designed by <strong>Naethra Technologies</strong></span>
             <div className="footer-links">
               <a href="#contact">Contact Us</a>
               <a href="#contact">Terms and Conditions</a>

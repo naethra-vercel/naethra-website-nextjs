@@ -1,6 +1,5 @@
-import { JarvisAIAssistantNew } from "./JarvisAIAssistantNew";
+import { NaethraAIAssistant } from "./NaethraAIAssistant";
 
-// Redirect to JarvisAIAssistantNew while keeping JarvisAIAssistantBackup available for backup reference
 export function JarvisAIAssistant() {
-  return <JarvisAIAssistantNew />;
+  return <NaethraAIAssistant />;
 }
