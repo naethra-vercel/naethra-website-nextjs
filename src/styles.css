@@ -161,7 +161,7 @@
 .trust-grid div > span { color: rgb(255 255 255 / 0.62); font-size: 0.7rem; }
 .client-strip { background: var(--white); padding-block: 0 4rem; }
 .client-strip-inner { display: block; }
-.client-logo-window { overflow: hidden; border-radius: 1.25rem; background: #1e293b; border: 1px solid #334155; padding: 2.2rem 0; box-shadow: inset 0 2px 12px rgba(0, 0, 0, 0.3); }
+.client-logo-window { overflow: hidden; border-radius: 0; background: transparent; border: 0; padding: 2.2rem 0; box-shadow: none; }
 .client-logo-track { display: flex; width: max-content; align-items: center; animation: client-marquee 28s linear infinite; }
 .client-logo-window:hover .client-logo-track,
 .client-logo-track:hover,
@@ -170,8 +170,8 @@
 }
 .client-logo { display: inline-flex; min-width: 10.5rem; height: 4.2rem; padding: 0.6rem 1.5rem; align-items: center; justify-content: center; flex-shrink: 0; margin-inline: 0.65rem; transition: transform 0.3s ease; }
 .client-logo:hover { transform: translateY(-2px); }
-.client-logo-img { max-height: 48px; max-width: 160px; width: auto; height: auto; object-fit: contain; filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 3px rgba(255, 255, 255, 0.4)); opacity: 1; transition: transform 0.3s ease, filter 0.3s ease; }
-.client-logo-img:hover { filter: drop-shadow(0 0 1.5px rgba(255, 255, 255, 1)) drop-shadow(0 0 5px rgba(255, 255, 255, 0.6)); }
+.client-logo-img { max-height: 200%; width: 150px !important; height: auto; max-width: 100%; object-fit: contain; object-position: center; box-shadow: none; filter: drop-shadow(0 0 1px var(--blue)) drop-shadow(0 0 0px rgb(0 91 150 / 0.45)); opacity: 1; transition: transform 0.3s ease, filter 0.3s ease; }
+.client-logo-img:hover { filter: drop-shadow(0 0 1.5px var(--blue)) drop-shadow(0 0 5px rgb(0 91 150 / 0.6)); }
 .client-logo-img:hover { transform: scale(1.08); }
 .section { padding-block: clamp(2.5rem, 5vw, 4.5rem); }
 .about-section { padding-block: clamp(2.5rem, 5vw, 4.5rem); }

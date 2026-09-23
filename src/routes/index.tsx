@@ -186,6 +186,7 @@ const valuedClients = [
   { name: "MacPros", logo: "https://naethra.com/wp-content/uploads/2023/04/MacPros_Logo_med_white.webp" },
   { name: "IRITS", logo: "https://naethra.com/wp-content/uploads/2023/04/IRITS-logo.webp" },
   { name: "AARMS", logo: "https://naethra.com/wp-content/uploads/2023/02/AARMS.png" },
+  { name: "Driev", logo: "https://driev.bike/assets/newimgs/longlogodriev.png" },
 ];
 
 const recentProjects = [

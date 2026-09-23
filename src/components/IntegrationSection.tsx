@@ -106,7 +106,7 @@ export default function IntegrationSection() {
       `}</style>
 
       {/* Main Content Area */}
-      <div className="relative z-20 space-y-6 text-center max-w-3xl mx-auto px-4 py-6 pointer-events-auto">
+      <div className="relative z-20 -translate-y-16 space-y-6 text-center max-w-3xl mx-auto px-4 py-6 pointer-events-auto">
         {/* Category Tag */}
         <div className="inline-block rounded-full border border-gray-200 bg-white py-1 pr-4 pl-1 font-sans text-xs text-gray-700 shadow-sm">
           <div className="flex items-center gap-x-2">
@@ -120,7 +120,7 @@ export default function IntegrationSection() {
         {/* Heading and Description */}
         <div className="space-y-3">
           <h2 className="mx-auto max-w-[620px] text-3xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-tight">
-            Your entire tech stack — <br />
+            Your entire tech stack <br />
             fully connected
           </h2>
           <p className="mx-auto max-w-[560px] text-gray-600 text-sm sm:text-base leading-relaxed font-medium">
