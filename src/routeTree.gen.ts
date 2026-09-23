@@ -10,33 +10,80 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutIndexRouteImport } from './routes/about/index'
+import { Route as AboutServicesRouteImport } from './routes/about/services'
+import { Route as AboutSpecialtyRouteImport } from './routes/about/specialty'
+import { Route as AboutTeamRouteImport } from './routes/about/team'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AboutIndexRoute = AboutIndexRouteImport.update({
+  id: '/about/',
+  path: '/about/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutServicesRoute = AboutServicesRouteImport.update({
+  id: '/about/services',
+  path: '/about/services',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutSpecialtyRoute = AboutSpecialtyRouteImport.update({
+  id: '/about/specialty',
+  path: '/about/specialty',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutTeamRoute = AboutTeamRouteImport.update({
+  id: '/about/team',
+  path: '/about/team',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about/services': typeof AboutServicesRoute
+  '/about/specialty': typeof AboutSpecialtyRoute
+  '/about/team': typeof AboutTeamRoute
+  '/about/': typeof AboutIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about/services': typeof AboutServicesRoute
+  '/about/specialty': typeof AboutSpecialtyRoute
+  '/about/team': typeof AboutTeamRoute
+  '/about': typeof AboutIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about/services': typeof AboutServicesRoute
+  '/about/specialty': typeof AboutSpecialtyRoute
+  '/about/team': typeof AboutTeamRoute
+  '/about/': typeof AboutIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    '/' | '/about/services' | '/about/specialty' | '/about/team' | '/about/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/about/services' | '/about/specialty' | '/about/team' | '/about'
+  id:
+    | '__root__'
+    | '/'
+    | '/about/services'
+    | '/about/specialty'
+    | '/about/team'
+    | '/about/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutServicesRoute: typeof AboutServicesRoute
+  AboutSpecialtyRoute: typeof AboutSpecialtyRoute
+  AboutTeamRoute: typeof AboutTeamRoute
+  AboutIndexRoute: typeof AboutIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +95,43 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/about/': {
+      id: '/about/'
+      path: '/about'
+      fullPath: '/about/'
+      preLoaderRoute: typeof AboutIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about/services': {
+      id: '/about/services'
+      path: '/about/services'
+      fullPath: '/about/services'
+      preLoaderRoute: typeof AboutServicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about/specialty': {
+      id: '/about/specialty'
+      path: '/about/specialty'
+      fullPath: '/about/specialty'
+      preLoaderRoute: typeof AboutSpecialtyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about/team': {
+      id: '/about/team'
+      path: '/about/team'
+      fullPath: '/about/team'
+      preLoaderRoute: typeof AboutTeamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutServicesRoute: AboutServicesRoute,
+  AboutSpecialtyRoute: AboutSpecialtyRoute,
+  AboutTeamRoute: AboutTeamRoute,
+  AboutIndexRoute: AboutIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

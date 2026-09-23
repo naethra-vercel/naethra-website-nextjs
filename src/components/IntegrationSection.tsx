@@ -6,79 +6,167 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import SectionEyebrow from "@/components/SectionEyebrow";
+
+import androidIcon from "@/assets/icons/Android.svg";
+import angularIcon from "@/assets/icons/Angular.svg";
+import appleIcon from "@/assets/icons/Apple.svg";
+import awsIcon from "@/assets/icons/AWS.svg";
+import azureIcon from "@/assets/icons/Azure.svg";
+import cIcon from "@/assets/icons/C.svg";
+import csharpIcon from "@/assets/icons/CSharp.svg";
+import dartIcon from "@/assets/icons/Dart.svg";
+import dockerIcon from "@/assets/icons/Docker.svg";
+import flutterIcon from "@/assets/icons/Flutter.svg";
+import githubIcon from "@/assets/icons/GitHub.svg";
+import googleCloudIcon from "@/assets/icons/Google Cloud.svg";
+import graphqlIcon from "@/assets/icons/GraphQL.svg";
+import ionicIcon from "@/assets/icons/Ionic.svg";
+import javaIcon from "@/assets/icons/Java.svg";
+import javascriptIcon from "@/assets/icons/JavaScript.svg";
+import jenkinsIcon from "@/assets/icons/Jenkins.svg";
+import jqueryIcon from "@/assets/icons/jQuery.svg";
+import kubernetesIcon from "@/assets/icons/Kubernetes.svg";
+import mysqlIcon from "@/assets/icons/MySQL.svg";
+import nestIcon from "@/assets/icons/Nest.js.svg";
+import nextIcon from "@/assets/icons/Next.js.svg";
+import netIcon from "@/assets/icons/NET.svg";
+import nodeIcon from "@/assets/icons/Node.js.svg";
+import oracleIcon from "@/assets/icons/Oracle.svg";
+import phpIcon from "@/assets/icons/PHP.svg";
+import postgresIcon from "@/assets/icons/PostgresSQL.svg";
+import pythonIcon from "@/assets/icons/Python.svg";
+import reactIcon from "@/assets/icons/React.svg";
+import wordpressIcon from "@/assets/icons/WordPress.svg";
 
 const INTEGRATIONS = [
   {
     name: "Angular",
-    icon: "https://api.iconify.design/logos:angular-icon.svg",
+    icon: angularIcon,
   },
   {
     name: "PHP",
-    icon: "https://api.iconify.design/logos:php.svg",
+    icon: phpIcon,
   },
   {
     name: "React",
-    icon: "https://api.iconify.design/logos:react.svg",
+    icon: reactIcon,
   },
   {
     name: ".NET",
-    icon: "https://api.iconify.design/logos:dotnet.svg",
+    icon: netIcon,
   },
   {
     name: "Node.JS",
-    icon: "https://api.iconify.design/logos:nodejs-icon.svg",
+    icon: nodeIcon,
   },
   {
     name: "Java",
-    icon: "https://api.iconify.design/logos:java.svg",
+    icon: javaIcon,
   },
   {
     name: "JavaScript",
-    icon: "https://api.iconify.design/logos:javascript.svg",
+    icon: javascriptIcon,
   },
   {
     name: "Android",
-    icon: "https://api.iconify.design/logos:android-icon.svg",
+    icon: androidIcon,
   },
   {
     name: "Ionic",
-    icon: "https://api.iconify.design/logos:ionic-icon.svg",
+    icon: ionicIcon,
   },
   {
     name: "iOS",
-    icon: "https://api.iconify.design/logos:apple.svg",
+    icon: appleIcon,
   },
   {
     name: "React Native",
-    icon: "https://api.iconify.design/logos:react.svg",
+    icon: reactIcon,
   },
   {
     name: "Flutter",
-    icon: "https://api.iconify.design/logos:flutter.svg",
+    icon: flutterIcon,
   },
   {
     name: "Cloud AWS",
-    icon: "https://api.iconify.design/logos:aws.svg",
+    icon: awsIcon,
   },
   {
     name: "Azure",
-    icon: "https://api.iconify.design/logos:azure-icon.svg",
+    icon: azureIcon,
   },
   {
     name: "Google Cloud",
-    icon: "https://api.iconify.design/logos:google-cloud.svg",
+    icon: googleCloudIcon,
   },
   {
-    name: "FileMaker",
-    icon: "https://cdn.simpleicons.org/claris/007AFF",
+    name: "C#",
+    icon: csharpIcon,
+  },
+  {
+    name: "C",
+    icon: cIcon,
+  },
+  {
+    name: "Dart",
+    icon: dartIcon,
+  },
+  {
+    name: "Docker",
+    icon: dockerIcon,
+  },
+  {
+    name: "GitHub",
+    icon: githubIcon,
+  },
+  {
+    name: "GraphQL",
+    icon: graphqlIcon,
+  },
+  {
+    name: "Jenkins",
+    icon: jenkinsIcon,
+  },
+  {
+    name: "jQuery",
+    icon: jqueryIcon,
+  },
+  {
+    name: "Kubernetes",
+    icon: kubernetesIcon,
+  },
+  {
+    name: "MySQL",
+    icon: mysqlIcon,
+  },
+  {
+    name: "Nest.js",
+    icon: nestIcon,
+  },
+  {
+    name: "Next.js",
+    icon: nextIcon,
+  },
+  {
+    name: "Oracle",
+    icon: oracleIcon,
+  },
+  {
+    name: "PostgreSQL",
+    icon: postgresIcon,
+  },
+  {
+    name: "Python",
+    icon: pythonIcon,
+  },
+  {
+    name: "WordPress",
+    icon: wordpressIcon,
   }];
 
 export default function IntegrationSection() {
-  // Repeating list to populate full circular orbit
-  const orbitItems = [
-    ...INTEGRATIONS,
-    ...INTEGRATIONS,
-  ];
+  const orbitItems = INTEGRATIONS;
 
   return (
     <section id="integration" className="relative overflow-hidden py-20 lg:py-28 bg-[#f4f7fc] min-h-[580px] flex flex-col items-center justify-center">
@@ -107,15 +195,7 @@ export default function IntegrationSection() {
 
       {/* Main Content Area */}
       <div className="relative z-20 -translate-y-16 space-y-6 text-center max-w-3xl mx-auto px-4 py-6 pointer-events-auto">
-        {/* Category Tag */}
-        <div className="inline-block rounded-full border border-gray-200 bg-white py-1 pr-4 pl-1 font-sans text-xs text-gray-700 shadow-sm">
-          <div className="flex items-center gap-x-2">
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gray-900 text-white text-[10px]">
-              ›
-            </span>
-            <span className="font-medium">Tech Stacks</span>
-          </div>
-        </div>
+        <SectionEyebrow>Tech Stacks</SectionEyebrow>
 
         {/* Heading and Description */}
         <div className="space-y-3">

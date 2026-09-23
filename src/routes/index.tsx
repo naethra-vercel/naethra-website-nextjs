@@ -41,6 +41,7 @@ import {
 } from "lucide-react";
 import IntegrationSection from "@/components/IntegrationSection";
 import { openNaethraAssistant } from "@/components/NaethraAIAssistant";
+import SectionEyebrow from "@/components/SectionEyebrow";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -75,7 +76,7 @@ const navItems = [
   ["Portfolio", "#work"],
   ["Services", "#services"],
   ["FileMaker", "#filemaker"],
-  ["About Us", "#about"],
+  ["About Us", "/about"],
   ["Contact Us", "#contact"],
 ];
 
@@ -312,16 +313,6 @@ function Logo({ inverse = false }: { inverse?: boolean }) {
         height={49}
       />
     </a>
-  );
-}
-
-function Eyebrow({ children, inverse = false }: { children: string; inverse?: boolean }) {
-  return (
-    <div className={`eyebrow ${inverse ? "eyebrow-inverse" : ""}`}>
-      <span className="eyebrow-mark">+</span>
-      <span className="eyebrow-label">{children}</span>
-      <span className="eyebrow-mark">+</span>
-    </div>
   );
 }
 
@@ -568,7 +559,7 @@ function Index() {
             </div>
           </div>
           <div className="about-copy" data-reveal="fade-up" data-reveal-delay="1">
-            <Eyebrow>About us</Eyebrow>
+            <SectionEyebrow>About us</SectionEyebrow>
             <h2>
               Innovate. Integrate. <em>Elevate tech.</em>
             </h2>
@@ -593,7 +584,7 @@ function Index() {
         <div className="site-container">
           <div className="services-heading" data-reveal="fade-up">
             <div>
-              <Eyebrow>What we offer</Eyebrow>
+              <SectionEyebrow>What we offer</SectionEyebrow>
               <h2>Our core consulting services</h2>
             </div>
             <p>We provide tailored consulting solutions to help businesses overcome challenges, seize opportunities, and achieve sustainable growth.</p>
@@ -632,7 +623,7 @@ function Index() {
       <section id="work" className="section work-section">
         <div className="site-container">
           <div className="recent-heading" data-reveal="fade-up">
-            <Eyebrow>Recent Projects</Eyebrow>
+            <SectionEyebrow>Recent Projects</SectionEyebrow>
             <h2>
               Explore the Recent Works
               <br />
@@ -660,7 +651,7 @@ function Index() {
         <div className="site-container">
           <div className="insights-heading" data-reveal="fade-up">
             <div>
-              <Eyebrow>Our blog</Eyebrow>
+              <SectionEyebrow>Our blog</SectionEyebrow>
               <h2>Insights &amp; Ideas</h2>
               <p>
                 Fresh perspectives on business growth, innovation, leadership, and operational
@@ -752,7 +743,7 @@ function Index() {
             </div>
           </div>
           <div className="testimonial-copy">
-            <Eyebrow>Testimonial</Eyebrow>
+            <SectionEyebrow>Testimonial</SectionEyebrow>
             <h2>
               Reviews from our <em>customers.</em>
             </h2>
@@ -772,7 +763,7 @@ function Index() {
       <section id="contact" className="contact-section">
         <div className="site-container contact-layout">
           <div className="contact-intro" data-reveal="fade-up">
-            <Eyebrow>Contact us</Eyebrow>
+            <SectionEyebrow>Contact us</SectionEyebrow>
             <h2>Get in touch</h2>
             <p>
               Technology is constantly evolving, shaping the way we live and work. It encompasses
