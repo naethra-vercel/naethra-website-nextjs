@@ -84,9 +84,11 @@ export default function IntegrationSection() {
         }
         .animate-orbit-spin {
           animation: orbit-spin 48s linear infinite;
+          animation-direction: reverse;
         }
         .animate-icon-counter-spin {
           animation: icon-counter-spin 48s linear infinite;
+          animation-direction: reverse;
         }
         .animate-orbit-spin:hover {
           animation-play-state: paused;
@@ -116,20 +118,6 @@ export default function IntegrationSection() {
           </p>
         </div>
 
-        {/* CTA Button */}
-        <div className="flex items-center justify-center pt-2">
-          <a href="#contact">
-            <button
-              type="button"
-              className="group relative flex h-11 cursor-pointer items-center rounded-full border border-gray-300 bg-white p-1 pr-6 text-xs sm:text-sm text-gray-900 shadow-sm transition-all hover:border-gray-400"
-            >
-              <div className="relative z-20 flex h-9 w-12 items-center justify-center overflow-hidden rounded-full bg-[#005b96] transition-transform duration-300 group-hover:scale-105">
-                <span className="text-white font-bold text-xs">›</span>
-              </div>
-              <span className="shrink-0 pl-3 font-semibold">Contact Us</span>
-            </button>
-          </a>
-        </div>
       </div>
 
       {/* Orbit Circle forming U-shaped smiling arc line passing through app icons */}

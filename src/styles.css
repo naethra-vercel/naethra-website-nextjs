@@ -118,8 +118,8 @@
 .hero-scroll svg { animation: bob 1.8s ease-in-out infinite; }
 
 .hero-section { --hero-u: min(100vw / 1280, 100vh / 960); position: relative; height: clamp(520px, 85vh, 820px); min-height: clamp(520px, 85vh, 820px); overflow: hidden; padding: 0; background: var(--frame, #e6edf6); color: #020c21; }
-.sentinel-bg { position: absolute; z-index: 0; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; filter: brightness(1.02) saturate(0.98); transform: scale(1.18); transition: transform 0.8s ease; }
-.sentinel-tint { position: absolute; z-index: 1; inset: 0; background: rgb(255 249 240 / .05); pointer-events: none; }
+.sentinel-bg { position: absolute; z-index: 0; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 25%; filter: brightness(1.02) saturate(0.98); opacity: 0.85; transform: scale(1.3); transform-origin: center top; transition: transform 0.8s ease; }
+.sentinel-tint { position: absolute; z-index: 1; inset: 0; background: rgb(255 249 240 / .28); pointer-events: none; }
 .sentinel-hero-inner { position: relative; z-index: 2; display: flex; height: 100%; min-height: 100%; flex-direction: column; justify-content: space-between; padding: calc(18 * var(--hero-u)) calc(50 * var(--hero-u)) calc(20 * var(--hero-u)); }
 .sentinel-topbar, .sentinel-bottom { display: flex; align-items: center; justify-content: center; gap: calc(24 * var(--hero-u)); text-align: center; }
 .sentinel-topbar { display: none; }
@@ -168,9 +168,10 @@
 .client-logo:hover {
   animation-play-state: paused;
 }
-.client-logo { display: inline-flex; min-width: 10.5rem; height: 4.2rem; padding: 0.6rem 1.5rem; align-items: center; justify-content: center; flex-shrink: 0; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 0.85rem; margin-inline: 0.65rem; transition: border-color 0.3s ease, background-color 0.3s ease, transform 0.3s ease; }
-.client-logo:hover { border-color: rgba(255, 255, 255, 0.45); background: rgba(255, 255, 255, 0.1); transform: translateY(-2px); }
-.client-logo-img { max-height: 48px; max-width: 160px; width: auto; height: auto; object-fit: contain; filter: none; opacity: 1; transition: transform 0.3s ease; }
+.client-logo { display: inline-flex; min-width: 10.5rem; height: 4.2rem; padding: 0.6rem 1.5rem; align-items: center; justify-content: center; flex-shrink: 0; margin-inline: 0.65rem; transition: transform 0.3s ease; }
+.client-logo:hover { transform: translateY(-2px); }
+.client-logo-img { max-height: 48px; max-width: 160px; width: auto; height: auto; object-fit: contain; filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 3px rgba(255, 255, 255, 0.4)); opacity: 1; transition: transform 0.3s ease, filter 0.3s ease; }
+.client-logo-img:hover { filter: drop-shadow(0 0 1.5px rgba(255, 255, 255, 1)) drop-shadow(0 0 5px rgba(255, 255, 255, 0.6)); }
 .client-logo-img:hover { transform: scale(1.08); }
 .section { padding-block: clamp(2.5rem, 5vw, 4.5rem); }
 .about-section { padding-block: clamp(2.5rem, 5vw, 4.5rem); }
@@ -182,7 +183,7 @@
 .services-heading h2 { max-width: 55rem; margin: 1.15rem 0 1rem; color: var(--ink); font-size: clamp(3rem, 5.5vw, 5.5rem); font-weight: 500; letter-spacing: -.08em; line-height: .92; }
 .services-heading p { max-width: 37rem; margin: 0; color: var(--muted); font-size: .98rem; line-height: 1.6; }
 .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(1.2rem, 2.5vw, 2.2rem); }
-.service-card { position: relative; min-height: 24rem; overflow: hidden; border-radius: 1rem; background: var(--blue-soft); display: flex; flex-direction: column; justify-content: flex-end; padding: 2.2rem; border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: 0 12px 30px rgba(6, 29, 69, 0.08); transition: transform 300ms ease, box-shadow 300ms ease; }
+.service-card { position: relative; min-height: 18rem; overflow: hidden; border-radius: 1rem; background: var(--blue-soft); display: flex; flex-direction: column; justify-content: flex-end; padding: 2.2rem; border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: 0 12px 30px rgba(6, 29, 69, 0.08); transition: transform 300ms ease, box-shadow 300ms ease; }
 .service-card:hover { transform: translateY(-0.35rem); box-shadow: 0 22px 45px rgba(6, 29, 69, 0.18); }
 .service-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 600ms cubic-bezier(0.2, 0.8, 0.2, 1); }
 .service-card:hover img { transform: scale(1.08); }
