@@ -34,7 +34,6 @@ function ServicesPage() {
       eyebrow="Our services"
       title="Our passion for what we do is rendered in our services"
       intro="Practical technology services for teams building, improving, and supporting digital products."
-      activePage="services"
     >
       <div className="about-service-grid">
         {services.map((service) => (

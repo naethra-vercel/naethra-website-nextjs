@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&family=Work+Sans:wght@400;500;600;700&display=swap");
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
@@ -16,8 +16,9 @@
   --muted: #637086;
   --line: rgb(0 91 150 / 0.16);
   --green: #b6e76b;
-  --font-display: "Manrope", sans-serif;
+  --font-display: "Syne", sans-serif;
   --font-body: "DM Sans", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
 }
 
 @theme inline {
@@ -445,7 +446,7 @@
 .site-footer { background: #071d3d; color: var(--white); padding-block: 3rem 1.5rem; }
 .footer-map-wrap { padding-bottom: 3rem; }
 .footer-map { display: block; width: 100%; height: 10rem; border: 0; filter: grayscale(0.8) contrast(0.9) brightness(1.2); border-radius: 0.75rem; }
-.footer-grid { display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: clamp(2rem, 7vw, 7rem); }
+.footer-grid { display: grid; grid-template-columns: 1.1fr 1fr 1fr; column-gap: clamp(2rem, 7vw, 7rem); row-gap: 1rem; }
 .footer-brand .brand-logo { width: 8.5rem; }
 .footer-grid p { max-width: 17rem; margin: 1.3rem 0 0; color: rgb(255 255 255 / 0.82); font-size: 0.75rem; line-height: 1.7; }
 .footer-socials { display: flex; gap: 0.65rem; margin-top: 1.2rem; }
@@ -462,7 +463,7 @@
 .newsletter-form input::placeholder { color: var(--white); }
 .newsletter-form button { display: grid; width: 2.35rem; height: 2.35rem; margin-right: 0.15rem; place-items: center; border: 0; border-radius: 50%; background: #5069ed; color: var(--white); cursor: pointer; }
 .footer-newsletter small { display: block; margin: 0.45rem 0 0.2rem 0.55rem; color: rgb(255 255 255 / 0.75); font-size: 0.56rem; }
-.footer-copy { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-top: 1px solid rgb(255 255 255 / 0.2); margin-top: 2rem; padding-top: 1.2rem; color: var(--white); font-size: 0.65rem; }
+.footer-copy { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-top: 1px solid rgb(255 255 255 / 0.2); margin-top: 0; padding-top: 1.2rem; color: var(--white); font-size: 0.65rem; }
 .footer-links { display: flex; gap: 1.5rem; color: var(--white); }
 .footer-links a { transition: color 180ms ease; }
 .footer-links a:hover { color: var(--green); }
@@ -794,7 +795,7 @@
 .site-footer-demo-card strong { font-size: .9rem; }
 .site-footer-demo-card small { max-width: 12rem; font-size: .72rem; line-height: 1.5; }
 .site-footer-detailed-bottom { background: linear-gradient(110deg, #39114f, #21104a 72%, #352263); }
-.site-footer-detailed-grid { display: grid; grid-template-columns: .95fr 1.05fr; gap: 2rem; padding-block: 2.5rem; }
+.site-footer-detailed-grid { display: grid; grid-template-columns: .95fr 1.05fr .8fr; gap: 2rem; padding-block: 1.5rem; }
 .site-footer-about img { width: 9rem; height: auto; filter: brightness(0) invert(1); }
 .site-footer-about p { max-width: 32rem; color: rgb(255 255 255 / .78); font-size: .78rem; line-height: 1.6; }
 .site-footer-about iframe { width: 100%; max-width: 32rem; height: 10rem; border: 0; }
@@ -802,7 +803,7 @@
 .site-footer-email form { display: grid; gap: .6rem; }
 .site-footer-email input, .site-footer-email textarea { width: 100%; border: 0; background: #fff; padding: .65rem .75rem; color: #142033; font: inherit; font-size: .72rem; }
 .site-footer-email button { border: 0; background: #c783dc; padding: .65rem; color: #fff; cursor: pointer; font: inherit; font-size: .7rem; }
-.site-footer-email address { margin-top: 1rem; color: rgb(255 255 255 / .8); font-size: .72rem; font-style: normal; line-height: 1.5; }
+.site-footer-contact-details address { margin-top: 1rem; color: rgb(255 255 255 / .8); font-size: .72rem; font-style: normal; line-height: 1.5; }
 .site-footer-detailed-legal { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: 1rem; color: rgb(255 255 255 / .6); font-size: .62rem; }
 .site-footer-detailed-legal .footer-links { display: flex; flex-wrap: wrap; gap: 1rem; }
 .site-footer-detailed-legal .footer-links a:hover { color: #fff; }
@@ -864,6 +865,7 @@
   .mobile-app-callout { align-items: flex-start; flex-direction: column; }
   .mobile-app-orbit { transform: scale(.9); transform-origin: top center; margin-bottom: -2rem; }
   .site-footer-detailed-top, .site-footer-detailed-grid { grid-template-columns: 1fr; }
+  .site-footer-detailed-grid { gap: 1.25rem; padding-block: 1.25rem; }
   .site-footer-demo-card { max-width: none; }
   .site-footer-detailed-legal { align-items: flex-start; flex-direction: column; }
 }
@@ -1110,7 +1112,7 @@
 .service-detail-hero-image { position: absolute; inset: 0; background-position: center; background-size: cover; filter: saturate(.72); }
 .service-detail-hero-overlay { position: absolute; inset: 0; background: linear-gradient(90deg, rgb(6 29 69 / .82), rgb(6 29 69 / .18)); }
 .service-detail-hero-copy { position: relative; z-index: 1; display: flex; min-height: inherit; flex-direction: column; justify-content: flex-end; padding-block: clamp(3rem, 7vw, 6rem); color: #fff; }
-.service-detail-hero-copy .service-eyebrow { color: var(--green); }
+.service-detail-hero-copy .service-eyebrow { color: var(--green); font-family: var(--font-mono); }
 .service-detail-hero-copy h1 { max-width: 60rem; margin: 0; font-family: var(--font-display); font-size: clamp(2.8rem, 7vw, 7rem); letter-spacing: -.08em; line-height: .92; }
 .service-detail-intro { display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; padding-block: clamp(3.5rem, 7vw, 6rem); }
 .service-detail-intro > p { max-width: 52rem; margin: 0; font-family: var(--font-display); font-size: clamp(1.25rem, 2.4vw, 2rem); font-weight: 600; letter-spacing: -.035em; line-height: 1.3; }

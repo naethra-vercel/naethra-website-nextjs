@@ -1000,6 +1000,8 @@ function Index() {
                 </strong>
               </div>
             </div>
+          </div>
+          <div className="footer-contact-details">
             <div className="footer-contact-row">
               <span className="footer-contact-icon">
                 <HugeiconsIcon icon={SmartPhone01Icon} size={17} />
@@ -1025,10 +1027,10 @@ function Index() {
               <strong>Naethra Technologies</strong>
             </span>
             <div className="footer-links">
-              <a href="#contact">Contact Us</a>
-              <a href="#contact">Terms and Conditions</a>
-              <a href="#contact">Privacy Policy</a>
-              <a href="#contact">Disclaimer and Notification</a>
+              <a href="/contact-us">Contact Us</a>
+              <a href="/terms-and-conditions">Terms and Conditions</a>
+              <a href="/privacy-policy">Privacy Policy</a>
+              <a href="/disclaimer-and-notification">Disclaimer and Notification</a>
             </div>
           </div>
         </div>

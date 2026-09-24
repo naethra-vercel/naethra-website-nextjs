@@ -12,7 +12,6 @@ function SpecialtyPage() {
       eyebrow="Our specialty"
       title="Our specialty"
       intro="The efficient use of data technology at both the workgroup and enterprise levels, with systems designed to keep growing with your business."
-      activePage="specialty"
     >
       <section className="about-copy-block">
         <span className="about-copy-rule" aria-hidden="true" />

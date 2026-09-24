@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { ArrowUpRight, Cloud, Code2, Database } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -7,7 +7,7 @@ import npMuraliImage from "@/assets/founders/NP_Murali.webp";
 import ramachandranImage from "@/assets/founders/Ramachandran.webp";
 import SiteFooter from "@/components/SiteFooter";
 import SectionEyebrow from "@/components/SectionEyebrow";
-import AnimatedCtaButton from "@/components/AnimatedCtaButton";
+import { NaethraContentHeader } from "@/components/NaethraContentPage";
 
 export const Route = createFileRoute("/about/")({
   component: AboutPage,
@@ -111,43 +111,7 @@ function AboutPage() {
 
   return (
     <main className="about-max about-single-page">
-      <header className="about-max-header">
-        <div className="site-container about-max-nav">
-          <Link to="/" className="brand-mark" aria-label="Naethra Technologies home">
-            <img
-              src="/logo.png"
-              alt="Naethra Technologies"
-              className="brand-logo"
-              width={220}
-              height={49}
-            />
-          </Link>
-          <nav aria-label="Primary navigation" className="about-max-links">
-            <Link to="/">Home</Link>
-            <Link to="/" hash="mobile">
-              Mobile
-            </Link>
-            <Link to="/" hash="web-app">
-              Web App
-            </Link>
-            <Link to="/" hash="work">
-              Portfolio
-            </Link>
-            <Link to="/" hash="services">
-              Services
-            </Link>
-            <Link to="/" hash="filemaker">
-              FileMaker
-            </Link>
-            <Link to="/" hash="contact">
-              Contact Us
-            </Link>
-          </nav>
-          <AnimatedCtaButton href="/#contact" className="about-max-contact">
-            30 mins meeting
-          </AnimatedCtaButton>
-        </div>
-      </header>
+      <NaethraContentHeader />
 
       {wordpressContent && (
         <section className="about-max-api-content" aria-label="WordPress About content">

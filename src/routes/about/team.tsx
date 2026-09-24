@@ -36,7 +36,6 @@ function TeamPage() {
       eyebrow="Our team"
       title="Our team"
       intro="Experienced people bringing thoughtful delivery, technical judgment, and dependable partnership to every engagement."
-      activePage="team"
     >
       <div className="about-team-list">
         {teamMembers.map((member, index) => (

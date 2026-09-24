@@ -23,14 +23,34 @@
 
 ## Typography
 
-- Headings: Outfit, weights 500-700, tight editorial line-height.
-- Body: Work Sans, weights 400-600, 1.55-1.8 line-height for readable copy.
-- Navigation and metadata: uppercase, 0.12em tracking, compact text sizes.
+- Live pairing: Syne for display type and DM Sans for readable body copy.
+- Headings use tight editorial line-height and the selected display family.
+- Navigation and metadata use IBM Plex Mono, uppercase, `.08em-.12em` tracking, and compact text sizes.
 - Keep long-form copy below roughly 65rem and preserve generous section spacing.
+
+### Font Pairings
+
+1. **Bold Graphic: Syne + DM Sans**
+	Syne's irregular, art-directed forms make headlines feel authored and poster-like; DM Sans keeps service copy immediate and calm.
+	```css
+	@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap");
+	```
+
+2. **Luxury Editorial: Cormorant Garamond + Space Grotesk**
+	Cormorant Garamond adds fashion-editorial drama and italic contrast, while Space Grotesk gives labels and interfaces a precise geometric counterpoint.
+	```css
+	@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,500;1,600&family=Space+Grotesk:wght@400;500;600;700&display=swap");
+	```
+
+3. **Futuristic / Tech-Creative: IBM Plex Mono + Manrope**
+	IBM Plex Mono turns metadata and hero fragments into technical artifacts; Manrope supplies a smooth, contemporary reading voice for longer content.
+	```css
+	@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&display=swap");
+	```
 
 ## Site-Wide Brand Rules
 
-- Use the homepage typography everywhere: `Manrope` for headings, navigation, and UI labels; `DM Sans` for body copy and form text.
+- Use `Syne` for expressive headings, `DM Sans` for body copy, and `IBM Plex Mono` for labels and metadata.
 - Use the logo blue `#005B96` (`--blue`) as the primary theme color for buttons, links, focus states, and page accents. Do not introduce a new amber or purple CTA color on shared content, legal, or contact pages.
 - Keep the existing homepage button shape, spacing, hover behavior, and theme tokens. Page-specific backgrounds may change, but shared buttons must remain visually consistent.
 - Mobile page sections may use the source page's navy and violet bands, but interactive accents and CTA buttons remain logo blue.

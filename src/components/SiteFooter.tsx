@@ -88,6 +88,9 @@ export default function SiteFooter({
               />
               <button type="submit">{submitted ? "SENT" : "SEND"}</button>
             </form>
+          </div>
+          <div className="site-footer-contact-details">
+            <h2>Contact Details</h2>
             <address>
               Naethra Technologies Pvt Ltd. New No:37, Old No: 22, Viswanathapuram Main Road,
               Kodambakkam, Chennai
