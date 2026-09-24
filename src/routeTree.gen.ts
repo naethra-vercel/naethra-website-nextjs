@@ -10,20 +10,35 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CmsRouteImport } from './routes/cms'
 import { Route as ContactUsRouteImport } from './routes/contact-us'
 import { Route as DisclaimerAndNotificationRouteImport } from './routes/disclaimer-and-notification'
 import { Route as FlutterAppDevelopmentCompanyRouteImport } from './routes/flutter-app-development-company'
 import { Route as MobileAppRouteImport } from './routes/mobile-app'
+import { Route as PortfolioRouteImport } from './routes/portfolio'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as TermsAndConditionsRouteImport } from './routes/terms-and-conditions'
+import { Route as WebAppRouteImport } from './routes/web-app'
 import { Route as AboutIndexRouteImport } from './routes/about/index'
 import { Route as AboutServicesRouteImport } from './routes/about/services'
 import { Route as AboutSpecialtyRouteImport } from './routes/about/specialty'
 import { Route as AboutTeamRouteImport } from './routes/about/team'
+import { Route as BlogsIndexRouteImport } from './routes/blogs/index'
+import { Route as BlogsSlugRouteImport } from './routes/blogs/$slug'
+import { Route as ServicesIndexRouteImport } from './routes/services/index'
+import { Route as ServicesAwsCloudSupportRouteImport } from './routes/services/aws-cloud-support'
+import { Route as ServicesClarisFilemakerApplicationRouteImport } from './routes/services/claris-filemaker-application'
+import { Route as ServicesCustomWebPublishingRouteImport } from './routes/services/custom-web-publishing'
+import { Route as ServicesDotNetApplicationRouteImport } from './routes/services/dot-net-application'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CmsRoute = CmsRouteImport.update({
+  id: '/cms',
+  path: '/cms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactUsRoute = ContactUsRouteImport.update({
@@ -48,6 +63,11 @@ const MobileAppRoute = MobileAppRouteImport.update({
   path: '/mobile-app',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PortfolioRoute = PortfolioRouteImport.update({
+  id: '/portfolio',
+  path: '/portfolio',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
   id: '/privacy-policy',
   path: '/privacy-policy',
@@ -56,6 +76,11 @@ const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
 const TermsAndConditionsRoute = TermsAndConditionsRouteImport.update({
   id: '/terms-and-conditions',
   path: '/terms-and-conditions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WebAppRoute = WebAppRouteImport.update({
+  id: '/web-app',
+  path: '/web-app',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutIndexRoute = AboutIndexRouteImport.update({
@@ -78,101 +103,209 @@ const AboutTeamRoute = AboutTeamRouteImport.update({
   path: '/about/team',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BlogsIndexRoute = BlogsIndexRouteImport.update({
+  id: '/blogs/',
+  path: '/blogs/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogsSlugRoute = BlogsSlugRouteImport.update({
+  id: '/blogs/$slug',
+  path: '/blogs/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesIndexRoute = ServicesIndexRouteImport.update({
+  id: '/services/',
+  path: '/services/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesAwsCloudSupportRoute = ServicesAwsCloudSupportRouteImport.update({
+  id: '/services/aws-cloud-support',
+  path: '/services/aws-cloud-support',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesClarisFilemakerApplicationRoute =
+  ServicesClarisFilemakerApplicationRouteImport.update({
+    id: '/services/claris-filemaker-application',
+    path: '/services/claris-filemaker-application',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ServicesCustomWebPublishingRoute =
+  ServicesCustomWebPublishingRouteImport.update({
+    id: '/services/custom-web-publishing',
+    path: '/services/custom-web-publishing',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ServicesDotNetApplicationRoute =
+  ServicesDotNetApplicationRouteImport.update({
+    id: '/services/dot-net-application',
+    path: '/services/dot-net-application',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/cms': typeof CmsRoute
   '/contact-us': typeof ContactUsRoute
   '/disclaimer-and-notification': typeof DisclaimerAndNotificationRoute
   '/flutter-app-development-company': typeof FlutterAppDevelopmentCompanyRoute
   '/mobile-app': typeof MobileAppRoute
+  '/portfolio': typeof PortfolioRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/terms-and-conditions': typeof TermsAndConditionsRoute
+  '/web-app': typeof WebAppRoute
   '/about/services': typeof AboutServicesRoute
   '/about/specialty': typeof AboutSpecialtyRoute
   '/about/team': typeof AboutTeamRoute
+  '/blogs/$slug': typeof BlogsSlugRoute
+  '/services/aws-cloud-support': typeof ServicesAwsCloudSupportRoute
+  '/services/claris-filemaker-application': typeof ServicesClarisFilemakerApplicationRoute
+  '/services/custom-web-publishing': typeof ServicesCustomWebPublishingRoute
+  '/services/dot-net-application': typeof ServicesDotNetApplicationRoute
   '/about/': typeof AboutIndexRoute
+  '/blogs/': typeof BlogsIndexRoute
+  '/services/': typeof ServicesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/cms': typeof CmsRoute
   '/contact-us': typeof ContactUsRoute
   '/disclaimer-and-notification': typeof DisclaimerAndNotificationRoute
   '/flutter-app-development-company': typeof FlutterAppDevelopmentCompanyRoute
   '/mobile-app': typeof MobileAppRoute
+  '/portfolio': typeof PortfolioRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/terms-and-conditions': typeof TermsAndConditionsRoute
+  '/web-app': typeof WebAppRoute
   '/about/services': typeof AboutServicesRoute
   '/about/specialty': typeof AboutSpecialtyRoute
   '/about/team': typeof AboutTeamRoute
+  '/blogs/$slug': typeof BlogsSlugRoute
+  '/services/aws-cloud-support': typeof ServicesAwsCloudSupportRoute
+  '/services/claris-filemaker-application': typeof ServicesClarisFilemakerApplicationRoute
+  '/services/custom-web-publishing': typeof ServicesCustomWebPublishingRoute
+  '/services/dot-net-application': typeof ServicesDotNetApplicationRoute
   '/about': typeof AboutIndexRoute
+  '/blogs': typeof BlogsIndexRoute
+  '/services': typeof ServicesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/cms': typeof CmsRoute
   '/contact-us': typeof ContactUsRoute
   '/disclaimer-and-notification': typeof DisclaimerAndNotificationRoute
   '/flutter-app-development-company': typeof FlutterAppDevelopmentCompanyRoute
   '/mobile-app': typeof MobileAppRoute
+  '/portfolio': typeof PortfolioRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/terms-and-conditions': typeof TermsAndConditionsRoute
+  '/web-app': typeof WebAppRoute
   '/about/services': typeof AboutServicesRoute
   '/about/specialty': typeof AboutSpecialtyRoute
   '/about/team': typeof AboutTeamRoute
+  '/blogs/$slug': typeof BlogsSlugRoute
+  '/services/aws-cloud-support': typeof ServicesAwsCloudSupportRoute
+  '/services/claris-filemaker-application': typeof ServicesClarisFilemakerApplicationRoute
+  '/services/custom-web-publishing': typeof ServicesCustomWebPublishingRoute
+  '/services/dot-net-application': typeof ServicesDotNetApplicationRoute
   '/about/': typeof AboutIndexRoute
+  '/blogs/': typeof BlogsIndexRoute
+  '/services/': typeof ServicesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/cms'
     | '/contact-us'
     | '/disclaimer-and-notification'
     | '/flutter-app-development-company'
     | '/mobile-app'
+    | '/portfolio'
     | '/privacy-policy'
     | '/terms-and-conditions'
+    | '/web-app'
     | '/about/services'
     | '/about/specialty'
     | '/about/team'
+    | '/blogs/$slug'
+    | '/services/aws-cloud-support'
+    | '/services/claris-filemaker-application'
+    | '/services/custom-web-publishing'
+    | '/services/dot-net-application'
     | '/about/'
+    | '/blogs/'
+    | '/services/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/cms'
     | '/contact-us'
     | '/disclaimer-and-notification'
     | '/flutter-app-development-company'
     | '/mobile-app'
+    | '/portfolio'
     | '/privacy-policy'
     | '/terms-and-conditions'
+    | '/web-app'
     | '/about/services'
     | '/about/specialty'
     | '/about/team'
+    | '/blogs/$slug'
+    | '/services/aws-cloud-support'
+    | '/services/claris-filemaker-application'
+    | '/services/custom-web-publishing'
+    | '/services/dot-net-application'
     | '/about'
+    | '/blogs'
+    | '/services'
   id:
     | '__root__'
     | '/'
+    | '/cms'
     | '/contact-us'
     | '/disclaimer-and-notification'
     | '/flutter-app-development-company'
     | '/mobile-app'
+    | '/portfolio'
     | '/privacy-policy'
     | '/terms-and-conditions'
+    | '/web-app'
     | '/about/services'
     | '/about/specialty'
     | '/about/team'
+    | '/blogs/$slug'
+    | '/services/aws-cloud-support'
+    | '/services/claris-filemaker-application'
+    | '/services/custom-web-publishing'
+    | '/services/dot-net-application'
     | '/about/'
+    | '/blogs/'
+    | '/services/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CmsRoute: typeof CmsRoute
   ContactUsRoute: typeof ContactUsRoute
   DisclaimerAndNotificationRoute: typeof DisclaimerAndNotificationRoute
   FlutterAppDevelopmentCompanyRoute: typeof FlutterAppDevelopmentCompanyRoute
   MobileAppRoute: typeof MobileAppRoute
+  PortfolioRoute: typeof PortfolioRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   TermsAndConditionsRoute: typeof TermsAndConditionsRoute
+  WebAppRoute: typeof WebAppRoute
   AboutServicesRoute: typeof AboutServicesRoute
   AboutSpecialtyRoute: typeof AboutSpecialtyRoute
   AboutTeamRoute: typeof AboutTeamRoute
+  BlogsSlugRoute: typeof BlogsSlugRoute
+  ServicesAwsCloudSupportRoute: typeof ServicesAwsCloudSupportRoute
+  ServicesClarisFilemakerApplicationRoute: typeof ServicesClarisFilemakerApplicationRoute
+  ServicesCustomWebPublishingRoute: typeof ServicesCustomWebPublishingRoute
+  ServicesDotNetApplicationRoute: typeof ServicesDotNetApplicationRoute
   AboutIndexRoute: typeof AboutIndexRoute
+  BlogsIndexRoute: typeof BlogsIndexRoute
+  ServicesIndexRoute: typeof ServicesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -182,6 +315,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cms': {
+      id: '/cms'
+      path: '/cms'
+      fullPath: '/cms'
+      preLoaderRoute: typeof CmsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact-us': {
@@ -212,6 +352,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MobileAppRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/portfolio': {
+      id: '/portfolio'
+      path: '/portfolio'
+      fullPath: '/portfolio'
+      preLoaderRoute: typeof PortfolioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/privacy-policy': {
       id: '/privacy-policy'
       path: '/privacy-policy'
@@ -224,6 +371,13 @@ declare module '@tanstack/react-router' {
       path: '/terms-and-conditions'
       fullPath: '/terms-and-conditions'
       preLoaderRoute: typeof TermsAndConditionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/web-app': {
+      id: '/web-app'
+      path: '/web-app'
+      fullPath: '/web-app'
+      preLoaderRoute: typeof WebAppRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about/': {
@@ -254,21 +408,81 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutTeamRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/blogs/': {
+      id: '/blogs/'
+      path: '/blogs'
+      fullPath: '/blogs/'
+      preLoaderRoute: typeof BlogsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blogs/$slug': {
+      id: '/blogs/$slug'
+      path: '/blogs/$slug'
+      fullPath: '/blogs/$slug'
+      preLoaderRoute: typeof BlogsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/': {
+      id: '/services/'
+      path: '/services'
+      fullPath: '/services/'
+      preLoaderRoute: typeof ServicesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/aws-cloud-support': {
+      id: '/services/aws-cloud-support'
+      path: '/services/aws-cloud-support'
+      fullPath: '/services/aws-cloud-support'
+      preLoaderRoute: typeof ServicesAwsCloudSupportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/claris-filemaker-application': {
+      id: '/services/claris-filemaker-application'
+      path: '/services/claris-filemaker-application'
+      fullPath: '/services/claris-filemaker-application'
+      preLoaderRoute: typeof ServicesClarisFilemakerApplicationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/custom-web-publishing': {
+      id: '/services/custom-web-publishing'
+      path: '/services/custom-web-publishing'
+      fullPath: '/services/custom-web-publishing'
+      preLoaderRoute: typeof ServicesCustomWebPublishingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/dot-net-application': {
+      id: '/services/dot-net-application'
+      path: '/services/dot-net-application'
+      fullPath: '/services/dot-net-application'
+      preLoaderRoute: typeof ServicesDotNetApplicationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CmsRoute: CmsRoute,
   ContactUsRoute: ContactUsRoute,
   DisclaimerAndNotificationRoute: DisclaimerAndNotificationRoute,
   FlutterAppDevelopmentCompanyRoute: FlutterAppDevelopmentCompanyRoute,
   MobileAppRoute: MobileAppRoute,
+  PortfolioRoute: PortfolioRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   TermsAndConditionsRoute: TermsAndConditionsRoute,
+  WebAppRoute: WebAppRoute,
   AboutServicesRoute: AboutServicesRoute,
   AboutSpecialtyRoute: AboutSpecialtyRoute,
   AboutTeamRoute: AboutTeamRoute,
+  BlogsSlugRoute: BlogsSlugRoute,
+  ServicesAwsCloudSupportRoute: ServicesAwsCloudSupportRoute,
+  ServicesClarisFilemakerApplicationRoute:
+    ServicesClarisFilemakerApplicationRoute,
+  ServicesCustomWebPublishingRoute: ServicesCustomWebPublishingRoute,
+  ServicesDotNetApplicationRoute: ServicesDotNetApplicationRoute,
   AboutIndexRoute: AboutIndexRoute,
+  BlogsIndexRoute: BlogsIndexRoute,
+  ServicesIndexRoute: ServicesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

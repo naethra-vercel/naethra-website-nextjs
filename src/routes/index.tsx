@@ -38,6 +38,7 @@ import IntegrationSection from "@/components/IntegrationSection";
 import { openNaethraAssistant } from "@/components/NaethraAIAssistant";
 import SectionEyebrow from "@/components/SectionEyebrow";
 import AnimatedCtaButton from "@/components/AnimatedCtaButton";
+import PlatformLoader from "@/components/PlatformLoader";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -68,10 +69,10 @@ export const Route = createFileRoute("/")({
 
 const navItems = [
   ["Mobile", "/mobile-app"],
-  ["Web App", "#web-app"],
-  ["Portfolio", "#work"],
+  ["Web App", "/web-app"],
+  ["Portfolio", "/portfolio"],
   ["Services", "#services"],
-  ["FileMaker", "#filemaker"],
+  ["FileMaker", "/services/claris-filemaker-application"],
   ["About Us", "/about"],
   ["Contact Us", "/contact-us"],
 ];
@@ -79,11 +80,13 @@ const navItems = [
 const mobileMenuItems = [["Flutter", "/flutter-app-development-company"]] as const;
 
 const serviceMenuItems = [
-  ["Content Management System", "#integration"],
-  ["Custom Web Publishing", "#filemaker"],
-  ["Dot Net Application", "#web-app"],
-  ["AWS & Cloud Support", "#integration"],
+  ["Content Management System", "/cms"],
+  ["Custom Web Publishing", "/services/custom-web-publishing"],
+  ["Dot Net Application", "/services/dot-net-application"],
+  ["AWS & Cloud Support", "/services/aws-cloud-support"],
 ] as const;
+
+const aboutMenuItems = [["Blog", "/blogs"]] as const;
 
 const services = [
   [
@@ -392,6 +395,7 @@ function Index() {
 
   return (
     <main id="top" className="site-page">
+      <PlatformLoader />
       <header className={`site-header ${isScrolled ? "is-scrolled" : ""}`}>
         <div className="site-container header-inner">
           <Logo />
@@ -419,6 +423,20 @@ function Index() {
                   </a>
                   <div className="nav-dropdown-menu">
                     {serviceMenuItems.map(([itemLabel, itemHref]) => (
+                      <a key={itemLabel} href={itemHref}>
+                        {itemLabel}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              ) : label === "About Us" ? (
+                <div className="nav-dropdown" key={label}>
+                  <a className="nav-about-link" href={href} aria-haspopup="true">
+                    {label}
+                    <span className="nav-chevron" aria-hidden="true" />
+                  </a>
+                  <div className="nav-dropdown-menu">
+                    {aboutMenuItems.map(([itemLabel, itemHref]) => (
                       <a key={itemLabel} href={itemHref}>
                         {itemLabel}
                       </a>
@@ -753,10 +771,7 @@ function Index() {
                 efficiency.
               </p>
             </div>
-            <a
-              href="mailto:info@naethra.com?subject=Naethra%20insights"
-              className="button button-dark"
-            >
+            <a href="/blogs" className="button button-dark">
               See all blog <HugeiconsIcon icon={ArrowUpRight01Icon} size={17} />
             </a>
           </div>
