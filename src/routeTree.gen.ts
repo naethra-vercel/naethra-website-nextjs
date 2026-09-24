@@ -10,6 +10,12 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ContactUsRouteImport } from './routes/contact-us'
+import { Route as DisclaimerAndNotificationRouteImport } from './routes/disclaimer-and-notification'
+import { Route as FlutterAppDevelopmentCompanyRouteImport } from './routes/flutter-app-development-company'
+import { Route as MobileAppRouteImport } from './routes/mobile-app'
+import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
+import { Route as TermsAndConditionsRouteImport } from './routes/terms-and-conditions'
 import { Route as AboutIndexRouteImport } from './routes/about/index'
 import { Route as AboutServicesRouteImport } from './routes/about/services'
 import { Route as AboutSpecialtyRouteImport } from './routes/about/specialty'
@@ -18,6 +24,38 @@ import { Route as AboutTeamRouteImport } from './routes/about/team'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactUsRoute = ContactUsRouteImport.update({
+  id: '/contact-us',
+  path: '/contact-us',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DisclaimerAndNotificationRoute =
+  DisclaimerAndNotificationRouteImport.update({
+    id: '/disclaimer-and-notification',
+    path: '/disclaimer-and-notification',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const FlutterAppDevelopmentCompanyRoute =
+  FlutterAppDevelopmentCompanyRouteImport.update({
+    id: '/flutter-app-development-company',
+    path: '/flutter-app-development-company',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const MobileAppRoute = MobileAppRouteImport.update({
+  id: '/mobile-app',
+  path: '/mobile-app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsAndConditionsRoute = TermsAndConditionsRouteImport.update({
+  id: '/terms-and-conditions',
+  path: '/terms-and-conditions',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutIndexRoute = AboutIndexRouteImport.update({
@@ -43,6 +81,12 @@ const AboutTeamRoute = AboutTeamRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/contact-us': typeof ContactUsRoute
+  '/disclaimer-and-notification': typeof DisclaimerAndNotificationRoute
+  '/flutter-app-development-company': typeof FlutterAppDevelopmentCompanyRoute
+  '/mobile-app': typeof MobileAppRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/terms-and-conditions': typeof TermsAndConditionsRoute
   '/about/services': typeof AboutServicesRoute
   '/about/specialty': typeof AboutSpecialtyRoute
   '/about/team': typeof AboutTeamRoute
@@ -50,6 +94,12 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/contact-us': typeof ContactUsRoute
+  '/disclaimer-and-notification': typeof DisclaimerAndNotificationRoute
+  '/flutter-app-development-company': typeof FlutterAppDevelopmentCompanyRoute
+  '/mobile-app': typeof MobileAppRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/terms-and-conditions': typeof TermsAndConditionsRoute
   '/about/services': typeof AboutServicesRoute
   '/about/specialty': typeof AboutSpecialtyRoute
   '/about/team': typeof AboutTeamRoute
@@ -58,6 +108,12 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/contact-us': typeof ContactUsRoute
+  '/disclaimer-and-notification': typeof DisclaimerAndNotificationRoute
+  '/flutter-app-development-company': typeof FlutterAppDevelopmentCompanyRoute
+  '/mobile-app': typeof MobileAppRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/terms-and-conditions': typeof TermsAndConditionsRoute
   '/about/services': typeof AboutServicesRoute
   '/about/specialty': typeof AboutSpecialtyRoute
   '/about/team': typeof AboutTeamRoute
@@ -66,12 +122,39 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/about/services' | '/about/specialty' | '/about/team' | '/about/'
+    | '/'
+    | '/contact-us'
+    | '/disclaimer-and-notification'
+    | '/flutter-app-development-company'
+    | '/mobile-app'
+    | '/privacy-policy'
+    | '/terms-and-conditions'
+    | '/about/services'
+    | '/about/specialty'
+    | '/about/team'
+    | '/about/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about/services' | '/about/specialty' | '/about/team' | '/about'
+  to:
+    | '/'
+    | '/contact-us'
+    | '/disclaimer-and-notification'
+    | '/flutter-app-development-company'
+    | '/mobile-app'
+    | '/privacy-policy'
+    | '/terms-and-conditions'
+    | '/about/services'
+    | '/about/specialty'
+    | '/about/team'
+    | '/about'
   id:
     | '__root__'
     | '/'
+    | '/contact-us'
+    | '/disclaimer-and-notification'
+    | '/flutter-app-development-company'
+    | '/mobile-app'
+    | '/privacy-policy'
+    | '/terms-and-conditions'
     | '/about/services'
     | '/about/specialty'
     | '/about/team'
@@ -80,6 +163,12 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ContactUsRoute: typeof ContactUsRoute
+  DisclaimerAndNotificationRoute: typeof DisclaimerAndNotificationRoute
+  FlutterAppDevelopmentCompanyRoute: typeof FlutterAppDevelopmentCompanyRoute
+  MobileAppRoute: typeof MobileAppRoute
+  PrivacyPolicyRoute: typeof PrivacyPolicyRoute
+  TermsAndConditionsRoute: typeof TermsAndConditionsRoute
   AboutServicesRoute: typeof AboutServicesRoute
   AboutSpecialtyRoute: typeof AboutSpecialtyRoute
   AboutTeamRoute: typeof AboutTeamRoute
@@ -93,6 +182,48 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact-us': {
+      id: '/contact-us'
+      path: '/contact-us'
+      fullPath: '/contact-us'
+      preLoaderRoute: typeof ContactUsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/disclaimer-and-notification': {
+      id: '/disclaimer-and-notification'
+      path: '/disclaimer-and-notification'
+      fullPath: '/disclaimer-and-notification'
+      preLoaderRoute: typeof DisclaimerAndNotificationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/flutter-app-development-company': {
+      id: '/flutter-app-development-company'
+      path: '/flutter-app-development-company'
+      fullPath: '/flutter-app-development-company'
+      preLoaderRoute: typeof FlutterAppDevelopmentCompanyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mobile-app': {
+      id: '/mobile-app'
+      path: '/mobile-app'
+      fullPath: '/mobile-app'
+      preLoaderRoute: typeof MobileAppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy-policy': {
+      id: '/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms-and-conditions': {
+      id: '/terms-and-conditions'
+      path: '/terms-and-conditions'
+      fullPath: '/terms-and-conditions'
+      preLoaderRoute: typeof TermsAndConditionsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about/': {
@@ -128,6 +259,12 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ContactUsRoute: ContactUsRoute,
+  DisclaimerAndNotificationRoute: DisclaimerAndNotificationRoute,
+  FlutterAppDevelopmentCompanyRoute: FlutterAppDevelopmentCompanyRoute,
+  MobileAppRoute: MobileAppRoute,
+  PrivacyPolicyRoute: PrivacyPolicyRoute,
+  TermsAndConditionsRoute: TermsAndConditionsRoute,
   AboutServicesRoute: AboutServicesRoute,
   AboutSpecialtyRoute: AboutSpecialtyRoute,
   AboutTeamRoute: AboutTeamRoute,

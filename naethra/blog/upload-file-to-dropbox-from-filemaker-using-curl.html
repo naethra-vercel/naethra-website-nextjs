@@ -1,0 +1,1503 @@
+<body class="wp-singular post-template-default single single-post postid-45249 single-format-standard wp-theme-thegem-elementor wp-child-theme-thegem-elementor-child elementor-default elementor-kit-6 elementor-page elementor-page-45249">
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TLKZXLK"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+	<script type="text/javascript">
+		var gemSettings = {"isTouch":"","forcedLasyDisabled":"","tabletPortrait":"1","tabletLandscape":"1","topAreaMobileDisable":"","parallaxDisabled":"","fillTopArea":"","themePath":"https:\/\/naethra.com\/wp-content\/themes\/thegem-elementor","rootUrl":"https:\/\/naethra.com","mobileEffectsEnabled":"","isRTL":""};
+		(function() {
+    function isTouchDevice() {
+        return (('ontouchstart' in window) ||
+            (navigator.MaxTouchPoints > 0) ||
+            (navigator.msMaxTouchPoints > 0));
+    }
+
+    window.gemSettings.isTouch = isTouchDevice();
+
+    function userAgentDetection() {
+        var ua = navigator.userAgent.toLowerCase(),
+        platform = navigator.platform.toLowerCase(),
+        UA = ua.match(/(opera|ie|firefox|chrome|version)[\s\/:]([\w\d\.]+)?.*?(safari|version[\s\/:]([\w\d\.]+)|$)/) || [null, 'unknown', 0],
+        mode = UA[1] == 'ie' && document.documentMode;
+
+        window.gemBrowser = {
+            name: (UA[1] == 'version') ? UA[3] : UA[1],
+            version: UA[2],
+            platform: {
+                name: ua.match(/ip(?:ad|od|hone)/) ? 'ios' : (ua.match(/(?:webos|android)/) || platform.match(/mac|win|linux/) || ['other'])[0]
+                }
+        };
+            }
+
+    window.updateGemClientSize = function() {
+        if (window.gemOptions == null || window.gemOptions == undefined) {
+            window.gemOptions = {
+                first: false,
+                clientWidth: 0,
+                clientHeight: 0,
+                innerWidth: -1
+            };
+        }
+
+        window.gemOptions.clientWidth = window.innerWidth || document.documentElement.clientWidth;
+        if (document.body != null && !window.gemOptions.clientWidth) {
+            window.gemOptions.clientWidth = document.body.clientWidth;
+        }
+
+        window.gemOptions.clientHeight = window.innerHeight || document.documentElement.clientHeight;
+        if (document.body != null && !window.gemOptions.clientHeight) {
+            window.gemOptions.clientHeight = document.body.clientHeight;
+        }
+    };
+
+    window.updateGemInnerSize = function(width) {
+        window.gemOptions.innerWidth = width != undefined ? width : (document.body != null ? document.body.clientWidth : 0);
+    };
+
+    userAgentDetection();
+    window.updateGemClientSize(true);
+
+    window.gemSettings.lasyDisabled = window.gemSettings.forcedLasyDisabled || (!window.gemSettings.mobileEffectsEnabled && (window.gemSettings.isTouch || window.gemOptions.clientWidth <= 800));
+})();
+		(function() {
+    if (window.gemBrowser.name == 'safari') {
+        try {
+            var safariVersion = parseInt(window.gemBrowser.version);
+        } catch(e) {
+            var safariVersion = 0;
+        }
+        if (safariVersion >= 9) {
+            window.gemSettings.parallaxDisabled = true;
+            window.gemSettings.fillTopArea = true;
+        }
+    }
+})();
+		(function() {
+    var fullwithData = {
+        page: null,
+        pageWidth: 0,
+        pageOffset: {},
+        fixVcRow: true,
+        pagePaddingLeft: 0
+    };
+
+    function updateFullwidthData() {
+        fullwithData.pageOffset = fullwithData.page.getBoundingClientRect();
+        fullwithData.pageWidth = parseFloat(fullwithData.pageOffset.width);
+        fullwithData.pagePaddingLeft = 0;
+
+        if (fullwithData.page.className.indexOf('vertical-header') != -1) {
+            fullwithData.pagePaddingLeft = 45;
+            if (fullwithData.pageWidth >= 1600) {
+                fullwithData.pagePaddingLeft = 360;
+            }
+            if (fullwithData.pageWidth < 980) {
+                fullwithData.pagePaddingLeft = 0;
+            }
+        }
+    }
+
+    function gem_fix_fullwidth_position(element) {
+        if (element == null) {
+            return false;
+        }
+
+        if (fullwithData.page == null) {
+            fullwithData.page = document.getElementById('page');
+            updateFullwidthData();
+        }
+
+        /*if (fullwithData.pageWidth < 1170) {
+            return false;
+        }*/
+
+        if (!fullwithData.fixVcRow) {
+            return false;
+        }
+
+        if (element.previousElementSibling != null && element.previousElementSibling != undefined && element.previousElementSibling.className.indexOf('fullwidth-block') == -1) {
+            var elementParentViewportOffset = element.previousElementSibling.getBoundingClientRect();
+        } else {
+            var elementParentViewportOffset = element.parentNode.getBoundingClientRect();
+        }
+
+        /*if (elementParentViewportOffset.top > window.gemOptions.clientHeight) {
+            fullwithData.fixVcRow = false;
+            return false;
+        }*/
+
+        if (element.className.indexOf('vc_row') != -1) {
+            var elementMarginLeft = -21;
+            var elementMarginRight = -21;
+        } else {
+            var elementMarginLeft = 0;
+            var elementMarginRight = 0;
+        }
+
+        var offset = parseInt(fullwithData.pageOffset.left + 0.5) - parseInt((elementParentViewportOffset.left < 0 ? 0 : elementParentViewportOffset.left) + 0.5) - elementMarginLeft + fullwithData.pagePaddingLeft;
+        var offsetKey = window.gemSettings.isRTL ? 'right' : 'left';
+
+        element.style.position = 'relative';
+        element.style[offsetKey] = offset + 'px';
+        element.style.width = fullwithData.pageWidth - fullwithData.pagePaddingLeft + 'px';
+
+        if (element.className.indexOf('vc_row') == -1) {
+            element.setAttribute('data-fullwidth-updated', 1);
+        }
+
+        if (element.className.indexOf('vc_row') != -1 && !element.hasAttribute('data-vc-stretch-content')) {
+            var el_full = element.parentNode.querySelector('.vc_row-full-width-before');
+            var padding = -1 * offset;
+            0 > padding && (padding = 0);
+            var paddingRight = fullwithData.pageWidth - padding - el_full.offsetWidth + elementMarginLeft + elementMarginRight;
+            0 > paddingRight && (paddingRight = 0);
+            element.style.paddingLeft = padding + 'px';
+            element.style.paddingRight = paddingRight + 'px';
+        }
+    }
+
+    window.gem_fix_fullwidth_position = gem_fix_fullwidth_position;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var classes = [];
+
+        if (window.gemSettings.isTouch) {
+            document.body.classList.add('thegem-touch');
+        }
+
+        if (window.gemSettings.lasyDisabled && !window.gemSettings.forcedLasyDisabled) {
+            document.body.classList.add('thegem-effects-disabled');
+        }
+    });
+
+    if (window.gemSettings.parallaxDisabled) {
+        var head  = document.getElementsByTagName('head')[0],
+            link  = document.createElement('style');
+        link.rel  = 'stylesheet';
+        link.type = 'text/css';
+        link.innerHTML = ".fullwidth-block.fullwidth-block-parallax-fixed .fullwidth-block-background { background-attachment: scroll !important; }";
+        head.appendChild(link);
+    }
+})();
+
+(function() {
+    setTimeout(function() {
+        var preloader = document.getElementById('page-preloader');
+        if (preloader != null && preloader != undefined) {
+            preloader.className += ' preloader-loaded';
+        }
+    }, window.pagePreloaderHideTime || 1000);
+})();
+	</script>
+	
+
+
+<div id="page" class="layout-fullwidth header-style-3">
+
+	<a href="#main" class="scroll-to-content">Skip to main content</a>
+
+			<a href="#page" class="scroll-top-button">Scroll Top</a>
+	
+	
+		
+		<div id="site-header-wrapper"  class="site-header-wrapper-transparent  " >
+			
+			
+			<header id="site-header" class="site-header animated-header mobile-menu-layout-default" role="banner">
+								
+				<div class="header-background">
+					<div class="container container-fullwidth">
+						<div class="header-main logo-position-left header-colors-light header-layout-default header-layout-fullwidth header-style-3">
+																							<div class="site-title">
+											<div class="site-logo" style="width:250px;">
+			<a href="https://naethra.com/" rel="home" aria-label="Homepage">
+									<span class="logo"><img src="https://naethra.com/wp-content/uploads/thegem/logos/logo_a5a0be335e7efd98281c16f7d696b452_1x.png" srcset="https://naethra.com/wp-content/uploads/thegem/logos/logo_a5a0be335e7efd98281c16f7d696b452_1x.png 1x,https://naethra.com/wp-content/uploads/thegem/logos/logo_a5a0be335e7efd98281c16f7d696b452_2x.png 2x,https://naethra.com/wp-content/uploads/thegem/logos/logo_a5a0be335e7efd98281c16f7d696b452_3x.png 3x" alt="Naethra Technologies Pvt.ltd" style="width:250px;" class="tgp-exclude default"/><img src="https://naethra.com/wp-content/uploads/thegem/logos/logo_888ff4509fa25b96823030128968037a_1x.png" srcset="https://naethra.com/wp-content/uploads/thegem/logos/logo_888ff4509fa25b96823030128968037a_1x.png 1x,https://naethra.com/wp-content/uploads/thegem/logos/logo_888ff4509fa25b96823030128968037a_2x.png 2x,https://naethra.com/wp-content/uploads/thegem/logos/logo_888ff4509fa25b96823030128968037a_3x.png 3x" alt="Naethra Technologies Pvt.ltd" style="width:220px;" class="tgp-exclude small light"/><img src="https://naethra.com/wp-content/uploads/thegem/logos/logo_c5b6fa71edacf1558d2009acd710dd77_1x.png" srcset="https://naethra.com/wp-content/uploads/thegem/logos/logo_c5b6fa71edacf1558d2009acd710dd77_1x.png 1x,https://naethra.com/wp-content/uploads/thegem/logos/logo_c5b6fa71edacf1558d2009acd710dd77_2x.png 2x,https://naethra.com/wp-content/uploads/thegem/logos/logo_c5b6fa71edacf1558d2009acd710dd77_3x.png 3x" alt="Naethra Technologies Pvt.ltd" style="width:220px;" class="tgp-exclude small"/></span>
+							</a>
+		</div>
+										</div>
+																											<nav id="primary-navigation" class="site-navigation primary-navigation" role="navigation">
+											<button class="menu-toggle dl-trigger">Primary Menu<span class="menu-line-1"></span><span class="menu-line-2"></span><span class="menu-line-3"></span></button>																							<ul id="primary-menu" class="nav-menu styled no-responsive dl-menu"><li id="menu-item-38183" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-parent menu-item-38183 megamenu-first-element"><a href="https://naethra.com/mobile-app/" aria-haspopup="true" aria-expanded="false">Mobile</a><span class="menu-item-parent-toggle" tabindex="0"></span>
+<ul class="sub-menu styled dl-submenu">
+	<li id="menu-item-40431" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-40431 megamenu-first-element"><a href="https://naethra.com/flutter-app-development-company/">Flutter</a></li>
+</ul>
+</li>
+<li id="menu-item-38184" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-38184 megamenu-first-element"><a href="https://naethra.com/web-app/">Web App</a></li>
+<li id="menu-item-38193" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-parent menu-item-38193 megamenu-enable megamenu-style-grid megamenu-first-element mobile-clickable"><a href="https://naethra.com/portfolio/" aria-haspopup="true" aria-expanded="false">Portfolio</a><span class="menu-item-parent-toggle" tabindex="0"></span>
+<ul class="sub-menu styled megamenu-empty-left megamenu-empty-right megamenu-empty-top megamenu-empty-bottom megamenu-masonry dl-submenu" data-megamenu-columns="1"  style="padding-left:0px; padding-right:0px; padding-top:0px; padding-bottom:0px; ">
+	<li id="menu-item-46084" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-46084 megamenu-first-element" style="width: 300px;" ><span class="megamenu-column-header"><a href="https://naethra.com/download/">Downloads</a></span></li>
+</ul>
+</li>
+<li id="menu-item-38209" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-parent menu-item-38209 megamenu-enable megamenu-style-grid megamenu-first-element mobile-clickable"><a href="https://naethra.com/services/" aria-haspopup="true" aria-expanded="false">Services</a><span class="menu-item-parent-toggle" tabindex="0"></span>
+<ul class="sub-menu styled megamenu-empty-left megamenu-empty-right megamenu-empty-top megamenu-empty-bottom megamenu-masonry dl-submenu" data-megamenu-columns="1"  style="padding-left:0px; padding-right:0px; padding-top:0px; padding-bottom:0px; ">
+	<li id="menu-item-38185" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-38185 megamenu-first-element" style="width: 300px;" ><span class="megamenu-column-header"><a href="https://naethra.com/cms/">Content Management System</a></span></li>
+	<li class="megamenu-new-row"></li><li id="menu-item-38217" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-38217 megamenu-first-element" style="width: 300px;" ><span class="megamenu-column-header"><a href="https://naethra.com/services/custom-web-publishing/">Custom Web Publishing</a></span></li>
+	<li class="megamenu-new-row"></li><li id="menu-item-38218" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-38218 megamenu-first-element" style="width: 300px;" ><span class="megamenu-column-header"><a href="https://naethra.com/services/dot-net-application/">Dot Net Application</a></span></li>
+	<li class="megamenu-new-row"></li><li id="menu-item-38219" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-38219 megamenu-first-element" style="width: 300px;" ><span class="megamenu-column-header"><a href="https://naethra.com/services/aws-cloud-support/">AWS &#038; Cloud Support</a></span></li>
+</ul>
+</li>
+<li id="menu-item-38216" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-38216 megamenu-enable megamenu-style-default megamenu-first-element"><a href="https://naethra.com/services/claris-filemaker-application/">FileMaker</a></li>
+<li id="menu-item-38188" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-parent menu-item-38188 megamenu-first-element"><a href="https://naethra.com/about-us/" aria-haspopup="true" aria-expanded="false">About Us</a><span class="menu-item-parent-toggle" tabindex="0"></span>
+<ul class="sub-menu styled dl-submenu">
+	<li id="menu-item-38187" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-38187 megamenu-first-element"><a href="https://naethra.com/blogs/">Blogs</a></li>
+</ul>
+</li>
+<li id="menu-item-38189" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-38189 megamenu-first-element"><a href="https://naethra.com/contact-us/">Contact Us</a></li>
+<li id="menu-item-42313" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-42313 megamenu-first-element"><a href="https://naethra.com/30-mins-meeting/"><i class="fa-solid fa-video"> 30 mins meeting</i></a></li>
+<li class="menu-item menu-item-search "><a href="#" aria-label="Search"></a><div class="minisearch "><form role="search" id="searchform" class="sf" action="https://naethra.com/" method="GET"><input id="searchform-input" class="sf-input" type="text" placeholder="Search..." name="s" aria-label="Search"><span class="sf-submit-icon"></span><input id="searchform-submit" class="sf-submit" type="submit" value="s" aria-label="Search"></form></div></li></ul>																																</nav>
+																														</div>
+					</div>
+				</div>
+			</header><!-- #site-header -->
+								</div><!-- #site-header-wrapper -->
+	
+	
+	<div id="main" class="site-main page__top-shadow visible" role="main" aria-label="Main">
+
+<div id="main-content" class="main-content">
+
+<div id="page-title" class="page-title-block custom-page-title">
+			<div class="fullwidth-content">
+					<div data-elementor-type="wp-post" data-elementor-id="33409" class="elementor elementor-33409">
+						<section class="elementor-section elementor-top-section elementor-element elementor-element-86e2099 elementor-section-full_width elementor-section-height-min-height elementor-section-height-default elementor-section-items-middle" data-id="86e2099" data-element_type="section" data-e-type="section" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+						<div class="elementor-container elementor-column-gap-thegem"><div class="elementor-row">
+					<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-2b073d9" data-id="2b073d9" data-element_type="column" data-e-type="column">
+			<div class="elementor-widget-wrap">
+							</div>
+		</div>
+					</div></div>
+		</section>
+				</div>
+				</div>
+				<div class="page-title-alignment-center"></div>
+		</div>
+
+<div class="block-content">
+	<div class="container">
+		<div class="panel row">
+
+			<div class="panel-center col-xs-12">
+				<article id="post-45249" class="post-45249 post type-post status-publish format-standard has-post-thumbnail category-filemaker category-database">
+
+					<div class="entry-content post-content">
+						
+						
+							
+							<div class="post-meta date-color">
+								<div class="entry-meta single-post-meta clearfix gem-post-date">
+									<div class="post-meta-right">
+
+																														<span class="post-meta-likes"><a href="#" class="zilla-likes" id="zilla-likes-45249" title="Like this"><span class="zilla-likes-count">6</span> <span class="zilla-likes-postfix"></span></a></span>																					<span class="post-meta-navigation">
+												<span class="post-meta-navigation-prev" title="Previous post"><a href="https://naethra.com/blog/to-display-filemaker-records-in-accordion-view-using-json/" rel="prev">&#xe636;</a></span>												<span
+														class="post-meta-category-link"><a
+															href="https://naethra.com/blog/category/database/filemaker/">&#xe620;</a>
+													</span>												<span class="post-meta-navigation-next" title="Next post"><a href="https://naethra.com/blog/power-bi-integration-with-filemaker/" rel="next">&#xe634;</a></span>											</span>
+																			</div>
+									<div class="post-meta-left">
+																					<span class="post-meta-author">By Allaudin</span>
+																															<span
+													class="sep"></span> <span
+													class="post-meta-categories"><a href="https://naethra.com/blog/category/database/filemaker/" title="View all posts in FileMaker">FileMaker</a> <span class="sep"></span> <a href="https://naethra.com/blog/category/database/" title="View all posts in Database">Database</a></span>
+																													</div>
+								</div><!-- .entry-meta -->
+							</div>
+							
+						
+								<div data-elementor-type="wp-post" data-elementor-id="45249" class="elementor elementor-45249">
+						<section class="elementor-section elementor-top-section elementor-element elementor-element-59346c4 elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="59346c4" data-element_type="section" data-e-type="section">
+						<div class="elementor-container elementor-column-gap-thegem"><div class="elementor-row">
+					<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-0298cef" data-id="0298cef" data-element_type="column" data-e-type="column">
+			<div class="elementor-widget-wrap elementor-element-populated">
+						<div class="elementor-element elementor-element-cd7baa9 flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-text-editor" data-id="cd7baa9" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
+				<div class="elementor-widget-container">
+												<div class="elementor-text-editor elementor-clearfix">
+						<h4 style="text-align: center;"><b> Upload File to Dropbox from FileMaker using cURL
+</b></h4>							</div>
+										</div>
+				</div>
+					</div>
+		</div>
+					</div></div>
+		</section>
+				<section class="elementor-section elementor-top-section elementor-element elementor-element-235ef21 elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="235ef21" data-element_type="section" data-e-type="section">
+						<div class="elementor-container elementor-column-gap-thegem"><div class="elementor-row">
+					<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-741ab0a" data-id="741ab0a" data-element_type="column" data-e-type="column">
+			<div class="elementor-widget-wrap elementor-element-populated">
+						<div class="elementor-element elementor-element-de398e1 flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-heading" data-id="de398e1" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
+				<div class="elementor-widget-container">
+					<h5 class="elementor-heading-title elementor-size-default">Justification of Topic:</h5>				</div>
+				</div>
+				<div class="elementor-element elementor-element-cb7b5f4 flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-text-editor" data-id="cb7b5f4" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
+				<div class="elementor-widget-container">
+												<div class="elementor-text-editor elementor-clearfix">
+						In this post, we will talk about how to upload file to dropbox from FileMaker using cURL. It will work above FileMaker version 16.
+
+							</div>
+										</div>
+				</div>
+				<div class="elementor-element elementor-element-a9e40bc flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-heading" data-id="a9e40bc" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
+				<div class="elementor-widget-container">
+					<h5 class="elementor-heading-title elementor-size-default">Introduction:</h5>				</div>
+				</div>
+				<div class="elementor-element elementor-element-bdb0459 flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-text-editor" data-id="bdb0459" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
+				<div class="elementor-widget-container">
+												<div class="elementor-text-editor elementor-clearfix">
+						First, we need to create an Account in Dropbox (https://www.dropbox.com) using this we can we can upload file to dropbox from FileMaker using cURL, This can be achieved through the following steps.
+							</div>
+										</div>
+				</div>
+				<div class="elementor-element elementor-element-248b480 flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-text-editor" data-id="248b480" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
+				<div class="elementor-widget-container">
+												<div class="elementor-text-editor elementor-clearfix">
+						<div style="text-align: left;">
+<h2 style="font-size: 15px; line-height: 53px;" data-elementor-setting-key="title" data-pen-placeholder="Type Here...">Step 1: Creating an Account in Dropbox to Generate Access Token.
+</h2>
+</div>							</div>
+										</div>
+				</div>
+				<div class="elementor-element elementor-element-d4d21a7 flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-text-editor" data-id="d4d21a7" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
+				<div class="elementor-widget-container">
+												<div class="elementor-text-editor elementor-clearfix">
+						<ul>
+ 	<li>Go to the Dropbox (https://www.dropbox.com) and create a Dropbox Account.</li>
+ 	<li>Click “Sign In” button and it will redirect to login page. There we have “create an account” button after clicking it will redirect to create account page, here need to enter the details and if we click “Create an account” button, then the dropbox account has been created.</li>
+ 	<li>Go back to the Dropbox (https://www.dropbox.com) and Login into the Account. After Login, use the url(https://www.dropbox.com/developers/apps/create), it will redirect to “Create a new app on the DBX Platform” page, here we need to implement the following steps
+<ul>
+ 	<li>Choose an API: Here need to select “Dropbox API” radio button.</li>
+ 	<li>Choose the type of access you need: Here need to select “Full Dropbox” radion button.</li>
+ 	<li>Name your app: Please enter some name and Please click check I agree checkbox and then click “Create app” button.</li>
+</ul>
+</li>
+ 	<li>Finally it will redirect to settings page, here we have “Generated access token” label, below to this we have “Generate” button, after click this button, it will generate access token, please see below image and note it the access token.</li>
+</ul>							</div>
+										</div>
+				</div>
+				<div class="elementor-element elementor-element-21674e3 flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-image" data-id="21674e3" data-element_type="widget" data-e-type="widget" data-widget_type="image.default">
+				<div class="elementor-widget-container">
+																<a href="https://naethra.com/wp-content/uploads/2023/06/db1.png" data-elementor-open-lightbox="yes" data-elementor-lightbox-title="db1" data-e-action-hash="#elementor-action%3Aaction%3Dlightbox%26settings%3DeyJpZCI6NDUyNTEsInVybCI6Imh0dHBzOlwvXC9uYWV0aHJhLmNvbVwvd3AtY29udGVudFwvdXBsb2Fkc1wvMjAyM1wvMDZcL2RiMS5wbmcifQ%3D%3D">
+							<img width="432" height="64" src="https://naethra.com/wp-content/uploads/2023/06/db1.png" class="attachment-large size-large wp-image-45251" alt="" srcset="https://naethra.com/wp-content/uploads/2023/06/db1.png 432w, https://naethra.com/wp-content/uploads/2023/06/db1-300x44.png 300w" sizes="(max-width: 432px) 100vw, 432px" />								</a>
+															</div>
+				</div>
+				<div class="elementor-element elementor-element-8de4dda flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-text-editor" data-id="8de4dda" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
+				<div class="elementor-widget-container">
+												<div class="elementor-text-editor elementor-clearfix">
+						<div style="text-align: left;"><h2 style="line-height: 53px;" data-elementor-setting-key="title" data-pen-placeholder="Type Here..."><span style="font-size: 15px;">Step 2: </span><span style="font-family: Helvetica Neue;"><span style="letter-spacing: 0.75px; text-transform: none;">CREATE A NEW SCRIPT IN FILEMAKER DATABASE</span><span style="font-size: 15px; text-transform: none;">.</span></span></h2></div>							</div>
+										</div>
+				</div>
+				<div class="elementor-element elementor-element-b390952 flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-text-editor" data-id="b390952" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
+				<div class="elementor-widget-container">
+												<div class="elementor-text-editor elementor-clearfix">
+						<ul><li>In the FileMaker database create container field and store the file in container field that you want to upload. Also create text field and store access token that we have noted.<ul><li>Create a new script to Upload File to Dropbox.</li><li>Store the container field value in variable, please see below image</li></ul></li></ul>							</div>
+										</div>
+				</div>
+				<div class="elementor-element elementor-element-2dc512e flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-image" data-id="2dc512e" data-element_type="widget" data-e-type="widget" data-widget_type="image.default">
+				<div class="elementor-widget-container">
+																<a href="https://naethra.com/wp-content/uploads/2023/06/db2.png" data-elementor-open-lightbox="yes" data-elementor-lightbox-title="db2" data-e-action-hash="#elementor-action%3Aaction%3Dlightbox%26settings%3DeyJpZCI6NDUyNTIsInVybCI6Imh0dHBzOlwvXC9uYWV0aHJhLmNvbVwvd3AtY29udGVudFwvdXBsb2Fkc1wvMjAyM1wvMDZcL2RiMi5wbmcifQ%3D%3D">
+							<img width="341" height="16" src="https://naethra.com/wp-content/uploads/2023/06/db2.png" class="attachment-large size-large wp-image-45252" alt="" srcset="https://naethra.com/wp-content/uploads/2023/06/db2.png 341w, https://naethra.com/wp-content/uploads/2023/06/db2-300x14.png 300w" sizes="(max-width: 341px) 100vw, 341px" />								</a>
+															</div>
+				</div>
+				<div class="elementor-element elementor-element-5330490 flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-text-editor" data-id="5330490" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
+				<div class="elementor-widget-container">
+												<div class="elementor-text-editor elementor-clearfix">
+						<ul><li>We are using the “Insert from URL” script step. In that we need to specify the url to upload file to dropbox as given in the following image.</li></ul>							</div>
+										</div>
+				</div>
+				<div class="elementor-element elementor-element-c726463 flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-image" data-id="c726463" data-element_type="widget" data-e-type="widget" data-widget_type="image.default">
+				<div class="elementor-widget-container">
+																<a href="https://naethra.com/wp-content/uploads/2023/06/db3.png" data-elementor-open-lightbox="yes" data-elementor-lightbox-title="db3" data-e-action-hash="#elementor-action%3Aaction%3Dlightbox%26settings%3DeyJpZCI6NDUyNTMsInVybCI6Imh0dHBzOlwvXC9uYWV0aHJhLmNvbVwvd3AtY29udGVudFwvdXBsb2Fkc1wvMjAyM1wvMDZcL2RiMy5wbmcifQ%3D%3D">
+							<img width="288" height="118" src="https://naethra.com/wp-content/uploads/2023/06/db3.png" class="attachment-large size-large wp-image-45253" alt="" />								</a>
+															</div>
+				</div>
+				<div class="elementor-element elementor-element-b17ba01 flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-text-editor" data-id="b17ba01" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
+				<div class="elementor-widget-container">
+												<div class="elementor-text-editor elementor-clearfix">
+						<ul>
+ 	<li>In the Specify cURL options, we need to provide the access token that we have stored in the field and also need to provide the Filename and File that we have stored in variable. The content of the message as given in the following image.
+</li>
+</ul>							</div>
+										</div>
+				</div>
+				<div class="elementor-element elementor-element-67594c9 flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-image" data-id="67594c9" data-element_type="widget" data-e-type="widget" data-widget_type="image.default">
+				<div class="elementor-widget-container">
+																<a href="https://naethra.com/wp-content/uploads/2023/08/img.png" data-elementor-open-lightbox="yes" data-elementor-lightbox-title="img" data-e-action-hash="#elementor-action%3Aaction%3Dlightbox%26settings%3DeyJpZCI6NDU0NzQsInVybCI6Imh0dHBzOlwvXC9uYWV0aHJhLmNvbVwvd3AtY29udGVudFwvdXBsb2Fkc1wvMjAyM1wvMDhcL2ltZy5wbmcifQ%3D%3D">
+							<img loading="lazy" width="855" height="257" src="https://naethra.com/wp-content/uploads/2023/08/img.png" class="attachment-large size-large wp-image-45474" alt="" srcset="https://naethra.com/wp-content/uploads/2023/08/img.png 855w, https://naethra.com/wp-content/uploads/2023/08/img-300x90.png 300w, https://naethra.com/wp-content/uploads/2023/08/img-768x231.png 768w" sizes="(max-width: 855px) 100vw, 855px" />								</a>
+															</div>
+				</div>
+				<div class="elementor-element elementor-element-824d346 flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-text-editor" data-id="824d346" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
+				<div class="elementor-widget-container">
+												<div class="elementor-text-editor elementor-clearfix">
+						<ul>
+ 	<li>After “Insert from URL” step executed, the File will be uploaded to the Dropbox.
+</li>
+</ul>							</div>
+										</div>
+				</div>
+					</div>
+		</div>
+					</div></div>
+		</section>
+				<section class="elementor-section elementor-top-section elementor-element elementor-element-727a7d5 elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="727a7d5" data-element_type="section" data-e-type="section" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+						<div class="elementor-container elementor-column-gap-thegem"><div class="elementor-row">
+					<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-301110d" data-id="301110d" data-element_type="column" data-e-type="column">
+			<div class="elementor-widget-wrap elementor-element-populated">
+						<div class="elementor-element elementor-element-b0040b4 flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-heading" data-id="b0040b4" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
+				<div class="elementor-widget-container">
+					<h4 class="elementor-heading-title elementor-size-default">Conclusion:</h4>				</div>
+				</div>
+				<div class="elementor-element elementor-element-a5e93a9 flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-text-editor" data-id="a5e93a9" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
+				<div class="elementor-widget-container">
+												<div class="elementor-text-editor elementor-clearfix">
+						In conclusion, The team at FMDBSolutions hopes this article explained to you a workaround to Upload File to Dropbox from FileMaker using cURL. FMDBSolutions is a team of well-qualified experts that have a lot of experience with the many versions of FileMaker Pro and the <a href="https://fmdbsolutions.com/filemaker-go-development/" target="_blank" rel="noopener"><b><u>FileMaker Go</u></b></a> app too.							</div>
+										</div>
+				</div>
+				<div class="elementor-element elementor-element-ffd5474 flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-text-editor" data-id="ffd5474" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
+				<div class="elementor-widget-container">
+												<div class="elementor-text-editor elementor-clearfix">
+						<p>Our team knows all about transitioning, migrating, converting, and upgrading for FileMaker. Companies that require <a href="https://fmdbsolutions.com/filemaker-integration/" target="_blank" rel="noopener"><b><u>FileMaker Integration</u></b></a> can also use our services. Naethra Technologies Pvt Ltd have worked with clients from the USA, Australia, and Singapore and will complete your FileMaker assignment in the best possible way at a lower price but at the same or higher level of excellence.</p>							</div>
+										</div>
+				</div>
+					</div>
+		</div>
+					</div></div>
+		</section>
+				<section class="elementor-section elementor-top-section elementor-element elementor-element-cf4bd04 elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="cf4bd04" data-element_type="section" data-e-type="section">
+						<div class="elementor-container elementor-column-gap-thegem"><div class="elementor-row">
+					<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-bdc3c2c" data-id="bdc3c2c" data-element_type="column" data-e-type="column">
+			<div class="elementor-widget-wrap">
+							</div>
+		</div>
+					</div></div>
+		</section>
+				<section class="elementor-section elementor-top-section elementor-element elementor-element-f95f066 elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="f95f066" data-element_type="section" data-e-type="section" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+						<div class="elementor-container elementor-column-gap-default"><div class="elementor-row">
+					<div class="elementor-column elementor-col-66 elementor-top-column elementor-element elementor-element-66d63e6" data-id="66d63e6" data-element_type="column" data-e-type="column">
+			<div class="elementor-widget-wrap elementor-element-populated">
+						<div class="elementor-element elementor-element-05d8593 flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-heading" data-id="05d8593" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
+				<div class="elementor-widget-container">
+					<p class="elementor-heading-title elementor-size-default"><a href="https://naethra.com/30-mins-meeting/">Comprehensive Full Stack Development Outsourcing​</a></p>				</div>
+				</div>
+				<div class="elementor-element elementor-element-67f8fe0 elementor-widget__width-initial flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-heading" data-id="67f8fe0" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
+				<div class="elementor-widget-container">
+					<p class="elementor-heading-title elementor-size-default"><a href="https://naethra.com/30-mins-meeting/">
+
+Mastering Web, Mobile Native, and Cross-Platform Applications</a></p>				</div>
+				</div>
+					</div>
+		</div>
+				<div class="elementor-column elementor-col-33 elementor-top-column elementor-element elementor-element-1bf142f" data-id="1bf142f" data-element_type="column" data-e-type="column">
+			<div class="elementor-widget-wrap elementor-element-populated">
+						<div class="elementor-element elementor-element-28d8e8a elementor-widget__width-inherit flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-invisible elementor-widget elementor-widget-thegem-styledbutton" data-id="28d8e8a" data-element_type="widget" data-e-type="widget" data-settings="{&quot;_animation&quot;:&quot;fadeIn&quot;,&quot;thegem_button_skin&quot;:&quot;flat&quot;,&quot;add_icon&quot;:&quot;yes&quot;}" data-widget_type="thegem-styledbutton.default">
+				<div class="elementor-widget-container">
+					
+<div class="gem-button-container gem-widget-button">
+
+		<a class="gem-button gem-button-size-giant gem-button-text-weight-bold gem-button-style-flat" href="https://naethra.com/30-mins-meeting/">
+		<span class="gem-inner-wrapper-btn">
+						<span class="gem-text-button">
+				Schedule a Meet			</span>
+		</span>
+	</a>
+
+	
+</div>				</div>
+				</div>
+					</div>
+		</div>
+					</div></div>
+		</section>
+				<section class="elementor-section elementor-top-section elementor-element elementor-element-1021a51 elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="1021a51" data-element_type="section" data-e-type="section" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+						<div class="elementor-container elementor-column-gap-default"><div class="elementor-row">
+					<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-1fcf3c0" data-id="1fcf3c0" data-element_type="column" data-e-type="column">
+			<div class="elementor-widget-wrap elementor-element-populated">
+						<section class="elementor-section elementor-inner-section elementor-element elementor-element-1dde5a2 elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="1dde5a2" data-element_type="section" data-e-type="section">
+						<div class="elementor-container elementor-column-gap-thegem"><div class="elementor-row">
+					<div class="elementor-column elementor-col-100 elementor-inner-column elementor-element elementor-element-90849d2" data-id="90849d2" data-element_type="column" data-e-type="column">
+			<div class="elementor-widget-wrap elementor-element-populated">
+						<div class="elementor-element elementor-element-fe4e8ee flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-heading" data-id="fe4e8ee" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
+				<div class="elementor-widget-container">
+					<div class="title-h2 elementor-heading-title elementor-size-default">Most popular</div>				</div>
+				</div>
+					</div>
+		</div>
+					</div></div>
+		</section>
+				<div class="elementor-element elementor-element-4dff664 flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-thegem-extended-blog-grid" data-id="4dff664" data-element_type="widget" data-e-type="widget" data-settings="{&quot;caption_position&quot;:&quot;hover&quot;,&quot;loading_animation&quot;:&quot;yes&quot;,&quot;animation_effect&quot;:&quot;move-up&quot;,&quot;image_hover_effect&quot;:&quot;circular&quot;,&quot;query_type&quot;:&quot;manual&quot;,&quot;select_posts_manual&quot;:[&quot;41838&quot;,&quot;41844&quot;,&quot;41826&quot;],&quot;filters_text_labels_clear_text&quot;:&quot;Clear Filters&quot;,&quot;not_found_text&quot;:&quot;No items were found matching your selection&quot;,&quot;sorting_extended_text&quot;:&quot;Default sorting&quot;,&quot;sorting_extended_dropdown_title_text&quot;:&quot;Sort by title (A-Z)&quot;,&quot;sorting_extended_dropdown_title_desc_text&quot;:&quot;Sort by title (Z-A)&quot;,&quot;sorting_extended_dropdown_latest_text&quot;:&quot;Sort by latest&quot;,&quot;sorting_extended_dropdown_oldest_text&quot;:&quot;Sort by oldest&quot;,&quot;blog_show_filter&quot;:&quot;yes&quot;,&quot;blog_show_sorting&quot;:&quot;yes&quot;,&quot;additional_meta_click_behavior&quot;:&quot;filtering&quot;,&quot;portfolio_uid&quot;:&quot;4dff664&quot;,&quot;skin_source&quot;:&quot;default&quot;,&quot;thegem_elementor_preset&quot;:&quot;default&quot;,&quot;layout&quot;:&quot;justified&quot;,&quot;columns&quot;:&quot;3x&quot;,&quot;columns_tablet&quot;:&quot;2x&quot;,&quot;columns_mobile&quot;:&quot;1x&quot;,&quot;image_size&quot;:&quot;default&quot;,&quot;image_ratio_default&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:&quot;&quot;,&quot;sizes&quot;:[]},&quot;exclude_posts&quot;:&quot;manual&quot;,&quot;order_by&quot;:&quot;default&quot;,&quot;order&quot;:&quot;default&quot;,&quot;blog_show_title&quot;:&quot;yes&quot;,&quot;blog_show_categories&quot;:&quot;yes&quot;,&quot;additional_meta_type&quot;:&quot;taxonomies&quot;,&quot;additional_meta_taxonomies&quot;:&quot;category&quot;,&quot;filter_type&quot;:&quot;default&quot;,&quot;filter_style&quot;:&quot;buttons&quot;,&quot;filter_by&quot;:&quot;category&quot;,&quot;attribute_click_behavior&quot;:&quot;filtering&quot;,&quot;attribute_order_by&quot;:&quot;name&quot;,&quot;attribute_query_type&quot;:&quot;or&quot;,&quot;filter_show_all&quot;:&quot;yes&quot;,&quot;search_by&quot;:&quot;content&quot;,&quot;items_per_page&quot;:8,&quot;show_pagination&quot;:&quot;yes&quot;,&quot;pagination_type&quot;:&quot;normal&quot;,&quot;next_page_preloading&quot;:&quot;yes&quot;,&quot;social_sharing&quot;:&quot;yes&quot;,&quot;sharing_icon&quot;:{&quot;value&quot;:&quot;&quot;,&quot;library&quot;:&quot;&quot;},&quot;shares_show_facebook&quot;:&quot;yes&quot;,&quot;shares_show_twitter&quot;:&quot;yes&quot;,&quot;shares_show_pinterest&quot;:&quot;yes&quot;,&quot;shares_show_tumblr&quot;:&quot;yes&quot;,&quot;shares_show_linkedin&quot;:&quot;yes&quot;,&quot;shares_show_reddit&quot;:&quot;yes&quot;,&quot;ignore_sticky_posts&quot;:&quot;yes&quot;,&quot;ajax_preloader_type&quot;:&quot;default&quot;,&quot;image_gaps&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:42,&quot;sizes&quot;:[]},&quot;image_gaps_tablet&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:&quot;&quot;,&quot;sizes&quot;:[]},&quot;image_gaps_mobile&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:&quot;&quot;,&quot;sizes&quot;:[]},&quot;blog_title_preset&quot;:&quot;default&quot;,&quot;title_tag&quot;:&quot;div&quot;,&quot;caption_container_preset&quot;:&quot;transparent&quot;,&quot;filter_responsive_icon&quot;:{&quot;value&quot;:&quot;&quot;,&quot;library&quot;:&quot;&quot;},&quot;pagination_arrows_left_icon&quot;:{&quot;value&quot;:&quot;&quot;,&quot;library&quot;:&quot;&quot;},&quot;pagination_arrows_right_icon&quot;:{&quot;value&quot;:&quot;&quot;,&quot;library&quot;:&quot;&quot;},&quot;readmore_button_type&quot;:&quot;outline&quot;,&quot;readmore_button_size&quot;:&quot;default&quot;}" data-widget_type="thegem-extended-blog-grid.default">
+				<div class="elementor-widget-container">
+					<div class="preloader save-space"><div class="preloader-spin"></div></div>			<div class="portfolio-preloader-wrapper">
+
+				
+				<div class="portfolio portfolio-grid extended-portfolio-grid news-grid no-padding portfolio-pagination-normal portfolio-style-justified background-style-transparent hover-default-circular title-on-hover caption-position-hover version-default  loading-animation item-animation-move-up      columns-tablet-2 columns-mobile-1 hover-default-circular hover-title  columns-3  next-page-preloading           " id="style-4dff664" data-style-uid="4dff664" data-portfolio-uid="4dff664" data-current-page="1" data-per-page="8" data-next-page="0" data-pages-count="1" data-hover="default-circular" data-portfolio-filter="[]" data-portfolio-filter-attributes="null" data-portfolio-filter-status="null" data-portfolio-filter-price="null" data-portfolio-filter-search="">
+					
+					<div class="portfolio-row-outer ">
+
+																							<div class="portfolio-top-panel filter-type-default">
+																				<div class="portfolio-top-panel-row filter-style-buttons">
+																							<div class="portfolio-top-panel-left"><div class="portfolio-filter-item portfolio-selected-filters  ">
+	<div class="portfolio-selected-filter-item clear-filters">
+		Clear Filters	</div>
+	</div>												</div>
+																																		<div class="portfolio-top-panel-right">
+																												<div class="portfolio-sorting title-h6">
+																<div class="orderby light">
+																	<label for="" data-value="date"></label>
+																	<a href="javascript:void(0);" role="button" class="sorting-switcher" data-current="date" aria-label="Order by"></a>
+																	<label for="" data-value="title"></label>
+																</div>
+																<div class="portfolio-sorting-sep"></div>
+																<div class="order light">
+																	<label for="" data-value="desc"></label>
+																	<a href="javascript:void(0);" role="button" class="sorting-switcher" data-current="desc" aria-label="Order"></a>
+																	<label for="" data-value="asc"></label>
+																</div>
+															</div>
+														
+																									</div>
+																					</div>
+																			</div>
+								
+								<div class="row portfolio-row">
+									<div class="portfolio-set clearfix"
+										 data-max-row-height="">
+											<div class="portfolio-item col-xs-12 col-sm-6 col-md-4 item-animations-not-inited before-start post-hide-date post-empty-excerpt post-has-author appearance-type- post-41844 post type-post status-publish format-standard has-post-thumbnail category-flutter" style="padding: calc(42px/2)" data-default-sort="0" data-sort-date="1675524095">
+					
+			<div class="wrap clearfix">
+													<div class="image post-41844 post type-post status-publish format-standard has-post-thumbnail category-flutter">
+						<div class="image-inner ">
+
+									<picture>
+						<img loading="lazy" src="https://naethra.com/wp-content/uploads/2026/08/transparent-thegem-product-justified-square-m.png" width="400" height="400"  class="attachment-thegem-product-justified-square-m" alt="Understanding the Flutter Architecture and Why it Matters for Your App" style="max-width: 110%" />
+		</picture>
+		<div class="post-featured-content"><a href="https://naethra.com/blog/understanding-the-flutter-architecture-and-why-it-matters-for-your-app/">		<picture>
+																	<source srcset="https://naethra.com/wp-content/uploads/2023/02/Understanding-the-Flutter-Architecture-1-thegem-product-justified-square-m.jpg 1x"   sizes="100vw">
+							<img loading="lazy" src="https://naethra.com/wp-content/uploads/2023/02/Understanding-the-Flutter-Architecture-1-thegem-product-justified-square-m.jpg" width="400" height="400"  class="img-responsive" alt="Understanding the Flutter Architecture" />
+		</picture>
+		</a></div>						</div>
+
+													<div class="overlay">
+								<div class="overlay-circle"></div>
+
+								<div class="links-wrapper">
+									<div class="links">
+										<div class="caption">
+											<a href="https://naethra.com/blog/understanding-the-flutter-architecture-and-why-it-matters-for-your-app/" class="portfolio-item-link">
+												<span class="screen-reader-text">Understanding the Flutter Architecture and Why it Matters for Your App</span>
+											</a>
+
+																							
+																							
+																							<div class="slide-content">
+													<div class="slide-content-visible">
+														
+														
+																													<div class="title">
+																<span class="title-h5 ">Understanding the Flutter Architecture and Why it Matters for Your App</span>															</div>
+														
+														
+														
+																			<div class="info">
+				<a class="additional-meta" data-filter-type="taxonomies" data-attr="category" data-filter="flutter">Flutter</a>					</div>
+				
+														
+																											</div>
+
+													<div class="slide-content-hidden">
+														
+																													
+		<div class="grid-post-meta clearfix without-likes">
+			<div class="grid-post-meta-inner">
+									<div class="grid-post-share">
+						<a href="javascript: void(0);" class="icon share" role="button" aria-label="Share">
+															<i class="default"></i>
+													</a>
+					</div>
+				
+				<div class="grid-post-meta-comments-likes">
+					
+									</div>
+
+									<div class="portfolio-sharing-pane">
+<div class="socials-sharing socials socials-colored-hover ">
+	        <a class="socials-item" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fnaethra.com%2Fblog%2Funderstanding-the-flutter-architecture-and-why-it-matters-for-your-app%2F" title="Facebook"><i class="socials-item-icon facebook"></i></a>
+		        <a class="socials-item" target="_blank" href="https://twitter.com/intent/tweet?text=Understanding+the+Flutter+Architecture+and+Why+it+Matters+for+Your+App&#038;url=https%3A%2F%2Fnaethra.com%2Fblog%2Funderstanding-the-flutter-architecture-and-why-it-matters-for-your-app%2F" title="Twitter"><i class="socials-item-icon twitter"></i></a>
+		        <a class="socials-item" target="_blank" href="https://pinterest.com/pin/create/button/?url=https%3A%2F%2Fnaethra.com%2Fblog%2Funderstanding-the-flutter-architecture-and-why-it-matters-for-your-app%2F&#038;description=Understanding+the+Flutter+Architecture+and+Why+it+Matters+for+Your+App&#038;media=https%3A%2F%2Fnaethra.com%2Fwp-content%2Fuploads%2F2023%2F02%2FUnderstanding-the-Flutter-Architecture-1-thegem-blog-timeline-large.jpg" title="Pinterest"><i class="socials-item-icon pinterest"></i></a>
+		        <a class="socials-item" target="_blank" href="http://tumblr.com/widgets/share/tool?canonicalUrl=https%3A%2F%2Fnaethra.com%2Fblog%2Funderstanding-the-flutter-architecture-and-why-it-matters-for-your-app%2F" title="Tumblr"><i class="socials-item-icon tumblr"></i></a>
+		        <a class="socials-item" target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&#038;url=https%3A%2F%2Fnaethra.com%2Fblog%2Funderstanding-the-flutter-architecture-and-why-it-matters-for-your-app%2F&#038;title=Understanding+the+Flutter+Architecture+and+Why+it+Matters+for+Your+App&amp;summary=Understanding+the+Flutter+Architecture+and+Why+it+Matters+for+Your+App+Are+you+looking+to+develop+a+mobile+app%3F+Then..." title="LinkedIn"><i class="socials-item-icon linkedin"></i></a>
+		        <a class="socials-item" target="_blank" href="https://www.reddit.com/submit?url=https%3A%2F%2Fnaethra.com%2Fblog%2Funderstanding-the-flutter-architecture-and-why-it-matters-for-your-app%2F&#038;title=Understanding+the+Flutter+Architecture+and+Why+it+Matters+for+Your+App" title="Reddit"><i class="socials-item-icon reddit"></i></a>
+	</div>
+</div>
+							</div>
+		</div>
+
+																
+														
+																													
+																													
+														
+																																																								</div>
+												</div>
+											
+																					</div>
+									</div>
+								</div>
+							</div>
+											</div>
+				
+							</div>
+				</div>
+	<div class="portfolio-item col-xs-12 col-sm-6 col-md-4 item-animations-not-inited before-start post-hide-date post-empty-excerpt post-has-author appearance-type- post-41838 post type-post status-publish format-standard has-post-thumbnail category-flutter" style="padding: calc(42px/2)" data-default-sort="0" data-sort-date="1675523955">
+					
+			<div class="wrap clearfix">
+													<div class="image post-41838 post type-post status-publish format-standard has-post-thumbnail category-flutter">
+						<div class="image-inner ">
+
+									<picture>
+						<img loading="lazy" src="https://naethra.com/wp-content/uploads/2026/08/transparent-thegem-product-justified-square-m.png" width="400" height="400"  class="attachment-thegem-product-justified-square-m" alt="Tips for Writing Clean and Reusable Flutter Code" style="max-width: 110%" />
+		</picture>
+		<div class="post-featured-content"><a href="https://naethra.com/blog/tips-for-writing-clean-and-reusable-flutter-code/">		<picture>
+																	<source srcset="https://naethra.com/wp-content/uploads/2023/02/Tips-for-Writing-Clean-and-Reusable-Flutter-Code-1-thegem-product-justified-square-m.jpg 1x"   sizes="100vw">
+							<img loading="lazy" src="https://naethra.com/wp-content/uploads/2023/02/Tips-for-Writing-Clean-and-Reusable-Flutter-Code-1-thegem-product-justified-square-m.jpg" width="400" height="400"  class="img-responsive" alt="Tips for Writing Clean and Reusable Flutter Code" />
+		</picture>
+		</a></div>						</div>
+
+													<div class="overlay">
+								<div class="overlay-circle"></div>
+
+								<div class="links-wrapper">
+									<div class="links">
+										<div class="caption">
+											<a href="https://naethra.com/blog/tips-for-writing-clean-and-reusable-flutter-code/" class="portfolio-item-link">
+												<span class="screen-reader-text">Tips for Writing Clean and Reusable Flutter Code</span>
+											</a>
+
+																							
+																							
+																							<div class="slide-content">
+													<div class="slide-content-visible">
+														
+														
+																													<div class="title">
+																<span class="title-h5 ">Tips for Writing Clean and Reusable Flutter Code</span>															</div>
+														
+														
+														
+																			<div class="info">
+				<a class="additional-meta" data-filter-type="taxonomies" data-attr="category" data-filter="flutter">Flutter</a>					</div>
+				
+														
+																											</div>
+
+													<div class="slide-content-hidden">
+														
+																													
+		<div class="grid-post-meta clearfix without-likes">
+			<div class="grid-post-meta-inner">
+									<div class="grid-post-share">
+						<a href="javascript: void(0);" class="icon share" role="button" aria-label="Share">
+															<i class="default"></i>
+													</a>
+					</div>
+				
+				<div class="grid-post-meta-comments-likes">
+					
+									</div>
+
+									<div class="portfolio-sharing-pane">
+<div class="socials-sharing socials socials-colored-hover ">
+	        <a class="socials-item" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fnaethra.com%2Fblog%2Ftips-for-writing-clean-and-reusable-flutter-code%2F" title="Facebook"><i class="socials-item-icon facebook"></i></a>
+		        <a class="socials-item" target="_blank" href="https://twitter.com/intent/tweet?text=Tips+for+Writing+Clean+and+Reusable+Flutter+Code&#038;url=https%3A%2F%2Fnaethra.com%2Fblog%2Ftips-for-writing-clean-and-reusable-flutter-code%2F" title="Twitter"><i class="socials-item-icon twitter"></i></a>
+		        <a class="socials-item" target="_blank" href="https://pinterest.com/pin/create/button/?url=https%3A%2F%2Fnaethra.com%2Fblog%2Ftips-for-writing-clean-and-reusable-flutter-code%2F&#038;description=Tips+for+Writing+Clean+and+Reusable+Flutter+Code&#038;media=https%3A%2F%2Fnaethra.com%2Fwp-content%2Fuploads%2F2023%2F02%2FTips-for-Writing-Clean-and-Reusable-Flutter-Code-1-thegem-blog-timeline-large.jpg" title="Pinterest"><i class="socials-item-icon pinterest"></i></a>
+		        <a class="socials-item" target="_blank" href="http://tumblr.com/widgets/share/tool?canonicalUrl=https%3A%2F%2Fnaethra.com%2Fblog%2Ftips-for-writing-clean-and-reusable-flutter-code%2F" title="Tumblr"><i class="socials-item-icon tumblr"></i></a>
+		        <a class="socials-item" target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&#038;url=https%3A%2F%2Fnaethra.com%2Fblog%2Ftips-for-writing-clean-and-reusable-flutter-code%2F&#038;title=Tips+for+Writing+Clean+and+Reusable+Flutter+Code&amp;summary=Tips+for+Writing+Clean+and+Reusable+Flutter+Code+Flutter+is+an+open-source+mobile+app+development+framework+from+Google.+It+is..." title="LinkedIn"><i class="socials-item-icon linkedin"></i></a>
+		        <a class="socials-item" target="_blank" href="https://www.reddit.com/submit?url=https%3A%2F%2Fnaethra.com%2Fblog%2Ftips-for-writing-clean-and-reusable-flutter-code%2F&#038;title=Tips+for+Writing+Clean+and+Reusable+Flutter+Code" title="Reddit"><i class="socials-item-icon reddit"></i></a>
+	</div>
+</div>
+							</div>
+		</div>
+
+																
+														
+																													
+																													
+														
+																																																								</div>
+												</div>
+											
+																					</div>
+									</div>
+								</div>
+							</div>
+											</div>
+				
+							</div>
+				</div>
+	<div class="portfolio-item col-xs-12 col-sm-6 col-md-4 item-animations-not-inited before-start post-hide-date post-empty-excerpt post-has-author appearance-type- post-41826 post type-post status-publish format-standard has-post-thumbnail category-flutter" style="padding: calc(42px/2)" data-default-sort="0" data-sort-date="1675523661">
+					
+			<div class="wrap clearfix">
+													<div class="image post-41826 post type-post status-publish format-standard has-post-thumbnail category-flutter">
+						<div class="image-inner ">
+
+									<picture>
+						<img loading="lazy" src="https://naethra.com/wp-content/uploads/2026/08/transparent-thegem-product-justified-square-m.png" width="400" height="400"  class="attachment-thegem-product-justified-square-m" alt="Optimising Performance in Flutter Apps" style="max-width: 110%" />
+		</picture>
+		<div class="post-featured-content"><a href="https://naethra.com/blog/optimising-performance-in-flutter-apps/">		<picture>
+																	<source srcset="https://naethra.com/wp-content/uploads/2023/02/Optimising-Performance-in-Flutter-Apps-1-thegem-product-justified-square-m.jpg 1x"   sizes="100vw">
+							<img loading="lazy" src="https://naethra.com/wp-content/uploads/2023/02/Optimising-Performance-in-Flutter-Apps-1-thegem-product-justified-square-m.jpg" width="400" height="400"  class="img-responsive" alt="Optimising Performance in Flutter Apps" />
+		</picture>
+		</a></div>						</div>
+
+													<div class="overlay">
+								<div class="overlay-circle"></div>
+
+								<div class="links-wrapper">
+									<div class="links">
+										<div class="caption">
+											<a href="https://naethra.com/blog/optimising-performance-in-flutter-apps/" class="portfolio-item-link">
+												<span class="screen-reader-text">Optimising Performance in Flutter Apps</span>
+											</a>
+
+																							
+																							
+																							<div class="slide-content">
+													<div class="slide-content-visible">
+														
+														
+																													<div class="title">
+																<span class="title-h5 ">Optimising Performance in Flutter Apps</span>															</div>
+														
+														
+														
+																			<div class="info">
+				<a class="additional-meta" data-filter-type="taxonomies" data-attr="category" data-filter="flutter">Flutter</a>					</div>
+				
+														
+																											</div>
+
+													<div class="slide-content-hidden">
+														
+																													
+		<div class="grid-post-meta clearfix without-likes">
+			<div class="grid-post-meta-inner">
+									<div class="grid-post-share">
+						<a href="javascript: void(0);" class="icon share" role="button" aria-label="Share">
+															<i class="default"></i>
+													</a>
+					</div>
+				
+				<div class="grid-post-meta-comments-likes">
+					
+									</div>
+
+									<div class="portfolio-sharing-pane">
+<div class="socials-sharing socials socials-colored-hover ">
+	        <a class="socials-item" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fnaethra.com%2Fblog%2Foptimising-performance-in-flutter-apps%2F" title="Facebook"><i class="socials-item-icon facebook"></i></a>
+		        <a class="socials-item" target="_blank" href="https://twitter.com/intent/tweet?text=Optimising+Performance+in+Flutter+Apps&#038;url=https%3A%2F%2Fnaethra.com%2Fblog%2Foptimising-performance-in-flutter-apps%2F" title="Twitter"><i class="socials-item-icon twitter"></i></a>
+		        <a class="socials-item" target="_blank" href="https://pinterest.com/pin/create/button/?url=https%3A%2F%2Fnaethra.com%2Fblog%2Foptimising-performance-in-flutter-apps%2F&#038;description=Optimising+Performance+in+Flutter+Apps&#038;media=https%3A%2F%2Fnaethra.com%2Fwp-content%2Fuploads%2F2023%2F02%2FOptimising-Performance-in-Flutter-Apps-1-thegem-blog-timeline-large.jpg" title="Pinterest"><i class="socials-item-icon pinterest"></i></a>
+		        <a class="socials-item" target="_blank" href="http://tumblr.com/widgets/share/tool?canonicalUrl=https%3A%2F%2Fnaethra.com%2Fblog%2Foptimising-performance-in-flutter-apps%2F" title="Tumblr"><i class="socials-item-icon tumblr"></i></a>
+		        <a class="socials-item" target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&#038;url=https%3A%2F%2Fnaethra.com%2Fblog%2Foptimising-performance-in-flutter-apps%2F&#038;title=Optimising+Performance+in+Flutter+Apps&amp;summary=Optimising+Performance+in+Flutter+Apps+Are+you+looking+to+develop+a+powerful+and+responsive+Mobile+app%3F+Flutter+is+a+great..." title="LinkedIn"><i class="socials-item-icon linkedin"></i></a>
+		        <a class="socials-item" target="_blank" href="https://www.reddit.com/submit?url=https%3A%2F%2Fnaethra.com%2Fblog%2Foptimising-performance-in-flutter-apps%2F&#038;title=Optimising+Performance+in+Flutter+Apps" title="Reddit"><i class="socials-item-icon reddit"></i></a>
+	</div>
+</div>
+							</div>
+		</div>
+
+																
+														
+																													
+																													
+														
+																																																								</div>
+												</div>
+											
+																					</div>
+									</div>
+								</div>
+							</div>
+											</div>
+				
+							</div>
+				</div>
+									</div><!-- .portflio-set -->
+																			<div class="portfolio-item-size-container">
+												<div class="portfolio-item col-xs-12 col-sm-6 col-md-4 item-animations-not-inited before-start post-hide-date post-empty-excerpt post-has-author post-41826 post type-post status-publish format-standard has-post-thumbnail category-flutter">
+			</div>
+										</div>
+																	</div><!-- .row-->
+
+																		<div class="portfolio-navigator gem-pagination" style="display:none;">
+											<a href="#" role="button" class="prev" aria-label="Prev">
+																									<i class="default"></i>
+																							</a>
+											<div class="pages"></div>
+											<a href="#" role="button" class="next" aria-label="Next">
+																									<i class="default"></i>
+																							</a>
+										</div>
+									
+								
+					</div><!-- .full-width -->
+				</div><!-- .portfolio-->
+			</div><!-- .portfolio-preloader-wrapper-->
+						</div>
+				</div>
+				<div class="elementor-element elementor-element-c66e8ae flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-thegem-styledbutton" data-id="c66e8ae" data-element_type="widget" data-e-type="widget" data-settings="{&quot;thegem_button_skin&quot;:&quot;outline&quot;,&quot;effects_enabled&quot;:&quot;yes&quot;}" data-widget_type="thegem-styledbutton.default">
+				<div class="elementor-widget-container">
+					
+<div class="gem-button-container gem-widget-button lazy-loading">
+
+		<a class="lazy-loading-item gem-button gem-button-size-medium gem-button-text-weight-bold gem-button-style-outline gem-button-border-3" data-ll-effect="drop-right-without-wrap" href="https://naethra.com/blogs/">
+		<span class="gem-inner-wrapper-btn">
+						<span class="gem-text-button">
+				View all posts			</span>
+		</span>
+	</a>
+
+	
+</div>				</div>
+				</div>
+					</div>
+		</div>
+					</div></div>
+		</section>
+				<section class="elementor-section elementor-top-section elementor-element elementor-element-46a41db elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="46a41db" data-element_type="section" data-e-type="section">
+						<div class="elementor-container elementor-column-gap-thegem"><div class="elementor-row">
+					<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-3705144" data-id="3705144" data-element_type="column" data-e-type="column">
+			<div class="elementor-widget-wrap elementor-element-populated">
+						<div class="elementor-element elementor-element-bbd3ac3 flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-image" data-id="bbd3ac3" data-element_type="widget" data-e-type="widget" data-widget_type="image.default">
+				<div class="elementor-widget-container">
+																<a href="https://naethra.com/wp-content/uploads/2023/06/FM_Dropbox.png" data-elementor-open-lightbox="yes" data-elementor-lightbox-title="FM_Dropbox" data-e-action-hash="#elementor-action%3Aaction%3Dlightbox%26settings%3DeyJpZCI6NDUyNTcsInVybCI6Imh0dHBzOlwvXC9uYWV0aHJhLmNvbVwvd3AtY29udGVudFwvdXBsb2Fkc1wvMjAyM1wvMDZcL0ZNX0Ryb3Bib3gucG5nIn0%3D">
+							<img loading="lazy" width="518" height="243" src="https://naethra.com/wp-content/uploads/2023/06/FM_Dropbox.png" class="attachment-large size-large wp-image-45257" alt="" srcset="https://naethra.com/wp-content/uploads/2023/06/FM_Dropbox.png 518w, https://naethra.com/wp-content/uploads/2023/06/FM_Dropbox-300x141.png 300w" sizes="(max-width: 518px) 100vw, 518px" />								</a>
+															</div>
+				</div>
+					</div>
+		</div>
+					</div></div>
+		</section>
+				</div>
+		
+											</div><!-- .entry-content -->
+
+					
+	<div class="socials-sharing socials socials-colored-hover">
+		<a class="socials-item" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fnaethra.com%2Fblog%2Fupload-file-to-dropbox-from-filemaker-using-curl%2F" title="Facebook"><i class="socials-item-icon facebook"></i></a>
+		<a class="socials-item" target="_blank" href="https://twitter.com/intent/tweet?text=Upload+File+to+Dropbox+from+FileMaker+using+cURL&#038;url=https%3A%2F%2Fnaethra.com%2Fblog%2Fupload-file-to-dropbox-from-filemaker-using-curl%2F" title="Twitter"><i class="socials-item-icon twitter"></i></a>
+		<a class="socials-item" target="_blank" href="https://pinterest.com/pin/create/button/?url=https%3A%2F%2Fnaethra.com%2Fblog%2Fupload-file-to-dropbox-from-filemaker-using-curl%2F&#038;description=Upload+File+to+Dropbox+from+FileMaker+using+cURL&#038;media=https%3A%2F%2Fnaethra.com%2Fwp-content%2Fuploads%2F2023%2F06%2FFM_Dropbox.png" title="Pinterest"><i class="socials-item-icon pinterest"></i></a>
+		<a class="socials-item" target="_blank" href="https://www.tumblr.com/widgets/share/tool?canonicalUrl=https%3A%2F%2Fnaethra.com%2Fblog%2Fupload-file-to-dropbox-from-filemaker-using-curl%2F" title="Tumblr"><i class="socials-item-icon tumblr"></i></a>
+		<a class="socials-item" target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&#038;url=https%3A%2F%2Fnaethra.com%2Fblog%2Fupload-file-to-dropbox-from-filemaker-using-curl%2F&#038;title=Upload+File+to+Dropbox+from+FileMaker+using+cURL&amp;summary=Upload+File+to+Dropbox+from+FileMaker+using+cURL+Justification+of+Topic%3A+In+this+post%2C+we+will+talk+about+how+to..." title="LinkedIn"><i class="socials-item-icon linkedin"></i></a>
+		<a class="socials-item" target="_blank" href="https://www.reddit.com/submit?url=https%3A%2F%2Fnaethra.com%2Fblog%2Fupload-file-to-dropbox-from-filemaker-using-curl%2F&#038;title=Upload+File+to+Dropbox+from+FileMaker+using+cURL" title="Reddit"><i class="socials-item-icon reddit"></i></a>
+	</div>
+
+
+								<div class="post-author-block rounded-corners clearfix">
+							<div class="post-author-avatar"><img alt='Allaudin' src='https://secure.gravatar.com/avatar/796751f658d99cc7f41b30125bfa5b3260d0b39a88e538047931e35038d32774?s=100&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/796751f658d99cc7f41b30125bfa5b3260d0b39a88e538047931e35038d32774?s=200&#038;d=mm&#038;r=g 2x' class='avatar avatar-100 photo' height='100' width='100' /></div>
+						<div class="post-author-info">
+				<div class="name title-h5">Allaudin <span class="light">/ About Author</span></div>
+				<div class="post-author-description"></div>
+				<div class="post-author-posts-link"><a href="https://naethra.com/author/allaudin/">More posts by Allaudin</a></div>
+			</div>
+		</div>
+	
+					
+					
+					
+				</article><!-- #post-## -->
+
+			</div>
+
+			
+		</div>
+
+	</div>
+</div><!-- .block-content -->
+
+</div><!-- #main-content -->
+
+
+<script nitro-exclude>
+    document.cookie = 'nitroCachedPage=' + (!window.NITROPACK_STATE ? '0' : '1') + '; path=/; SameSite=Lax';
+</script>
+		</div><!-- #main -->
+		<div id="lazy-loading-point"></div>
+
+												<footer class="custom-footer">
+					<div class="fullwidth-content">
+								<div data-elementor-type="wp-post" data-elementor-id="36808" class="elementor elementor-36808">
+						<footer class="elementor-section elementor-top-section elementor-element elementor-element-03cfd8c elementor-hidden-desktop elementor-hidden-tablet elementor-hidden-mobile elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="03cfd8c" data-element_type="section" data-e-type="section" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+						<div class="elementor-container elementor-column-gap-thegem"><div class="elementor-row">
+					<div class="elementor-column elementor-col-66 elementor-top-column elementor-element elementor-element-4da2915" data-id="4da2915" data-element_type="column" data-e-type="column">
+			<div class="elementor-widget-wrap elementor-element-populated">
+						<div class="elementor-element elementor-element-a8b8682 flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-google_maps" data-id="a8b8682" data-element_type="widget" data-e-type="widget" data-widget_type="google_maps.default">
+				<div class="elementor-widget-container">
+							<div class="elementor-custom-embed">
+			<iframe loading="lazy"
+					src="https://maps.google.com/maps?q=Naethra%20Technologies%20Private%20Limited%2C%2037%2C%20Viswanathapuram%20Main%20Rd%2C%20Azeez%20Nagar%2C%20Kodambakkam%2C%20Chennai%2C%20Tamil%20Nadu%20600024&#038;t=m&#038;z=17&#038;output=embed&#038;iwloc=near"
+					title="Naethra Technologies Private Limited, 37, Viswanathapuram Main Rd, Azeez Nagar, Kodambakkam, Chennai, Tamil Nadu 600024"
+					aria-label="Naethra Technologies Private Limited, 37, Viswanathapuram Main Rd, Azeez Nagar, Kodambakkam, Chennai, Tamil Nadu 600024"
+			></iframe>
+		</div>
+						</div>
+				</div>
+					</div>
+		</div>
+				<div class="elementor-column elementor-col-33 elementor-top-column elementor-element elementor-element-2c9b88c" data-id="2c9b88c" data-element_type="column" data-e-type="column">
+			<div class="elementor-widget-wrap elementor-element-populated">
+						<div class="elementor-element elementor-element-85f624e elementor-position-inline-start elementor-mobile-position-inline-start elementor-view-default flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-icon-box" data-id="85f624e" data-element_type="widget" data-e-type="widget" data-widget_type="icon-box.default">
+				<div class="elementor-widget-container">
+							<div class="elementor-icon-box-wrapper">
+
+						<div class="elementor-icon-box-icon">
+				<span  class="elementor-icon">
+				<i aria-hidden="true" class="gem-mdi mdi-city"></i>				</span>
+			</div>
+			
+						<div class="elementor-icon-box-content">
+
+									<p class="elementor-icon-box-title">
+						<span  >
+							 WE ARE HERE						</span>
+					</p>
+				
+									<p class="elementor-icon-box-description">
+						NAETHRA Technologies Pvt Ltd.
+New No:37, Old No: 22,
+Viswanathapuram Main Road,
+Kodambakkam,Chennai<br><br>
+
+Phone: 044-45548592
+Email: info@naethra.com					</p>
+				
+			</div>
+			
+		</div>
+						</div>
+				</div>
+				<div class="elementor-element elementor-element-64313bf elementor-position-inline-start elementor-mobile-position-inline-start elementor-view-default flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-icon-box" data-id="64313bf" data-element_type="widget" data-e-type="widget" data-widget_type="icon-box.default">
+				<div class="elementor-widget-container">
+							<div class="elementor-icon-box-wrapper">
+
+						<div class="elementor-icon-box-icon">
+				<span  class="elementor-icon">
+				<i aria-hidden="true" class="gem-mdi mdi-alarm"></i>				</span>
+			</div>
+			
+						<div class="elementor-icon-box-content">
+
+									<p class="elementor-icon-box-title">
+						<span  >
+							WORKING HOURS						</span>
+					</p>
+				
+									<p class="elementor-icon-box-description">
+						Monday – Friday: 10:00 AM – 07:30 PM Hrs					</p>
+				
+			</div>
+			
+		</div>
+						</div>
+				</div>
+					</div>
+		</div>
+					</div></div>
+		</footer>
+				<section class="elementor-section elementor-top-section elementor-element elementor-element-2397feb elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="2397feb" data-element_type="section" data-e-type="section">
+						<div class="elementor-container elementor-column-gap-thegem"><div class="elementor-row">
+					<div class="elementor-column elementor-col-50 elementor-top-column elementor-element elementor-element-1e86f66" data-id="1e86f66" data-element_type="column" data-e-type="column" data-settings="{&quot;background_background&quot;:&quot;gradient&quot;}">
+			<div class="elementor-widget-wrap elementor-element-populated">
+						<section class="elementor-section elementor-inner-section elementor-element elementor-element-850ef77 elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="850ef77" data-element_type="section" data-e-type="section" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+						<div class="elementor-container elementor-column-gap-thegem"><div class="elementor-row">
+					<div class="elementor-column elementor-col-100 elementor-inner-column elementor-element elementor-element-0bb7bb5" data-id="0bb7bb5" data-element_type="column" data-e-type="column">
+			<div class="elementor-widget-wrap elementor-element-populated">
+						<div class="elementor-element elementor-element-dd8cefc flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-heading" data-id="dd8cefc" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
+				<div class="elementor-widget-container">
+					<h2 class="elementor-heading-title elementor-size-default">Contact Us</h2>				</div>
+				</div>
+				<div class="elementor-element elementor-element-91b59f8 elementor-position-inline-start elementor-view-default elementor-mobile-position-block-start flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-icon-box" data-id="91b59f8" data-element_type="widget" data-e-type="widget" data-widget_type="icon-box.default">
+				<div class="elementor-widget-container">
+							<div class="elementor-icon-box-wrapper">
+
+						<div class="elementor-icon-box-icon">
+				<a href="tel:%20+91443500320" class="elementor-icon" tabindex="-1" aria-label=" +91 4435003204">
+				<i aria-hidden="true" class="gem-mdi mdi-phone-in-talk"></i>				</a>
+			</div>
+			
+						<div class="elementor-icon-box-content">
+
+									<h3 class="elementor-icon-box-title">
+						<a href="tel:%20+91443500320" >
+							 +91 4435003204						</a>
+					</h3>
+				
+				
+			</div>
+			
+		</div>
+						</div>
+				</div>
+				<div class="elementor-element elementor-element-80f13bd elementor-position-inline-start elementor-view-default elementor-mobile-position-block-start flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-icon-box" data-id="80f13bd" data-element_type="widget" data-e-type="widget" data-widget_type="icon-box.default">
+				<div class="elementor-widget-container">
+							<div class="elementor-icon-box-wrapper">
+
+						<div class="elementor-icon-box-icon">
+				<a href="mailto:info@naethra.com" class="elementor-icon" tabindex="-1" aria-label="info(at)naethra.com">
+				<i aria-hidden="true" class="fas fa-envelope-open-text"></i>				</a>
+			</div>
+			
+						<div class="elementor-icon-box-content">
+
+									<h3 class="elementor-icon-box-title">
+						<a href="mailto:info@naethra.com" >
+							info(at)naethra.com						</a>
+					</h3>
+				
+				
+			</div>
+			
+		</div>
+						</div>
+				</div>
+					</div>
+		</div>
+					</div></div>
+		</section>
+				<div class="elementor-element elementor-element-b169d10 flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-google_maps" data-id="b169d10" data-element_type="widget" data-e-type="widget" data-widget_type="google_maps.default">
+				<div class="elementor-widget-container">
+							<div class="elementor-custom-embed">
+			<iframe loading="lazy"
+					src="https://maps.google.com/maps?q=naethra&#038;t=m&#038;z=10&#038;output=embed&#038;iwloc=near"
+					title="naethra"
+					aria-label="naethra"
+			></iframe>
+		</div>
+						</div>
+				</div>
+					</div>
+		</div>
+				<div class="elementor-column elementor-col-50 elementor-top-column elementor-element elementor-element-f8f540b" data-id="f8f540b" data-element_type="column" data-e-type="column">
+			<div class="elementor-widget-wrap elementor-element-populated">
+						<div class="elementor-element elementor-element-a8de491 flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-heading" data-id="a8de491" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
+				<div class="elementor-widget-container">
+					<h2 class="elementor-heading-title elementor-size-default">Request a Free Demo Today</h2>				</div>
+				</div>
+				<div class="elementor-element elementor-element-9dba298 flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-html" data-id="9dba298" data-element_type="widget" data-e-type="widget" data-widget_type="html.default">
+				<div class="elementor-widget-container">
+					<!-- Start of Meetings Embed Script -->
+    <div class="meetings-iframe-container" data-src="https://meetings.hubspot.com/info12224?embed=true">
+        
+</div>
+    <script type="text/javascript" src="https://static.hsappstatic.net/MeetingsEmbed/ex/MeetingsEmbedCode.js"></script>
+  <!-- End of Meetings Embed Script -->				</div>
+				</div>
+					</div>
+		</div>
+					</div></div>
+		</section>
+				<section class="elementor-section elementor-top-section elementor-element elementor-element-2966696 elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="2966696" data-element_type="section" data-e-type="section" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+						<div class="elementor-container elementor-column-gap-thegem"><div class="elementor-row">
+					<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-1a6bef3" data-id="1a6bef3" data-element_type="column" data-e-type="column">
+			<div class="elementor-widget-wrap elementor-element-populated">
+						<div class="elementor-element elementor-element-8ec4df7 flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-thegem-styledimage" data-id="8ec4df7" data-element_type="widget" data-e-type="widget" data-settings="{&quot;image&quot;:{&quot;url&quot;:&quot;http:\/\/ntpl.naethrastaging.com\/wp-content\/uploads\/2022\/06\/ntpl-logo-w.png&quot;,&quot;id&quot;:33450,&quot;size&quot;:&quot;&quot;,&quot;alt&quot;:&quot;&quot;,&quot;source&quot;:&quot;library&quot;},&quot;thegem_elementor_preset&quot;:&quot;default&quot;,&quot;image_position&quot;:&quot;left&quot;}" data-widget_type="thegem-styledimage.default">
+				<div class="elementor-widget-container">
+					
+<div class="styled-image-wrapper">
+			<div class="gem-image gem-wrapbox gem-wrapbox-default gem-wrapbox-position-left lazy-loading ">
+			<div class="gem-wrapbox-inner  lazy-loading-item"  data-ll-effect="move-up">
+									<img class="gem-wrapbox-element img-responsive "
+						 src="https://naethra.com/wp-content/uploads/2022/06/ntpl-logo-w.png"
+						 alt="Naethra Technologies Pvt.ltd_Logo">
+								</div>
+		</div>
+		</div>
+
+
+	
+						</div>
+				</div>
+					</div>
+		</div>
+					</div></div>
+		</section>
+				<section class="elementor-section elementor-top-section elementor-element elementor-element-ebdfb29 elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="ebdfb29" data-element_type="section" data-e-type="section" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+						<div class="elementor-container elementor-column-gap-thegem"><div class="elementor-row">
+					<div class="elementor-column elementor-col-50 elementor-top-column elementor-element elementor-element-e71cdea" data-id="e71cdea" data-element_type="column" data-e-type="column">
+			<div class="elementor-widget-wrap elementor-element-populated">
+						<div class="elementor-element elementor-element-c907e50 flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-text-editor" data-id="c907e50" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
+				<div class="elementor-widget-container">
+												<div class="elementor-text-editor elementor-clearfix">
+						<p>We want to be your trusted partner in custom data tool development, helping you and your team get the most out of your tools, including Flutter Development, Ionic Framework, Cordova, PHP, Java MySQL, PostgreSQL, AJAX and more for LAN/WAN, Web and mobile deployments, FileMaker Pro. With our expertise and diverse custom development services, we can help your business succeed|and stand out from the competition.</p>							</div>
+										</div>
+				</div>
+				<div class="elementor-element elementor-element-8fbd9d4 flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-google_maps" data-id="8fbd9d4" data-element_type="widget" data-e-type="widget" data-widget_type="google_maps.default">
+				<div class="elementor-widget-container">
+							<div class="elementor-custom-embed">
+			<iframe loading="lazy"
+					src="https://maps.google.com/maps?q=Naethra%20Technologies%20Private%20Limited%2C%2037%2C%20Viswanathapuram%20Main%20Rd%2C%20Azeez%20Nagar%2C%20Kodambakkam%2C%20Chennai%2C%20Tamil%20Nadu%20600024&#038;t=m&#038;z=14&#038;output=embed&#038;iwloc=near"
+					title="Naethra Technologies Private Limited, 37, Viswanathapuram Main Rd, Azeez Nagar, Kodambakkam, Chennai, Tamil Nadu 600024"
+					aria-label="Naethra Technologies Private Limited, 37, Viswanathapuram Main Rd, Azeez Nagar, Kodambakkam, Chennai, Tamil Nadu 600024"
+			></iframe>
+		</div>
+						</div>
+				</div>
+					</div>
+		</div>
+				<div class="elementor-column elementor-col-50 elementor-top-column elementor-element elementor-element-6c69bc5" data-id="6c69bc5" data-element_type="column" data-e-type="column">
+			<div class="elementor-widget-wrap elementor-element-populated">
+						<div class="elementor-element elementor-element-f26ec82 flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-heading" data-id="f26ec82" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
+				<div class="elementor-widget-container">
+					<p class="elementor-heading-title elementor-size-default">Email Us</p>				</div>
+				</div>
+				<div class="elementor-element elementor-element-54bd8f9 flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-thegem-contact-form7" data-id="54bd8f9" data-element_type="widget" data-e-type="widget" data-settings="{&quot;thegem_elementor_preset&quot;:&quot;white&quot;}" data-widget_type="thegem-contact-form7.default">
+				<div class="elementor-widget-container">
+					
+<div class="wpcf7 no-js" id="wpcf7-f579-o2" lang="en-US" dir="ltr" data-wpcf7-id="579">
+<div class="screen-reader-response"><p role="status" aria-live="polite" aria-atomic="true"></p> <ul></ul></div>
+<form action="/blog/upload-file-to-dropbox-from-filemaker-using-curl/#wpcf7-f579-o2" method="post" class="wpcf7-form init thegem-cf7 gem-contact-form-white form-54bd8f9 label-top" aria-label="Contact form" novalidate="novalidate" data-status="init">
+<fieldset class="hidden-fields-container"><legend class="screen-reader-text">Hidden fields</legend><input type="hidden" name="_wpcf7" value="579" /><input type="hidden" name="_wpcf7_version" value="6.1.6" /><input type="hidden" name="_wpcf7_locale" value="en_US" /><input type="hidden" name="_wpcf7_unit_tag" value="wpcf7-f579-o2" /><input type="hidden" name="_wpcf7_container_post" value="0" /><input type="hidden" name="_wpcf7_posted_data_hash" value="" /><input type="hidden" name="_wpcf7_recaptcha_response" value="" />
+</fieldset>
+<div class="contact-form-footer">
+<p><span class="wpcf7-form-control-wrap" data-name="your-first-name"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" aria-required="true" aria-invalid="false" placeholder="Your name" value="" type="text" name="your-first-name" /></span></p>
+<p><span class="wpcf7-form-control-wrap" data-name="your-email_1"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-email wpcf7-validates-as-required wpcf7-text wpcf7-validates-as-email" aria-required="true" aria-invalid="false" placeholder="Your email" value="" type="email" name="your-email_1" /></span></p>
+<p><span class="wpcf7-form-control-wrap" data-name="your-subject"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" aria-required="true" aria-invalid="false" placeholder="Your subject" value="" type="text" name="your-subject" /></span></p>
+<p><span class="wpcf7-form-control-wrap" data-name="your-message"><textarea cols="40" rows="10" maxlength="2000" class="wpcf7-form-control wpcf7-textarea wpcf7-validates-as-required" aria-required="true" aria-invalid="false" placeholder="Your message" name="your-message"></textarea></span></p>
+<div><div class="gem-button-container gem-button-position-center"><input class="gem-button gem-button-size-medium gem-button-style-flat gem-button-text-weight-thin wpcf7-form-control wpcf7-submit has-spinner gem-button-wpcf-custom" style="border-radius: 0px;background-color: #ce93d8;color: #fff;" onmouseleave="this.style.backgroundColor='#ce93d8';this.style.color='#fff';" onmouseenter="this.style.backgroundColor='#fff';this.style.color='#ce93d8';" id="" tabindex="" type="submit" value="Send" /></div> </div>
+</div><input type='hidden' class='wpcf7-pum' value='{"closepopup":false,"closedelay":0,"openpopup":false,"openpopup_id":0}' /><div class="wpcf7-response-output" aria-hidden="true"></div>
+</form>
+</div>
+				</div>
+				</div>
+				<div class="elementor-element elementor-element-627b3b8 elementor-icon-list--layout-traditional elementor-list-item-link-full_width flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-icon-list" data-id="627b3b8" data-element_type="widget" data-e-type="widget" data-widget_type="icon-list.default">
+				<div class="elementor-widget-container">
+							<ul class="elementor-icon-list-items">
+							<li class="elementor-icon-list-item">
+											<span class="elementor-icon-list-icon">
+							<i aria-hidden="true" class="fas fa-map-marker-alt"></i>						</span>
+										<span class="elementor-icon-list-text">Naethra Technologies Pvt Ltd. New No:37, Old No: 22, Viswanathapuram Main Road, Kodambakkam, Chennai</span>
+									</li>
+								<li class="elementor-icon-list-item">
+											<span class="elementor-icon-list-icon">
+							<i aria-hidden="true" class="gem-mdi mdi-phone"></i>						</span>
+										<span class="elementor-icon-list-text"> +91 4435003204, +91 4435003205</span>
+									</li>
+								<li class="elementor-icon-list-item">
+											<span class="elementor-icon-list-icon">
+							<i aria-hidden="true" class="fas fa-envelope-open-text"></i>						</span>
+										<span class="elementor-icon-list-text">info(at)naethra.com</span>
+									</li>
+								<li class="elementor-icon-list-item">
+											<span class="elementor-icon-list-icon">
+							<i aria-hidden="true" class="gem-mdi mdi-alarm-multiple"></i>						</span>
+										<span class="elementor-icon-list-text">Monday – Friday: 10:00 AM – 07:30 PM Hrs</span>
+									</li>
+						</ul>
+						</div>
+				</div>
+					</div>
+		</div>
+					</div></div>
+		</section>
+				</div>
+							</div>
+									</footer>
+									<footer id="colophon" class="site-footer" role="contentinfo">
+				<div class="container">
+					
+<div class="row inline-row footer-widget-area" role="complementary">
+	<div id="thegem-template-1" class="widget inline-column col-sm-6 col-xs-12 count-2 widget_thegem-template"></div><div id="thegem-template-2" class="widget inline-column col-sm-6 col-xs-12 count-2 widget_thegem-template">		<div data-elementor-type="section" data-elementor-id="1194" class="elementor elementor-1194">
+						<section class="elementor-section elementor-top-section elementor-element elementor-element-deb7110 elementor-section-full_width elementor-section-height-default elementor-section-height-default" data-id="deb7110" data-element_type="section" data-e-type="section">
+						<div class="elementor-container elementor-column-gap-default"><div class="elementor-row">
+					<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-5edf469" data-id="5edf469" data-element_type="column" data-e-type="column">
+			<div class="elementor-widget-wrap elementor-element-populated">
+						<div class="elementor-element elementor-element-fbaf2e0 flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-heading" data-id="fbaf2e0" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
+				<div class="elementor-widget-container">
+					<p class="elementor-heading-title elementor-size-default">Email Us</p>				</div>
+				</div>
+				<div class="elementor-element elementor-element-982b543 flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-thegem-contact-form7" data-id="982b543" data-element_type="widget" data-e-type="widget" data-settings="{&quot;thegem_elementor_preset&quot;:&quot;default&quot;}" data-widget_type="thegem-contact-form7.default">
+				<div class="elementor-widget-container">
+					
+<div class="wpcf7 no-js" id="wpcf7-f579-o3" lang="en-US" dir="ltr" data-wpcf7-id="579">
+<div class="screen-reader-response"><p role="status" aria-live="polite" aria-atomic="true"></p> <ul></ul></div>
+<form action="/blog/upload-file-to-dropbox-from-filemaker-using-curl/#wpcf7-f579-o3" method="post" class="wpcf7-form init thegem-cf7 form-982b543 label-top" aria-label="Contact form" novalidate="novalidate" data-status="init">
+<fieldset class="hidden-fields-container"><legend class="screen-reader-text">Hidden fields</legend><input type="hidden" name="_wpcf7" value="579" /><input type="hidden" name="_wpcf7_version" value="6.1.6" /><input type="hidden" name="_wpcf7_locale" value="en_US" /><input type="hidden" name="_wpcf7_unit_tag" value="wpcf7-f579-o3" /><input type="hidden" name="_wpcf7_container_post" value="0" /><input type="hidden" name="_wpcf7_posted_data_hash" value="" /><input type="hidden" name="_wpcf7_recaptcha_response" value="" />
+</fieldset>
+<div class="contact-form-footer">
+<p><span class="wpcf7-form-control-wrap" data-name="your-first-name"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" aria-required="true" aria-invalid="false" placeholder="Your name" value="" type="text" name="your-first-name" /></span></p>
+<p><span class="wpcf7-form-control-wrap" data-name="your-email_1"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-email wpcf7-validates-as-required wpcf7-text wpcf7-validates-as-email" aria-required="true" aria-invalid="false" placeholder="Your email" value="" type="email" name="your-email_1" /></span></p>
+<p><span class="wpcf7-form-control-wrap" data-name="your-subject"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" aria-required="true" aria-invalid="false" placeholder="Your subject" value="" type="text" name="your-subject" /></span></p>
+<p><span class="wpcf7-form-control-wrap" data-name="your-message"><textarea cols="40" rows="10" maxlength="2000" class="wpcf7-form-control wpcf7-textarea wpcf7-validates-as-required" aria-required="true" aria-invalid="false" placeholder="Your message" name="your-message"></textarea></span></p>
+<div><input class="wpcf7-form-control wpcf7-submit has-spinner" type="submit" value="Send" /></div>
+</div><input type='hidden' class='wpcf7-pum' value='{"closepopup":false,"closedelay":0,"openpopup":false,"openpopup_id":0}' /><div class="wpcf7-response-output" aria-hidden="true"></div>
+</form>
+</div>
+				</div>
+				</div>
+				<div class="elementor-element elementor-element-6a38366 elementor-icon-list--layout-traditional elementor-list-item-link-full_width flex-horizontal-align-default flex-horizontal-align-tablet-default flex-horizontal-align-mobile-default flex-vertical-align-default flex-vertical-align-tablet-default flex-vertical-align-mobile-default elementor-widget elementor-widget-icon-list" data-id="6a38366" data-element_type="widget" data-e-type="widget" data-widget_type="icon-list.default">
+				<div class="elementor-widget-container">
+							<ul class="elementor-icon-list-items">
+							<li class="elementor-icon-list-item">
+											<span class="elementor-icon-list-icon">
+							<i aria-hidden="true" class="fas fa-map-marker-alt"></i>						</span>
+										<span class="elementor-icon-list-text">Naethra Technologies Pvt Ltd. New No:37, Old No: 22, Viswanathapuram Main Road, Kodambakkam, Chennai</span>
+									</li>
+								<li class="elementor-icon-list-item">
+											<span class="elementor-icon-list-icon">
+							<i aria-hidden="true" class="gem-mdi mdi-phone"></i>						</span>
+										<span class="elementor-icon-list-text"> +91 4435003204, +91 4435003205</span>
+									</li>
+								<li class="elementor-icon-list-item">
+											<span class="elementor-icon-list-icon">
+							<i aria-hidden="true" class="fas fa-envelope-open-text"></i>						</span>
+										<span class="elementor-icon-list-text">info(at)naethra.com</span>
+									</li>
+								<li class="elementor-icon-list-item">
+											<span class="elementor-icon-list-icon">
+							<i aria-hidden="true" class="gem-mdi mdi-alarm-multiple"></i>						</span>
+										<span class="elementor-icon-list-text">Monday – Friday: 10:00 AM – 07:30 PM Hrs</span>
+									</li>
+						</ul>
+						</div>
+				</div>
+					</div>
+		</div>
+					</div></div>
+		</section>
+				</div>
+		</div></div><!-- .footer-widget-area -->
+				</div>
+			</footer><!-- #colophon -->
+			
+			
+			<footer id="footer-nav" class="site-footer">
+				<div class="container"><div class="row">
+
+					<div class="col-md-3 col-md-push-9">
+													<div id="footer-socials"><div class="socials inline-inside socials-colored">
+																														<a href="https://www.facebook.com/NTPL2006/" target="_blank" title="Facebook" class="socials-item"><i class="socials-item-icon facebook"></i></a>
+																																								<a href="https://www.linkedin.com/in/naethra-technologies-pvt-ltd-102064245/" target="_blank" title="LinkedIn" class="socials-item"><i class="socials-item-icon linkedin"></i></a>
+																																								<a href="https://twitter.com/Naethra2" target="_blank" title="Twitter" class="socials-item"><i class="socials-item-icon twitter"></i></a>
+																																								<a href="https://www.instagram.com/naethratech/" target="_blank" title="Instagram" class="socials-item"><i class="socials-item-icon instagram"></i></a>
+																																																																																																																				<a href="https://www.youtube.com/channel/UCZP-sBP2j0X05qWF8YpV5tg" target="_blank" title="YouTube" class="socials-item"><i class="socials-item-icon youtube"></i></a>
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																			</div></div><!-- #footer-socials -->
+											</div>
+
+					<div class="col-md-6">
+												<nav id="footer-navigation" class="site-navigation footer-navigation centered-box" role="navigation">
+							<ul id="footer-menu" class="nav-menu styled clearfix inline-inside"><li id="menu-item-33428" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-33428"><a href="https://naethra.com/contact-us/">Contact Us</a></li>
+<li id="menu-item-46424" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-46424"><a href="https://naethra.com/terms-and-conditions/">Terms and Conditions</a></li>
+<li id="menu-item-46425" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-46425"><a href="https://naethra.com/privacy-policy/">Privacy Policy</a></li>
+<li id="menu-item-46423" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-46423"><a href="https://naethra.com/disclaimer-and-notification/">Disclaimer and Notification</a></li>
+</ul>						</nav>
+											</div>
+
+					<div class="col-md-3 col-md-pull-9"><div class="footer-site-info">2026 &copy; Copyrights <a href="https://naethra.com">Naethra Technologies</a></div></div>
+
+				</div></div>
+			</footer><!-- #footer-nav -->
+						
+			</div><!-- #page -->
+
+	
+	<script type="speculationrules">
+{"prefetch":[{"source":"document","where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":["/wp-*.php","/wp-admin/*","/wp-content/uploads/*","/wp-content/*","/wp-content/plugins/*","/wp-content/themes/thegem-elementor-child/*","/wp-content/themes/thegem-elementor/*","/*\\?(.+)"]}},{"not":{"selector_matches":"a[rel~=\"nofollow\"]"}},{"not":{"selector_matches":".no-prefetch, .no-prefetch a"}}]},"eagerness":"conservative"}]}
+</script>
+            <script>
+                const abmsg = "We noticed an ad blocker. Consider whitelisting us to support the site ❤️";
+                const abmsgd = "download";
+                const iswpdmpropage = 0;
+                jQuery(function($){
+
+                    
+                });
+            </script>
+            <div id="fb-root"></div>
+            <div 
+	id="pum-35417" 
+	role="dialog" 
+	aria-modal="false"
+	aria-labelledby="pum_popup_title_35417"
+	class="pum pum-overlay pum-theme-35408 pum-theme-default-theme popmake-overlay click_open" 
+	data-popmake="{&quot;id&quot;:35417,&quot;slug&quot;:&quot;request-a-call&quot;,&quot;theme_id&quot;:35408,&quot;cookies&quot;:[{&quot;event&quot;:&quot;on_popup_close&quot;,&quot;settings&quot;:{&quot;name&quot;:&quot;pum-35417&quot;,&quot;key&quot;:&quot;&quot;,&quot;session&quot;:false,&quot;path&quot;:&quot;1&quot;,&quot;time&quot;:&quot;1 month&quot;}}],&quot;triggers&quot;:[{&quot;type&quot;:&quot;click_open&quot;,&quot;settings&quot;:{&quot;extra_selectors&quot;:&quot;.forenquiries&quot;}}],&quot;mobile_disabled&quot;:null,&quot;tablet_disabled&quot;:null,&quot;meta&quot;:{&quot;display&quot;:{&quot;stackable&quot;:false,&quot;overlay_disabled&quot;:false,&quot;scrollable_content&quot;:false,&quot;disable_reposition&quot;:false,&quot;size&quot;:&quot;medium&quot;,&quot;responsive_min_width&quot;:&quot;0%&quot;,&quot;responsive_min_width_unit&quot;:false,&quot;responsive_max_width&quot;:&quot;100%&quot;,&quot;responsive_max_width_unit&quot;:false,&quot;custom_width&quot;:&quot;640px&quot;,&quot;custom_width_unit&quot;:false,&quot;custom_height&quot;:&quot;380px&quot;,&quot;custom_height_unit&quot;:false,&quot;custom_height_auto&quot;:false,&quot;location&quot;:&quot;center&quot;,&quot;position_from_trigger&quot;:false,&quot;position_top&quot;:&quot;100&quot;,&quot;position_left&quot;:&quot;0&quot;,&quot;position_bottom&quot;:&quot;0&quot;,&quot;position_right&quot;:&quot;0&quot;,&quot;position_fixed&quot;:false,&quot;animation_type&quot;:&quot;fade&quot;,&quot;animation_speed&quot;:&quot;350&quot;,&quot;animation_origin&quot;:&quot;center top&quot;,&quot;overlay_zindex&quot;:false,&quot;zindex&quot;:&quot;1999999999&quot;},&quot;close&quot;:{&quot;text&quot;:&quot;&quot;,&quot;button_delay&quot;:&quot;0&quot;,&quot;overlay_click&quot;:false,&quot;esc_press&quot;:false,&quot;f4_press&quot;:false},&quot;click_open&quot;:[]}}">
+
+	<div id="popmake-35417" class="pum-container popmake theme-35408 pum-responsive pum-responsive-medium responsive size-medium">
+
+				
+							<div id="pum_popup_title_35417" class="pum-title popmake-title">
+				Call me at this number			</div>
+		
+		
+				<div class="pum-content popmake-content" tabindex="0">
+			
+<div class="wpcf7 no-js" id="wpcf7-f35418-o1" lang="en-US" dir="ltr" data-wpcf7-id="35418">
+<div class="screen-reader-response"><p role="status" aria-live="polite" aria-atomic="true"></p> <ul></ul></div>
+<form action="/blog/upload-file-to-dropbox-from-filemaker-using-curl/#wpcf7-f35418-o1" method="post" class="wpcf7-form init" aria-label="Contact form" novalidate="novalidate" data-status="init">
+<fieldset class="hidden-fields-container"><legend class="screen-reader-text">Hidden fields</legend><input type="hidden" name="_wpcf7" value="35418" /><input type="hidden" name="_wpcf7_version" value="6.1.6" /><input type="hidden" name="_wpcf7_locale" value="en_US" /><input type="hidden" name="_wpcf7_unit_tag" value="wpcf7-f35418-o1" /><input type="hidden" name="_wpcf7_container_post" value="0" /><input type="hidden" name="_wpcf7_posted_data_hash" value="" /><input type="hidden" name="_wpcf7_recaptcha_response" value="" />
+</fieldset>
+<div class="row">
+<div class="form-line col-lg-4 col-md-4 col-xs-12"><div class="gem-form-icon-name"><span class="wpcf7-form-control-wrap mask-231"><input type="tel" value="" name="mask-231" class="wpcf7-form-control wpcf7-mask wpcf7-validates-as-required wpcf7mf-mask" size="40" aria-required="1" aria-invalid="" placeholder="(___) ___-____" data-mask="(___) ___-____" /></span></div></div>
+<div class="form-line col-lg-4 col-md-4 col-xs-12"><div class="gem-form-icon-email"><span class="wpcf7-form-control-wrap" data-name="text-730"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" aria-required="true" aria-invalid="false" placeholder="Enter Your Name" value="" type="text" name="text-730" /></span></div></div>
+<div class="form-line col-lg-4 col-md-4 col-xs-12"><div class="gem-form-icon-website"><span class="wpcf7-form-control-wrap" data-name="date-855"><input class="wpcf7-form-control wpcf7-date wpcf7-validates-as-required wpcf7-validates-as-date" aria-required="true" aria-invalid="false" placeholder="MM/DD/YYYY" value="" type="date" name="date-855" /></span></div></div>
+<div class="form-line col-lg-12 col-md-12 col-xs-12">  <span class="wpcf7-form-control-wrap" data-name="text-625"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" aria-required="true" aria-invalid="false" value="" type="text" name="text-625" /></span></div>
+<div class="col-lg-12 col-md-12 col-xs-12"><input class="wpcf7-form-control wpcf7-submit has-spinner btn btn-primary" type="submit" value="I am waiting for a call" /></div>
+</div><input type='hidden' class='wpcf7-pum' value='{"closepopup":false,"closedelay":0,"openpopup":true,"openpopup_id":35417}' /><div class="wpcf7-response-output" aria-hidden="true"></div>
+</form>
+</div>
+
+		</div>
+
+				
+							<button type="button" class="pum-close popmake-close" aria-label="Close">
+			CLOSE			</button>
+		
+	</div>
+
+</div>
+        <script>
+			/* <![CDATA[ */
+			var booking_event_redirect_handler = function(e) {
+   console.log(e.details);
+  // add/call your code here
+alert("test");
+  window.location.replace("https://naethra.com/custome-thank-you-page/");
+};
+
+document.addEventListener("wpcal_booking_new", booking_event_redirect_handler);			/* ]]> */
+		</script>
+        			<script>
+				const lazyloadRunObserver = () => {
+					const lazyloadBackgrounds = document.querySelectorAll( `.e-con.e-parent:not(.e-lazyloaded)` );
+					const lazyloadBackgroundObserver = new IntersectionObserver( ( entries ) => {
+						entries.forEach( ( entry ) => {
+							if ( entry.isIntersecting ) {
+								let lazyloadBackground = entry.target;
+								if( lazyloadBackground ) {
+									lazyloadBackground.classList.add( 'e-lazyloaded' );
+								}
+								lazyloadBackgroundObserver.unobserve( entry.target );
+							}
+						});
+					}, { rootMargin: '200px 0px 200px 0px' } );
+					lazyloadBackgrounds.forEach( ( lazyloadBackground ) => {
+						lazyloadBackgroundObserver.observe( lazyloadBackground );
+					} );
+				};
+				const events = [
+					'DOMContentLoaded',
+					'elementor/lazyload/observe',
+				];
+				events.forEach( ( event ) => {
+					document.addEventListener( event, lazyloadRunObserver );
+				} );
+			</script>
+			<link rel='stylesheet' id='icons-fontawesome-css' href='https://naethra.com/wp-content/themes/thegem-elementor/css/icons-fontawesome.css?ver=5.12.1.1' media='all' />
+<link rel='stylesheet' id='thegem-news-grid-version-default-hovers-circular-css' href='https://naethra.com/wp-content/themes/thegem-elementor/css/thegem-news-grid-version-default/circular.css?ver=5.12.1.1' media='all' />
+<link rel='stylesheet' id='thegem-animations-css' href='https://naethra.com/wp-content/themes/thegem-elementor/css/thegem-itemsAnimations.css?ver=5.12.1.1' media='all' />
+<link rel='stylesheet' id='thegem-lazy-loading-animations-css' href='https://naethra.com/wp-content/themes/thegem-elementor/css/thegem-lazy-loading-animations.css?ver=5.12.1.1' media='all' />
+<link rel='stylesheet' id='elementor-post-1194-css' href='https://naethra.com/wp-content/uploads/elementor/css/post-1194.css?ver=1786473091' media='all' />
+<style id="global-styles-inline-css">
+:root{--wp--preset--aspect-ratio--square: 1;--wp--preset--aspect-ratio--4-3: 4/3;--wp--preset--aspect-ratio--3-4: 3/4;--wp--preset--aspect-ratio--3-2: 3/2;--wp--preset--aspect-ratio--2-3: 2/3;--wp--preset--aspect-ratio--16-9: 16/9;--wp--preset--aspect-ratio--9-16: 9/16;--wp--preset--color--black: #000000;--wp--preset--color--cyan-bluish-gray: #abb8c3;--wp--preset--color--white: #ffffff;--wp--preset--color--pale-pink: #f78da7;--wp--preset--color--vivid-red: #cf2e2e;--wp--preset--color--luminous-vivid-orange: #ff6900;--wp--preset--color--luminous-vivid-amber: #fcb900;--wp--preset--color--light-green-cyan: #7bdcb5;--wp--preset--color--vivid-green-cyan: #00d084;--wp--preset--color--pale-cyan-blue: #8ed1fc;--wp--preset--color--vivid-cyan-blue: #0693e3;--wp--preset--color--vivid-purple: #9b51e0;--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple: linear-gradient(135deg,rgb(6,147,227) 0%,rgb(155,81,224) 100%);--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan: linear-gradient(135deg,rgb(122,220,180) 0%,rgb(0,208,130) 100%);--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange: linear-gradient(135deg,rgb(252,185,0) 0%,rgb(255,105,0) 100%);--wp--preset--gradient--luminous-vivid-orange-to-vivid-red: linear-gradient(135deg,rgb(255,105,0) 0%,rgb(207,46,46) 100%);--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray: linear-gradient(135deg,rgb(238,238,238) 0%,rgb(169,184,195) 100%);--wp--preset--gradient--cool-to-warm-spectrum: linear-gradient(135deg,rgb(74,234,220) 0%,rgb(151,120,209) 20%,rgb(207,42,186) 40%,rgb(238,44,130) 60%,rgb(251,105,98) 80%,rgb(254,248,76) 100%);--wp--preset--gradient--blush-light-purple: linear-gradient(135deg,rgb(255,206,236) 0%,rgb(152,150,240) 100%);--wp--preset--gradient--blush-bordeaux: linear-gradient(135deg,rgb(254,205,165) 0%,rgb(254,45,45) 50%,rgb(107,0,62) 100%);--wp--preset--gradient--luminous-dusk: linear-gradient(135deg,rgb(255,203,112) 0%,rgb(199,81,192) 50%,rgb(65,88,208) 100%);--wp--preset--gradient--pale-ocean: linear-gradient(135deg,rgb(255,245,203) 0%,rgb(182,227,212) 50%,rgb(51,167,181) 100%);--wp--preset--gradient--electric-grass: linear-gradient(135deg,rgb(202,248,128) 0%,rgb(113,206,126) 100%);--wp--preset--gradient--midnight: linear-gradient(135deg,rgb(2,3,129) 0%,rgb(40,116,252) 100%);--wp--preset--font-size--small: 13px;--wp--preset--font-size--medium: 20px;--wp--preset--font-size--large: 36px;--wp--preset--font-size--x-large: 42px;--wp--preset--spacing--20: 0.44rem;--wp--preset--spacing--30: 0.67rem;--wp--preset--spacing--40: 1rem;--wp--preset--spacing--50: 1.5rem;--wp--preset--spacing--60: 2.25rem;--wp--preset--spacing--70: 3.38rem;--wp--preset--spacing--80: 5.06rem;--wp--preset--shadow--natural: 6px 6px 9px rgba(0, 0, 0, 0.2);--wp--preset--shadow--deep: 12px 12px 50px rgba(0, 0, 0, 0.4);--wp--preset--shadow--sharp: 6px 6px 0px rgba(0, 0, 0, 0.2);--wp--preset--shadow--outlined: 6px 6px 0px -3px rgb(255, 255, 255), 6px 6px rgb(0, 0, 0);--wp--preset--shadow--crisp: 6px 6px 0px rgb(0, 0, 0);}:where(body) { margin: 0; }:where(.is-layout-flex){gap: 0.5em;}:where(.is-layout-grid){gap: 0.5em;}body .is-layout-flex{display: flex;}.is-layout-flex{flex-wrap: wrap;align-items: center;}.is-layout-flex > :is(*, div){margin: 0;}body .is-layout-grid{display: grid;}.is-layout-grid > :is(*, div){margin: 0;}body{padding-top: 0px;padding-right: 0px;padding-bottom: 0px;padding-left: 0px;}:root :where(.wp-element-button, .wp-block-button__link){background-color: #32373c;border-width: 0;color: #fff;font-family: inherit;font-size: inherit;font-style: inherit;font-weight: inherit;letter-spacing: inherit;line-height: inherit;padding-top: calc(0.667em + 2px);padding-right: calc(1.333em + 2px);padding-bottom: calc(0.667em + 2px);padding-left: calc(1.333em + 2px);text-decoration: none;text-transform: inherit;}.has-black-color{color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-color{color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-color{color: var(--wp--preset--color--white) !important;}.has-pale-pink-color{color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-color{color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-color{color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-color{color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-color{color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-color{color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-color{color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-color{color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-color{color: var(--wp--preset--color--vivid-purple) !important;}.has-black-background-color{background-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-background-color{background-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-background-color{background-color: var(--wp--preset--color--white) !important;}.has-pale-pink-background-color{background-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-background-color{background-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-background-color{background-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-background-color{background-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-background-color{background-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-background-color{background-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-background-color{background-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-background-color{background-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-background-color{background-color: var(--wp--preset--color--vivid-purple) !important;}.has-black-border-color{border-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-border-color{border-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-border-color{border-color: var(--wp--preset--color--white) !important;}.has-pale-pink-border-color{border-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-border-color{border-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-border-color{border-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-border-color{border-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-border-color{border-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-border-color{border-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-border-color{border-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-border-color{border-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-border-color{border-color: var(--wp--preset--color--vivid-purple) !important;}.has-vivid-cyan-blue-to-vivid-purple-gradient-background{background: var(--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple) !important;}.has-light-green-cyan-to-vivid-green-cyan-gradient-background{background: var(--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan) !important;}.has-luminous-vivid-amber-to-luminous-vivid-orange-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange) !important;}.has-luminous-vivid-orange-to-vivid-red-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-orange-to-vivid-red) !important;}.has-very-light-gray-to-cyan-bluish-gray-gradient-background{background: var(--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray) !important;}.has-cool-to-warm-spectrum-gradient-background{background: var(--wp--preset--gradient--cool-to-warm-spectrum) !important;}.has-blush-light-purple-gradient-background{background: var(--wp--preset--gradient--blush-light-purple) !important;}.has-blush-bordeaux-gradient-background{background: var(--wp--preset--gradient--blush-bordeaux) !important;}.has-luminous-dusk-gradient-background{background: var(--wp--preset--gradient--luminous-dusk) !important;}.has-pale-ocean-gradient-background{background: var(--wp--preset--gradient--pale-ocean) !important;}.has-electric-grass-gradient-background{background: var(--wp--preset--gradient--electric-grass) !important;}.has-midnight-gradient-background{background: var(--wp--preset--gradient--midnight) !important;}.has-small-font-size{font-size: var(--wp--preset--font-size--small) !important;}.has-medium-font-size{font-size: var(--wp--preset--font-size--medium) !important;}.has-large-font-size{font-size: var(--wp--preset--font-size--large) !important;}.has-x-large-font-size{font-size: var(--wp--preset--font-size--x-large) !important;}
+/*# sourceURL=global-styles-inline-css */
+</style>
+<script id="thegem-form-elements-js" src="https://naethra.com/wp-content/themes/thegem-elementor/js/thegem-form-elements.min.js?ver=5.12.1.1"></script>
+<script id="jquery-easing-js" src="https://naethra.com/wp-content/themes/thegem-elementor/js/jquery.easing.js?ver=5.12.1.1"></script>
+<script id="SmoothScroll-js" src="https://naethra.com/wp-content/themes/thegem-elementor/js/SmoothScroll.js?ver=5.12.1.1"></script>
+<script id="jquery-dlmenu-js" src="https://naethra.com/wp-content/themes/thegem-elementor/js/jquery.dlmenu.js?ver=5.12.1.1"></script>
+<script id="thegem-menu-init-script-js-extra">
+var thegem_dlmenu_settings = {"ajax_url":"https://naethra.com/wp-admin/admin-ajax.php","backLabel":"Back","showCurrentLabel":"Show this page"};
+//# sourceURL=thegem-menu-init-script-js-extra
+</script>
+<script id="thegem-menu-init-script-js" src="https://naethra.com/wp-content/themes/thegem-elementor/js/thegem-menu_init.js?ver=5.12.1.1"></script>
+<script id="thegem-header-js" src="https://naethra.com/wp-content/themes/thegem-elementor/js/thegem-header.js?ver=5.12.1.1"></script>
+<script id="thegem-scripts-js-extra">
+var thegem_scripts_data = {"ajax_url":"https://naethra.com/wp-admin/admin-ajax.php","ajax_nonce":"50d044a9d2"};
+//# sourceURL=thegem-scripts-js-extra
+</script>
+<script id="thegem-scripts-js" src="https://naethra.com/wp-content/themes/thegem-elementor/js/functions.js?ver=5.12.1.1"></script>
+<script id="jquery-mousewheel-js" src="https://naethra.com/wp-content/themes/thegem-elementor/js/fancyBox/jquery.mousewheel.pack.js?ver=5.12.1.1"></script>
+<script id="jquery-fancybox-js" src="https://naethra.com/wp-content/themes/thegem-elementor/js/fancyBox/jquery.fancybox.min.js?ver=5.12.1.1"></script>
+<script id="fancybox-init-script-js" src="https://naethra.com/wp-content/themes/thegem-elementor/js/fancyBox/jquery.fancybox-init.js?ver=5.12.1.1"></script>
+<script id="wp-hooks-js" src="https://naethra.com/wp-includes/js/dist/hooks.min.js?ver=7496969728ca0f95732d"></script>
+<script id="wp-i18n-js" src="https://naethra.com/wp-includes/js/dist/i18n.min.js?ver=781d11515ad3d91786ec"></script>
+<script id="wp-i18n-js-after">
+wp.i18n.setLocaleData( { 'text direction\u0004ltr': [ 'ltr' ] } );
+//# sourceURL=wp-i18n-js-after
+</script>
+<script id="swv-js" src="https://naethra.com/wp-content/plugins/contact-form-7/includes/swv/js/index.js?ver=6.1.6"></script>
+<script id="contact-form-7-js-before">
+var wpcf7 = {
+    "api": {
+        "root": "https:\/\/naethra.com\/wp-json\/",
+        "namespace": "contact-form-7\/v1"
+    },
+    "cached": 1
+};
+var wpcf7 = {
+    "api": {
+        "root": "https:\/\/naethra.com\/wp-json\/",
+        "namespace": "contact-form-7\/v1"
+    },
+    "cached": 1
+};
+//# sourceURL=contact-form-7-js-before
+</script>
+<script id="contact-form-7-js" src="https://naethra.com/wp-content/plugins/contact-form-7/includes/js/index.js?ver=6.1.6"></script>
+<script id="jquery-form-js" src="https://naethra.com/wp-includes/js/jquery/jquery.form.min.js?ver=4.3.0"></script>
+<script id="wpcf7mf-mask-js" src="https://naethra.com/wp-content/plugins/cf7-phone-mask-field/assets/js/jquery.maskedinput.js?ver=1.4"></script>
+<script id="chaty-front-end-js-extra">
+var chaty_settings = {"ajax_url":"https://naethra.com/wp-admin/admin-ajax.php","analytics":"0","capture_analytics":"0","token":"0dc6547be0","chaty_widgets":[{"id":0,"identifier":0,"settings":{"cta_type":"simple-view","cta_body":"","cta_head":"","cta_head_bg_color":"","cta_head_text_color":"","show_close_button":1,"position":"right","custom_position":1,"bottom_spacing":"25","side_spacing":"25","icon_view":"vertical","default_state":"click","cta_text":"Contact us","cta_text_color":"#333333","cta_bg_color":"#ffffff","show_cta":"first_click","is_pending_mesg_enabled":"off","pending_mesg_count":"1","pending_mesg_count_color":"#ffffff","pending_mesg_count_bgcolor":"#dd0000","widget_icon":"chat-base","widget_icon_url":"","font_family":"-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif","widget_size":"54","custom_widget_size":"54","is_google_analytics_enabled":0,"close_text":"Hide","widget_color":"#A886CD","widget_icon_color":"#ffffff","widget_rgb_color":"168,134,205","has_custom_css":0,"custom_css":"","widget_token":"168ae44ba3","widget_index":"","attention_effect":""},"triggers":{"has_time_delay":1,"time_delay":"0","exit_intent":0,"has_display_after_page_scroll":0,"display_after_page_scroll":"0","auto_hide_widget":0,"hide_after":0,"show_on_pages_rules":[],"time_diff":0,"has_date_scheduling_rules":0,"date_scheduling_rules":{"start_date_time":"","end_date_time":""},"date_scheduling_rules_timezone":0,"day_hours_scheduling_rules_timezone":0,"has_day_hours_scheduling_rules":[],"day_hours_scheduling_rules":[],"day_time_diff":0,"show_on_direct_visit":0,"show_on_referrer_social_network":0,"show_on_referrer_search_engines":0,"show_on_referrer_google_ads":0,"show_on_referrer_urls":[],"has_show_on_specific_referrer_urls":0,"has_traffic_source":0,"has_countries":0,"countries":[],"has_target_rules":0},"channels":[{"channel":"Email","value":"info@naethra.com","hover_text":"Email","chatway_position":"","svg_icon":"\u003Csvg width=\"39\" height=\"39\" viewBox=\"0 0 39 39\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"\u003E\u003Ccircle class=\"color-element\" cx=\"19.4395\" cy=\"19.4395\" r=\"19.4395\" fill=\"#FF485F\"/\u003E\u003Cpath d=\"M20.5379 14.2557H1.36919C0.547677 14.2557 0 13.7373 0 12.9597V1.29597C0 0.518387 0.547677 0 1.36919 0H20.5379C21.3594 0 21.9071 0.518387 21.9071 1.29597V12.9597C21.9071 13.7373 21.3594 14.2557 20.5379 14.2557ZM20.5379 12.9597V13.6077V12.9597ZM1.36919 1.29597V12.9597H20.5379V1.29597H1.36919Z\" transform=\"translate(8.48619 12.3117)\" fill=\"white\"/\u003E\u003Cpath d=\"M10.9659 8.43548C10.829 8.43548 10.692 8.43548 10.5551 8.30588L0.286184 1.17806C0.012346 0.918864 -0.124573 0.530073 0.149265 0.270879C0.423104 0.0116857 0.833862 -0.117911 1.1077 0.141283L10.9659 7.00991L20.8241 0.141283C21.0979 -0.117911 21.5087 0.0116857 21.7825 0.270879C22.0563 0.530073 21.9194 0.918864 21.6456 1.17806L11.3766 8.30588C11.2397 8.43548 11.1028 8.43548 10.9659 8.43548Z\" transform=\"translate(8.47443 12.9478)\" fill=\"white\"/\u003E\u003Cpath d=\"M9.0906 7.13951C8.95368 7.13951 8.81676 7.13951 8.67984 7.00991L0.327768 1.17806C-0.0829894 0.918864 -0.0829899 0.530073 0.190849 0.270879C0.327768 0.0116855 0.738525 -0.117911 1.14928 0.141282L9.50136 5.97314C9.7752 6.23233 9.91212 6.62112 9.63828 6.88032C9.50136 7.00991 9.36444 7.13951 9.0906 7.13951Z\" transform=\"translate(20.6183 18.7799)\" fill=\"white\"/\u003E\u003Cpath d=\"M0.696942 7.13951C0.423104 7.13951 0.286185 7.00991 0.149265 6.88032C-0.124573 6.62112 0.012346 6.23233 0.286185 5.97314L8.63826 0.141282C9.04902 -0.117911 9.45977 0.0116855 9.59669 0.270879C9.87053 0.530073 9.73361 0.918864 9.45977 1.17806L1.1077 7.00991C0.970781 7.13951 0.833862 7.13951 0.696942 7.13951Z\" transform=\"translate(8.47443 18.7799)\" fill=\"white\"/\u003E\u003C/svg\u003E","is_desktop":1,"is_mobile":1,"icon_color":"#FF485F","icon_rgb_color":"255,72,95","channel_type":"Email","custom_image_url":"","order":"","pre_set_message":"","is_use_web_version":"1","is_open_new_tab":"1","is_default_open":"0","has_welcome_message":"0","emoji_picker":"1","input_placeholder":"Write your message...","chat_welcome_message":"","wp_popup_headline":"","wp_popup_nickname":"","wp_popup_profile":"","wp_popup_head_bg_color":"#4AA485","qr_code_image_url":"","mail_subject":"","channel_account_type":"personal","contact_form_settings":[],"contact_fields":[],"url":"mailto:info@naethra.com","mobile_target":"","desktop_target":"","target":"","is_agent":0,"agent_data":[],"header_text":"","header_sub_text":"","header_bg_color":"","header_text_color":"","widget_token":"168ae44ba3","widget_index":"","click_event":"","viber_url":""}]}],"data_analytics_settings":"off","lang":{"whatsapp_label":"WhatsApp Message","hide_whatsapp_form":"Hide WhatsApp Form","emoji_picker":"Show Emojis"},"has_chatway":""};
+//# sourceURL=chaty-front-end-js-extra
+</script>
+<script defer id="chaty-front-end-js" src="https://naethra.com/wp-content/plugins/chaty/js/cht-front-script.min.js?ver=3.5.71745568763"></script>
+<script id="jquery-ui-core-js" src="https://naethra.com/wp-includes/js/jquery/ui/core.min.js?ver=1.13.3"></script>
+<script id="popup-maker-site-js-extra">
+var pum_vars = {"version":"1.22.0","pm_dir_url":"https://naethra.com/wp-content/plugins/popup-maker/","ajaxurl":"https://naethra.com/wp-admin/admin-ajax.php","restapi":"https://naethra.com/wp-json/pum/v1","rest_nonce":null,"default_theme":"35408","debug_mode":"","disable_tracking":"","home_url":"/","message_position":"top","core_sub_forms_enabled":"1","popups":[],"cookie_domain":"","paramNames":{"popup_id":"pid","cta":"cta","notrack":"notrack"},"analytics_enabled":"1","analytics_route":"analytics","analytics_api":"https://naethra.com/wp-json/pum/v1"};
+var pum_sub_vars = {"ajaxurl":"https://naethra.com/wp-admin/admin-ajax.php","message_position":"top"};
+var pum_popups = {"pum-35417":{"triggers":[{"type":"click_open","settings":{"extra_selectors":".forenquiries"}}],"cookies":[{"event":"on_popup_close","settings":{"name":"pum-35417","key":"","session":false,"path":"1","time":"1 month"}}],"disable_on_mobile":false,"disable_on_tablet":false,"atc_promotion":null,"explain":null,"type_section":null,"theme_id":"35408","size":"medium","responsive_min_width":"0%","responsive_max_width":"100%","custom_width":"640px","custom_height_auto":false,"custom_height":"380px","scrollable_content":false,"animation_type":"fade","animation_speed":"350","animation_origin":"center top","open_sound":"none","custom_sound":"","location":"center","position_top":"100","position_bottom":"0","position_left":"0","position_right":"0","position_from_trigger":false,"position_fixed":false,"overlay_disabled":false,"stackable":false,"disable_reposition":false,"zindex":"1999999999","close_button_delay":"0","fi_promotion":null,"close_on_form_submission":false,"close_on_form_submission_delay":"0","close_on_overlay_click":false,"close_on_esc_press":false,"close_on_f4_press":false,"disable_form_reopen":false,"disable_accessibility":false,"theme_slug":"default-theme","id":35417,"slug":"request-a-call"}};
+//# sourceURL=popup-maker-site-js-extra
+</script>
+<script id="popup-maker-site-js" src="//naethra.com/wp-content/uploads/pum/pum-site-scripts.js?defer&#038;generated=1767357176&#038;ver=1.22.0"></script>
+<script id="google-recaptcha-js" src="https://www.google.com/recaptcha/api.js?render=6LelfPMfAAAAAMN4ewWY-X72xhbb9o2_lxFQPOjp&#038;ver=3.0"></script>
+<script id="wp-polyfill-js" src="https://naethra.com/wp-includes/js/dist/vendor/wp-polyfill.min.js?ver=3.15.0"></script>
+<script id="wpcf7-recaptcha-js-before">
+var wpcf7_recaptcha = {
+    "sitekey": "6LelfPMfAAAAAMN4ewWY-X72xhbb9o2_lxFQPOjp",
+    "actions": {
+        "homepage": "homepage",
+        "contactform": "contactform"
+    }
+};
+//# sourceURL=wpcf7-recaptcha-js-before
+</script>
+<script id="wpcf7-recaptcha-js" src="https://naethra.com/wp-content/plugins/contact-form-7/modules/recaptcha/index.js?ver=6.1.6"></script>
+<script id="elementor-webpack-runtime-js" src="https://naethra.com/wp-content/plugins/elementor/assets/js/webpack.runtime.min.js?ver=4.1.1"></script>
+<script id="elementor-frontend-modules-js" src="https://naethra.com/wp-content/plugins/elementor/assets/js/frontend-modules.min.js?ver=4.1.1"></script>
+<script id="elementor-frontend-js-before">
+var elementorFrontendConfig = {"environmentMode":{"edit":false,"wpPreview":false,"isScriptDebug":false},"i18n":{"shareOnFacebook":"Share on Facebook","shareOnTwitter":"Share on Twitter","pinIt":"Pin it","download":"Download","downloadImage":"Download image","fullscreen":"Fullscreen","zoom":"Zoom","share":"Share","playVideo":"Play Video","previous":"Previous","next":"Next","close":"Close","a11yCarouselPrevSlideMessage":"Previous slide","a11yCarouselNextSlideMessage":"Next slide","a11yCarouselFirstSlideMessage":"This is the first slide","a11yCarouselLastSlideMessage":"This is the last slide","a11yCarouselPaginationBulletMessage":"Go to slide"},"is_rtl":false,"breakpoints":{"xs":0,"sm":480,"md":768,"lg":1025,"xl":1440,"xxl":1600},"responsive":{"breakpoints":{"mobile":{"label":"Mobile Portrait","value":767,"default_value":767,"direction":"max","is_enabled":true},"mobile_extra":{"label":"Mobile Landscape","value":880,"default_value":880,"direction":"max","is_enabled":false},"tablet":{"label":"Tablet Portrait","value":1024,"default_value":1024,"direction":"max","is_enabled":true},"tablet_extra":{"label":"Tablet Landscape","value":1200,"default_value":1200,"direction":"max","is_enabled":false},"laptop":{"label":"Laptop","value":1366,"default_value":1366,"direction":"max","is_enabled":false},"widescreen":{"label":"Widescreen","value":2400,"default_value":2400,"direction":"min","is_enabled":false}},
+"hasCustomBreakpoints":false},"version":"4.1.1","is_static":false,"experimentalFeatures":{"additional_custom_breakpoints":true,"global_classes_should_enforce_capabilities":true,"e_variables":true,"e_opt_in_v4_page":true,"e_components":true,"e_interactions":true,"e_widget_creation":true,"import-export-customization":true},"urls":{"assets":"https:\/\/naethra.com\/wp-content\/plugins\/elementor\/assets\/","ajaxurl":"https:\/\/naethra.com\/wp-admin\/admin-ajax.php","uploadUrl":"https:\/\/naethra.com\/wp-content\/uploads"},"nonces":{"floatingButtonsClickTracking":"8d3c378cb0","atomicFormsSendForm":"70f20d3aa7"},"swiperClass":"swiper","settings":{"page":[],"editorPreferences":[]},"kit":{"active_breakpoints":["viewport_mobile","viewport_tablet"],"global_image_lightbox":"yes","lightbox_enable_counter":"yes","lightbox_enable_fullscreen":"yes","lightbox_enable_zoom":"yes","lightbox_enable_share":"yes","lightbox_title_src":"title","lightbox_description_src":"description"},"post":{"id":45249,"title":"Upload%20File%20to%20Dropbox%20from%20FileMaker%20using%20cURL%20-%20Easy%205%20minutes%20step","excerpt":"","featuredImage":"https:\/\/naethra.com\/wp-content\/uploads\/2023\/06\/FM_Dropbox.png"}};
+//# sourceURL=elementor-frontend-js-before
+</script>
+<script id="elementor-frontend-js" src="https://naethra.com/wp-content/plugins/elementor/assets/js/frontend.min.js?ver=4.1.1"></script>
+<script id="thegem-portfolio-grid-extended-js-extra">
+var thegem_portfolio_ajax = {"action":"blog_grid_extended_load_more","url":"https://naethra.com/wp-admin/admin-ajax.php","nonce":"3678529817"};
+var thegem_portfolio_ajax_4dff664 = {"data":{"categories":null,"blog_show_description":"","blog_show_date":"","blog_show_author":"","blog_show_author_avatar":null,"blog_show_comments":"","blog_show_likes":"","caption_position":"hover","more_button_text":null,"loading_animation":"yes","animation_effect":"move-up","image_hover_effect":"circular","by_text":null,"show_all_button_text":"","sorting_date_text":"","sorting_name_text":"","sorting_desc_text":"","sorting_asc_text":"","repeater_details":null,"repeater_attributes":null,"query_type":"manual","select_posts_manual":["41838","41844","41826"],"blog_readmore_button_text":null,"filters_text_labels_all_text":null,"filters_text_labels_clear_text":"Clear Filters","filters_text_labels_search_text":null,"filter_buttons_hidden_show_text":null,"filter_buttons_hidden_sidebar_title":null,"filter_buttons_hidden_filter_by_text":null,"not_found_text":"No items were found matching your selection","filters_mobile_show_button_text":null,"filters_more_button_text":null,"sorting_extended_text":"Default sorting","sorting_extended_dropdown_title_text":"Sort by title (A-Z)","sorting_extended_dropdown_title_desc_text":"Sort by title (Z-A)","sorting_extended_dropdown_latest_text":"Sort by latest","sorting_extended_dropdown_oldest_text":"Sort by oldest","repeater_sort":null,"blog_show_filter":"","blog_show_sorting":"yes","ignore_highlights":"","additional_meta_click_behavior":"filtering","portfolio_uid":"4dff664","skin_source":"default","thegem_elementor_preset":"default","layout":"justified","loop_builder":null,"layout_builder":null,"columns":"3x","columns_builder":null,"columns_desktop":"3x","columns_tablet":"2x","columns_tablet_builder":null,"columns_mobile":"1x","columns_mobile_builder":null,"columns_desktop_list":null,"columns_tablet_list":null,"columns_tablet_list_builder":null,"columns_mobile_list_builder":null,"columns_100":null,"layout_scheme_6x":null,"layout_scheme_5x":null,"layout_scheme_4x":null,"layout_scheme_3x":null,"layout_scheme_2x":null,"scheme_apply_mobiles":null,"scheme_apply_tablets":null,"image_size":"default","image_ratio":null,"image_ratio_default":{"unit":"px","size":"","sizes":[]},"disable_preloader":"","hide_filters_sorting":"","loop_equal_height":null,"source_post_type_page":null,"source_post_type_page_manual":null,"source_post_type_page_exclude_type":null,"source_post_type_page_exclude":null,"source_post_type_page_exclude_terms":null,"source_post_type_wpdmpro":null,"source_post_type_wpdmpro_tax_wpdmcategory":null,"source_post_type_wpdmpro_tax_wpdmtag":null,"source_post_type_wpdmpro_tax_thegem_teams":null,"source_post_type_wpdmpro_tax_thegem_testimonials_sets":null,"source_post_type_wpdmpro_manual":null,"source_post_type_wpdmpro_exclude_type":null,"source_post_type_wpdmpro_exclude":null,"source_post_type_wpdmpro_exclude_terms":null,"source_post_type_thegem_pf_item":null,"source_post_type_thegem_pf_item_tax_thegem_portfolios":null,"source_post_type_thegem_pf_item_tax_thegem_teams":null,"source_post_type_thegem_pf_item_tax_thegem_testimonials_sets":null,"source_post_type_thegem_pf_item_manual":null,"source_post_type_thegem_pf_item_exclude_type":null,"source_post_type_thegem_pf_item_exclude":null,"source_post_type_thegem_pf_item_exclude_terms":null,"source_post_type_portfolio":null,"source_post_type_portfolio_tax_portfolio-category":null,"source_post_type_portfolio_tax_portfolio-tag":null,"source_post_type_portfolio_tax_thegem_teams":null,"source_post_type_portfolio_tax_thegem_testimonials_sets":null,"source_post_type_portfolio_manual":null,"source_post_type_portfolio_exclude_type":null,"source_post_type_portfolio_exclude":null,"source_post_type_portfolio_exclude_terms":null,"source_post_type_popup":null,"source_post_type_popup_manual":null,"source_post_type_popup_exclude_type":null,"source_post_type_popup_exclude":null,"source_post_type_popup_exclude_terms":null,"source_post_type_popup_theme":null,"source_post_type_popup_theme_manual":null,"source_post_type_popup_theme_exclude_type":null,"source_post_type_popup_theme_exclude":null,"source_post_type_popup_theme_exclude_terms":null,"source_post_type_thegem_team_person":null,"source_post_type_thegem_team_person_tax_thegem_teams":null,"source_post_type_thegem_team_person_tax_thegem_testimonials_sets":null,"source_post_type_thegem_team_person_manual":null,"source_post_type_thegem_team_person_exclude_type":null,"source_post_type_thegem_team_person_exclude":null,"source_post_type_thegem_team_person_exclude_terms":null,"source_post_type_thegem_testimonial":null,"source_post_type_thegem_testimonial_tax_thegem_testimonials_sets":null,"source_post_type_thegem_testimonial_tax_thegem_teams":null,"source_post_type_thegem_testimonial_manual":null,"source_post_type_thegem_testimonial_exclude_type":null,"source_post_type_thegem_testimonial_exclude":null,"source_post_type_thegem_testimonial_exclude_terms":null,"source":null,"select_blog_tags":null,"select_blog_authors":null,"select_blog_posts":null,"exclude_blog_posts_type":null,"exclude_blog_posts":null,"exclude_blog_posts_terms":null,"taxonomy_related":null,"taxonomy_related_post_type":null,"exclude_posts":"manual","exclude_posts_manual":"","exclude_posts_manual_terms":null,"order_by":"default","order":"desc","offset":"","caption_position_list":null,"image_hover_effect_list":null,"blog_show_featured_image":null,"blog_show_title":"yes","blog_show_categories":"yes","additional_meta_type":"taxonomies","additional_meta_taxonomies":"category","additional_meta_details":null,"additional_meta_custom_fields":null,"additional_meta_click_behavior_meta":null,"blog_show_details":"","details_layout":null,"details_style":null,"details_position":null,"blog_show_readmore_button":null,"readmore_button_link":null,"readmore_button_custom_link":null,"readmore_button_id":null,"blog_show_divider":null,"filter_type":"default","filter_style":"buttons","mobile_dropdown":null,"filter_by":"category","attribute_click_behavior":"filtering","attribute_order_by":"name","attribute_query_type":"or","filters_style":null,"sidebar_position":null,"sidebar_sticky":null,"filters_sticky":"","filters_scroll_top":null,"filters_preloading":"","filter_show_all":"yes","truncate_filters":"","truncate_filters_number":null,"hide_empty_filters":"","sorting_type":null,"sorting_dropdown_open":null,"show_search":"","show_search_as":null,"search_reset_filters":null,"live_search":null,"search_by":"content","fullwidth_section_sorting":"","items_per_page":8,"show_pagination":"yes","pagination_type":"normal","load_more_show_all":null,"next_page_preloading":"yes","reduce_html_size":"","items_on_load":null,"more_icon":null,"more_stretch_full_width":null,"more_show_separator":null,"social_sharing":"yes","sharing_icon":{"value":"","library":""},"shares_show_facebook":"yes","shares_show_twitter":"yes","shares_show_pinterest":"yes","shares_show_tumblr":"yes","shares_show_linkedin":"yes","shares_show_reddit":"yes","loading_animation_mobile":"","ignore_sticky_posts":"yes","skeleton_loader":"","ajax_preloader_type":"default","disable_bottom_margin":"","metro_max_row_height":null,"metro_max_row_height_tablet":null,"metro_max_row_height_mobile":null,"image_gaps":{"unit":"px","size":42,"sizes":[]},"image_gaps_tablet":{"unit":"px","size":"","sizes":[]},"image_gaps_mobile":{"unit":"px","size":"","sizes":[]},"fullwidth_section_images":"","shadowed_container":null,"image_hover_overlay_video_link":null,"image_hover_overlay_video_start":null,"image_hover_overlay_video_end":null,"image_hover_overlay_play_once":null,"image_hover_overlay_play_on_mobile":null,"image_hover_overlay_privacy_mode":null,"image_hover_overlay_slideshow_gallery":null,"image_hover_overlay_slideshow_loop":null,"image_hover_overlay_slideshow_slide_duration":null,"image_hover_overlay_slideshow_slide_transition":null,"image_hover_overlay_slideshow_transition_duration":null,"image_hover_overlay_slideshow_lazyload":null,"image_hover_overlay_slideshow_ken_burns":null,"image_hover_overlay_slideshow_ken_burns_zoom_direction":null,"icon_hover_show":null,"icon_hover_icon":null,"blog_title_preset":"default","title_tag":"div","title_weight":"","blog_description_preset":null,"likes_icon":null,"comments_icon":null,"caption_container_preset":"transparent","caption_container_background_normal_video_link":null,"caption_container_background_normal_video_start":null,"caption_container_background_normal_video_end":null,"caption_container_background_normal_play_once":null,"caption_container_background_normal_play_on_mobile":null,"caption_container_background_normal_privacy_mode":null,"caption_container_background_normal_slideshow_gallery":null,"caption_container_background_normal_slideshow_loop":null,"caption_container_background_normal_slideshow_slide_duration":null,"caption_container_background_normal_slideshow_slide_transition":null,"caption_container_background_normal_slideshow_transition_duration":null,"caption_container_background_normal_slideshow_lazyload":null,"caption_container_background_normal_slideshow_ken_burns":null,"caption_container_background_normal_slideshow_ken_burns_zoom_direction":null,"disable_hover":"","caption_container_background_hover_video_link":null,"caption_container_background_hover_video_start":null,"caption_container_background_hover_video_end":null,"caption_container_background_hover_play_once":null,"caption_container_background_hover_play_on_mobile":null,"caption_container_background_hover_privacy_mode":null,"caption_container_background_hover_slideshow_gallery":null,"caption_container_background_hover_slideshow_loop":null,"caption_container_background_hover_slideshow_slide_duration":null,"caption_container_background_hover_slideshow_slide_transition":null,"caption_container_background_hover_slideshow_transition_duration":null,"caption_container_background_hover_slideshow_lazyload":null,"caption_container_background_hover_slideshow_ken_burns":null,"caption_container_background_hover_slideshow_ken_burns_zoom_direction":null,"hover_pointer":null,"filters_more_button_arrow":null,"filter_responsive_icon":{"value":"","library":""},"filter_buttons_standard_alignment":null,"filter_buttons_hidden_show_icon":null,"duplicate_selected_in_sidebar":null,"pagination_arrows_left_icon":{"value":"","library":""},"pagination_arrows_right_icon":{"value":"","library":""},"pagination_more_button_type":null,"pagination_more_button_size":null,"pagination_more_button_icon_align":null,"pagination_more_button_icon_align_tablet":null,"pagination_more_button_icon_align_mobile":null,"pagination_more_button_separator_style_active":null,"details_alignment_vertical":null,"details_alignment_inline":null,"details_divider_show":null,"details_label_preset":null,"details_label_font_weight":null,"details_colon_show":null,"details_separator":null,"details_value_preset":null,"details_value_font_weight":null,"readmore_button_type":"outline","readmore_button_size":"default","readmore_button_border_type":"","_position":"","_animation":"","_animation_tablet":"","_animation_mobile":"","_animation_delay":null,"_transform_rotateZ_effect":null,"_transform_rotateZ_effect_tablet":null,"_transform_rotateZ_effect_mobile":null,"_transform_rotate_3d":null,"_transform_rotateX_effect":null,"_transform_rotateX_effect_tablet":null,"_transform_rotateX_effect_mobile":null,"_transform_rotateY_effect":null,"_transform_rotateY_effect_tablet":null,"_transform_rotateY_effect_mobile":null,"_transform_perspective_effect":null,"_transform_perspective_effect_tablet":null,"_transform_perspective_effect_mobile":null,"_transform_translateX_effect":null,"_transform_translateX_effect_tablet":null,"_transform_translateX_effect_mobile":null,"_transform_translateY_effect":null,"_transform_translateY_effect_tablet":null,"_transform_translateY_effect_mobile":null,"_transform_scale_effect":null,"_transform_scale_effect_tablet":null,"_transform_scale_effect_mobile":null,"_transform_scaleX_effect":null,"_transform_scaleX_effect_tablet":null,"_transform_scaleX_effect_mobile":null,"_transform_scaleY_effect":null,"_transform_scaleY_effect_tablet":null,"_transform_scaleY_effect_mobile":null,"_transform_skewX_effect":null,"_transform_skewX_effect_tablet":null,"_transform_skewX_effect_mobile":null,"_transform_skewY_effect":null,"_transform_skewY_effect_tablet":null,"_transform_skewY_effect_mobile":null,"_transform_flipX_effect":"","_transform_flipY_effect":"","_transform_rotateZ_effect_hover":null,"_transform_rotateZ_effect_hover_tablet":null,"_transform_rotateZ_effect_hover_mobile":null,"_transform_rotate_3d_hover":null,"_transform_rotateX_effect_hover":null,"_transform_rotateX_effect_hover_tablet":null,"_transform_rotateX_effect_hover_mobile":null,"_transform_rotateY_effect_hover":null,"_transform_rotateY_effect_hover_tablet":null,"_transform_rotateY_effect_hover_mobile":null,"_transform_perspective_effect_hover":null,"_transform_perspective_effect_hover_tablet":null,"_transform_perspective_effect_hover_mobile":null,"_transform_translateX_effect_hover":null,"_transform_translateX_effect_hover_tablet":null,"_transform_translateX_effect_hover_mobile":null,"_transform_translateY_effect_hover":null,"_transform_translateY_effect_hover_tablet":null,"_transform_translateY_effect_hover_mobile":null,"_transform_scale_effect_hover":null,"_transform_scale_effect_hover_tablet":null,"_transform_scale_effect_hover_mobile":null,"_transform_scaleX_effect_hover":null,"_transform_scaleX_effect_hover_tablet":null,"_transform_scaleX_effect_hover_mobile":null,"_transform_scaleY_effect_hover":null,"_transform_scaleY_effect_hover_tablet":null,"_transform_scaleY_effect_hover_mobile":null,"_transform_skewX_effect_hover":null,"_transform_skewX_effect_hover_tablet":null,"_transform_skewX_effect_hover_mobile":null,"_transform_skewY_effect_hover":null,"_transform_skewY_effect_hover_tablet":null,"_transform_skewY_effect_hover_mobile":null,"_transform_flipX_effect_hover":"","_transform_flipY_effect_hover":"","_background_video_link":null,"_background_video_start":null,"_background_video_end":null,"_background_play_once":null,"_background_play_on_mobile":null,"_background_privacy_mode":null,"_background_slideshow_gallery":null,"_background_slideshow_loop":null,"_background_slideshow_slide_duration":null,"_background_slideshow_slide_transition":null,"_background_slideshow_transition_duration":null,"_background_slideshow_lazyload":null,"_background_slideshow_ken_burns":null,"_background_slideshow_ken_burns_zoom_direction":null,"_background_hover_video_link":null,"_background_hover_video_start":null,"_background_hover_video_end":null,"_background_hover_play_once":null,"_background_hover_play_on_mobile":null,"_background_hover_privacy_mode":null,"_background_hover_slideshow_gallery":null,"_background_hover_slideshow_loop":null,"_background_hover_slideshow_slide_duration":null,"_background_hover_slideshow_slide_transition":null,"_background_hover_slideshow_transition_duration":null,"_background_hover_slideshow_lazyload":null,"_background_hover_slideshow_ken_burns":null,"_background_hover_slideshow_ken_burns_zoom_direction":null,"thegem_custom_css":"","thegem_interaction_vertical_scroll":"","thegem_interaction_vertical_scroll_direction":null,"thegem_interaction_vertical_scroll_speed":null,"thegem_interaction_vertical_scroll_range":null,"thegem_interaction_horizontal_scroll":"","thegem_interaction_horizontal_scroll_direction":null,"thegem_interaction_horizontal_scroll_speed":null,"thegem_interaction_horizontal_scroll_range":null,"thegem_interaction_mouse":"","thegem_interaction_mouse_direction":null,"thegem_interaction_mouse_speed":null,"thegem_interaction_devices":null,"style_uid":"4dff664","orderby":"date"},"action":"blog_grid_extended_load_more","url":"https://naethra.com/wp-admin/admin-ajax.php","nonce":"3678529817"};
+//# sourceURL=thegem-portfolio-grid-extended-js-extra
+</script>
+<script id="thegem-portfolio-grid-extended-js" src="https://naethra.com/wp-content/themes/thegem-elementor/js/thegem-portfolio-grid-extended.js?ver=5.12.1.1"></script>
+<script id="thegem-items-animations-js" src="https://naethra.com/wp-content/themes/thegem-elementor/js/thegem-itemsAnimations.js?ver=5.12.1.1"></script>
+<script id="thegem-scroll-monitor-js" src="https://naethra.com/wp-content/themes/thegem-elementor/js/thegem-scrollMonitor.js?ver=5.12.1.1"></script>
+<script id="thegem-isotope-js-js" src="https://naethra.com/wp-content/themes/thegem-elementor/js/isotope.min.js?ver=5.12.1.1"></script>
+<script id="thegem-isotope-masonry-custom-js" src="https://naethra.com/wp-content/themes/thegem-elementor/js/isotope-masonry-custom.js?ver=5.12.1.1"></script>
+<script id="thegem-lazy-loading-js" src="https://naethra.com/wp-content/themes/thegem-elementor/js/thegem-lazyLoading.js?ver=5.12.1.1"></script>
+<script id="thegem-contact-form7-js" src="https://naethra.com/wp-content/plugins/thegem-elements-elementor/inc/elementor/widgets/contact-form-7/assets/js/thegem-cf7.js"></script>
+<script id="jet-resize-sensor-js" src="https://naethra.com/wp-content/plugins/jetsticky-for-elementor/assets/js/lib/ResizeSensor.min.js?ver=1.7.0"></script>
+<script id="jet-sticky-sidebar-js" src="https://naethra.com/wp-content/plugins/jetsticky-for-elementor/assets/js/lib/sticky-sidebar/sticky-sidebar.min.js?ver=3.3.1"></script>
+<script id="jsticky-js" src="https://naethra.com/wp-content/plugins/jetsticky-for-elementor/assets/js/lib/jsticky/jquery.jsticky.js?ver=1.1.0"></script>
+<script id="jet-sticky-frontend-js-extra">
+var JetStickySettings = {"elements_data":{"sections":[],"columns":[]}};
+//# sourceURL=jet-sticky-frontend-js-extra
+</script>
+<script id="jet-sticky-frontend-js" src="https://naethra.com/wp-content/plugins/jetsticky-for-elementor/assets/js/jet-sticky-frontend.js?ver=1.0.4"></script>
+<script id="wp-emoji-settings" type="application/json">
+{"baseUrl":"https://s.w.org/images/core/emoji/17.0.2/72x72/","ext":".png","svgUrl":"https://s.w.org/images/core/emoji/17.0.2/svg/","svgExt":".svg","source":{"concatemoji":"https://naethra.com/wp-includes/js/wp-emoji-release.min.js?ver=7.0"}}
+</script>
+<script type="module">
+/*! This file is auto-generated */
+const a=JSON.parse(document.getElementById("wp-emoji-settings").textContent),o=(window._wpemojiSettings=a,"wpEmojiSettingsSupports"),s=["flag","emoji"];function i(e){try{var t={supportTests:e,timestamp:(new Date).valueOf()};sessionStorage.setItem(o,JSON.stringify(t))}catch(e){}}function c(e,t,n){e.clearRect(0,0,e.canvas.width,e.canvas.height),e.fillText(t,0,0);t=new Uint32Array(e.getImageData(0,0,e.canvas.width,e.canvas.height).data);e.clearRect(0,0,e.canvas.width,e.canvas.height),e.fillText(n,0,0);const a=new Uint32Array(e.getImageData(0,0,e.canvas.width,e.canvas.height).data);return t.every((e,t)=>e===a[t])}function p(e,t){e.clearRect(0,0,e.canvas.width,e.canvas.height),e.fillText(t,0,0);var n=e.getImageData(16,16,1,1);for(let e=0;e<n.data.length;e++)if(0!==n.data[e])return!1;return!0}function u(e,t,n,a){switch(t){case"flag":return n(e,"\ud83c\udff3\ufe0f\u200d\u26a7\ufe0f","\ud83c\udff3\ufe0f\u200b\u26a7\ufe0f")?!1:!n(e,"\ud83c\udde8\ud83c\uddf6","\ud83c\udde8\u200b\ud83c\uddf6")&&!n(e,"\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc65\udb40\udc6e\udb40\udc67\udb40\udc7f","\ud83c\udff4\u200b\udb40\udc67\u200b\udb40\udc62\u200b\udb40\udc65\u200b\udb40\udc6e\u200b\udb40\udc67\u200b\udb40\udc7f");case"emoji":return!a(e,"\ud83e\u1fac8")}return!1}function f(e,t,n,a){let r;const o=(r="undefined"!=typeof WorkerGlobalScope&&self instanceof WorkerGlobalScope?new OffscreenCanvas(300,150):document.createElement("canvas")).getContext("2d",{willReadFrequently:!0}),s=(o.textBaseline="top",o.font="600 32px Arial",{});return e.forEach(e=>{s[e]=t(o,e,n,a)}),s}function r(e){var t=document.createElement("script");t.src=e,t.defer=!0,document.head.appendChild(t)}a.supports={everything:!0,everythingExceptFlag:!0},new Promise(t=>{let n=function(){try{var e=JSON.parse(sessionStorage.getItem(o));if("object"==typeof e&&"number"==typeof e.timestamp&&(new Date).valueOf()<e.timestamp+604800&&"object"==typeof e.supportTests)return e.supportTests}catch(e){}return null}();if(!n){if("undefined"!=typeof Worker&&"undefined"!=typeof OffscreenCanvas&&"undefined"!=typeof URL&&URL.createObjectURL&&"undefined"!=typeof Blob)try{var e="postMessage("+f.toString()+"("+[JSON.stringify(s),u.toString(),c.toString(),p.toString()].join(",")+"));",a=new Blob([e],{type:"text/javascript"});const r=new Worker(URL.createObjectURL(a),{name:"wpTestEmojiSupports"});return void(r.onmessage=e=>{i(n=e.data),r.terminate(),t(n)})}catch(e){}i(n=f(s,u,c,p))}t(n)}).then(e=>{for(const n in e)a.supports[n]=e[n],a.supports.everything=a.supports.everything&&a.supports[n],"flag"!==n&&(a.supports.everythingExceptFlag=a.supports.everythingExceptFlag&&a.supports[n]);var t;a.supports.everythingExceptFlag=a.supports.everythingExceptFlag&&!a.supports.flag,a.supports.everything||((t=a.source||{}).concatemoji?r(t.concatemoji):t.wpemoji&&t.twemoji&&(r(t.twemoji),r(t.wpemoji)))});
+//# sourceURL=https://naethra.com/wp-includes/js/wp-emoji-loader.min.js
+</script>
+<script>function lazyLoadThumb(e,alt,l){var t='<img src="https://i.ytimg.com/vi/ID/hqdefault.jpg" alt="" width="480" height="360">',a='<button class="play" aria-label="play Youtube video"></button>';if(l){t=t.replace('data-lazy-','');t=t.replace('loading="lazy"','');t=t.replace(/<noscript>.*?<\/noscript>/g,'');}t=t.replace('alt=""','alt="'+alt+'"');return t.replace("ID",e)+a}function lazyLoadYoutubeIframe(){var e=document.createElement("iframe"),t="ID?autoplay=1";t+=0===this.parentNode.dataset.query.length?"":"&"+this.parentNode.dataset.query;e.setAttribute("src",t.replace("ID",this.parentNode.dataset.src)),e.setAttribute("frameborder","0"),e.setAttribute("allowfullscreen","1"),e.setAttribute("allow","accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"),this.parentNode.parentNode.replaceChild(e,this.parentNode)}document.addEventListener("DOMContentLoaded",function(){var exclusions=[];var e,t,p,u,l,a=document.getElementsByClassName("rll-youtube-player");for(t=0;t<a.length;t++)(e=document.createElement("div")),(u='https://i.ytimg.com/vi/ID/hqdefault.jpg'),(u=u.replace('ID',a[t].dataset.id)),(l=exclusions.some(exclusion=>u.includes(exclusion))),e.setAttribute("data-id",a[t].dataset.id),e.setAttribute("data-query",a[t].dataset.query),e.setAttribute("data-src",a[t].dataset.src),(e.innerHTML=lazyLoadThumb(a[t].dataset.id,a[t].dataset.alt,l)),a[t].appendChild(e),(p=e.querySelector(".play")),(p.onclick=lazyLoadYoutubeIframe)});</script></body>

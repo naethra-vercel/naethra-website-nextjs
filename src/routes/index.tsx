@@ -22,12 +22,7 @@ import { type CSSProperties, type FormEvent, useEffect, useState } from "react";
 import founderImage from "@/assets/putech-founder.jpg";
 import projectImage from "@/assets/putech-project.jpg";
 import teamImage from "@/assets/putech-team.jpg";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   Smartphone,
   Flag,
@@ -42,6 +37,7 @@ import {
 import IntegrationSection from "@/components/IntegrationSection";
 import { openNaethraAssistant } from "@/components/NaethraAIAssistant";
 import SectionEyebrow from "@/components/SectionEyebrow";
+import AnimatedCtaButton from "@/components/AnimatedCtaButton";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -71,14 +67,16 @@ export const Route = createFileRoute("/")({
 });
 
 const navItems = [
-  ["Mobile", "#mobile"],
+  ["Mobile", "/mobile-app"],
   ["Web App", "#web-app"],
   ["Portfolio", "#work"],
   ["Services", "#services"],
   ["FileMaker", "#filemaker"],
   ["About Us", "/about"],
-  ["Contact Us", "#contact"],
+  ["Contact Us", "/contact-us"],
 ];
+
+const mobileMenuItems = [["Flutter", "/flutter-app-development-company"]] as const;
 
 const serviceMenuItems = [
   ["Content Management System", "#integration"],
@@ -174,24 +172,47 @@ const blogPosts = [
 const valuedClients = [
   { name: "Chemtools", logo: "https://naethra.com/wp-content/uploads/2023/04/Chemtools.webp" },
   { name: "Namanama", logo: "https://naethra.com/wp-content/uploads/2023/02/namanama-Logo.jpeg" },
-  { name: "Sabine Surveyors", logo: "https://naethra.com/wp-content/uploads/2023/04/Sabine-Surveyors.webp" },
+  {
+    name: "Sabine Surveyors",
+    logo: "https://naethra.com/wp-content/uploads/2023/04/Sabine-Surveyors.webp",
+  },
   { name: "Shingda", logo: "https://naethra.com/wp-content/uploads/2023/04/shingda.webp" },
-  { name: "Fyrepower", logo: "https://naethra.com/wp-content/uploads/2023/02/New-fyrepower-logo-copy.png" },
-  { name: "CURA Emergency Services", logo: "https://naethra.com/wp-content/uploads/2023/04/CURA-Emergency-Services.webp" },
-  { name: "Expat Aircon Services", logo: "https://naethra.com/wp-content/uploads/2023/02/EXPAT-AIRCON-SERVICES.png" },
-  { name: "Sauna Specialist", logo: "https://naethra.com/wp-content/uploads/2023/04/Sauna_Specialist_Logo.png" },
+  {
+    name: "Fyrepower",
+    logo: "https://naethra.com/wp-content/uploads/2023/02/New-fyrepower-logo-copy.png",
+  },
+  {
+    name: "CURA Emergency Services",
+    logo: "https://naethra.com/wp-content/uploads/2023/04/CURA-Emergency-Services.webp",
+  },
+  {
+    name: "Expat Aircon Services",
+    logo: "https://naethra.com/wp-content/uploads/2023/02/EXPAT-AIRCON-SERVICES.png",
+  },
+  {
+    name: "Sauna Specialist",
+    logo: "https://naethra.com/wp-content/uploads/2023/04/Sauna_Specialist_Logo.png",
+  },
   { name: "Syndeo", logo: "https://naethra.com/wp-content/uploads/2023/02/Syndeo.jpg" },
   { name: "Sabine", logo: "https://naethra.com/wp-content/uploads/2023/04/Sabine.png" },
   { name: "OEG", logo: "https://naethra.com/wp-content/uploads/2023/02/OEG-logo.svg" },
   { name: "Mahathri", logo: "https://naethra.com/wp-content/uploads/2023/04/Mahathri-Logo.webp" },
-  { name: "MacPros", logo: "https://naethra.com/wp-content/uploads/2023/04/MacPros_Logo_med_white.webp" },
+  {
+    name: "MacPros",
+    logo: "https://naethra.com/wp-content/uploads/2023/04/MacPros_Logo_med_white.webp",
+  },
   { name: "IRITS", logo: "https://naethra.com/wp-content/uploads/2023/04/IRITS-logo.webp" },
   { name: "AARMS", logo: "https://naethra.com/wp-content/uploads/2023/02/AARMS.png" },
   { name: "Driev", logo: "https://driev.bike/assets/newimgs/longlogodriev.png" },
 ];
 
 const recentProjects = [
-  [projectImage, "Team collaborating on a software project", "Business Development", "Digital Marketing"],
+  [
+    projectImage,
+    "Team collaborating on a software project",
+    "Business Development",
+    "Digital Marketing",
+  ],
   [teamImage, "Product team reviewing a digital experience", "Finance strategy", "Finance"],
   [projectImage, "Team presenting project analytics", "Process optimization", "Operations"],
   [founderImage, "Technology team working together", "Marketing research", "Growth"],
@@ -211,21 +232,24 @@ const offerServices = [
     description:
       "Our first mobile app project was delivered 2 years ago and since then mobile applications have been the fastest growing part..",
     icon: Smartphone,
-    image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=1000&q=80",
+    image:
+      "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=1000&q=80",
   },
   {
     title: "Website Development",
     description:
       "Our skilled and experienced development team offers a rich set of possible technology and user interface solutions, whatever your needs .Some areas where we've done work...",
     icon: Flag,
-    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1000&q=80",
+    image:
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1000&q=80",
   },
   {
     title: "Content Management System",
     description:
       "We work on a number of open source Content Management Systems (CMS), which can be easily downloaded by anyone...",
     icon: Presentation,
-    image: "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=1000&q=80",
+    image:
+      "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=1000&q=80",
   },
 
   // Middle Row
@@ -234,21 +258,24 @@ const offerServices = [
     description:
       "Our Java Competency Center solutions help your company fundamentally improve the way it builds software solutions using JEE..",
     icon: TrendingUp,
-    image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1000&q=80",
+    image:
+      "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1000&q=80",
   },
   {
     title: "Php/Mysql Applications",
     description:
       "PHP is a widely-used general-purpose scripting language that is especially suited for Web development...",
     icon: LayoutGrid,
-    image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1000&q=80",
+    image:
+      "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1000&q=80",
   },
   {
     title: ".Net Applications",
     description:
       "Naethra provides full-cycle development services in Microsoft .NET to Independent Software Vendors (ISVs), product...",
     icon: Monitor,
-    image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1000&q=80",
+    image:
+      "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1000&q=80",
   },
 
   // Bottom Row
@@ -257,21 +284,24 @@ const offerServices = [
     description:
       "We have over 100 person years experience in FileMaker skills. Our developers are certified FM developers and.",
     icon: FileCode,
-    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1000&q=80",
+    image:
+      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1000&q=80",
   },
   {
     title: "Custom Web Publishing With PHP(CWP)",
     description:
       "With our Filemaker-to-Web solution, you can offer controlled public access to your data, while it remains connected...",
     icon: Laptop,
-    image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1000&q=80",
+    image:
+      "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1000&q=80",
   },
   {
     title: "Cloud Solutions",
     description:
       "Cloud computing is the delivery of computing services—including servers, storage, databases, networking, software...",
     icon: CloudIconLucide,
-    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1000&q=80",
+    image:
+      "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1000&q=80",
   },
 ];
 
@@ -367,27 +397,48 @@ function Index() {
           <Logo />
           <nav className="desktop-nav theme-nav" aria-label="Primary navigation">
             {navItems.map(([label, href]) =>
-              label === "Services" ? (
+              label === "Mobile" ? (
+                <div className="nav-dropdown" key={label}>
+                  <a href={href} aria-haspopup="true">
+                    {label}
+                    <span className="nav-chevron" aria-hidden="true" />
+                  </a>
+                  <div className="nav-dropdown-menu">
+                    {mobileMenuItems.map(([itemLabel, itemHref]) => (
+                      <a key={itemLabel} href={itemHref}>
+                        {itemLabel}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              ) : label === "Services" ? (
                 <div className="nav-dropdown" key={label}>
                   <a className="nav-services-link" href={href} aria-haspopup="true">
-                    {label}<span className="nav-chevron" aria-hidden="true" />
+                    {label}
+                    <span className="nav-chevron" aria-hidden="true" />
                   </a>
                   <div className="nav-dropdown-menu">
                     {serviceMenuItems.map(([itemLabel, itemHref]) => (
-                      <a key={itemLabel} href={itemHref}>{itemLabel}</a>
+                      <a key={itemLabel} href={itemHref}>
+                        {itemLabel}
+                      </a>
                     ))}
                   </div>
                 </div>
               ) : (
-                <a className={label === "About Us" ? "nav-about-link" : undefined} key={label} href={href}>
+                <a
+                  className={label === "About Us" ? "nav-about-link" : undefined}
+                  key={label}
+                  href={href}
+                >
                   {label}
                 </a>
               ),
             )}
           </nav>
-          <a href="#contact" className="button button-orange header-cta">
-            <span>30 mins meeting</span><i aria-hidden="true">›</i>
-          </a>
+          <AnimatedCtaButton href="#contact" className="header-cta">
+            30 mins meeting
+          </AnimatedCtaButton>
           <button
             type="button"
             className="menu-button"
@@ -404,8 +455,23 @@ function Index() {
         </div>
         {menuOpen && (
           <nav className="mobile-nav" aria-label="Mobile navigation">
-            {navItems.map(([label, href]) => (
-              label === "Services" ? (
+            {navItems.map(([label, href]) =>
+              label === "Mobile" ? (
+                <div className="mobile-nav-group" key={label}>
+                  <a href={href} onClick={() => setMenuOpen(false)}>
+                    {label}
+                    <HugeiconsIcon icon={ArrowUpRight01Icon} size={18} />
+                  </a>
+                  <div className="mobile-nav-submenu">
+                    {mobileMenuItems.map(([itemLabel, itemHref]) => (
+                      <a key={itemLabel} href={itemHref} onClick={() => setMenuOpen(false)}>
+                        {itemLabel}
+                        <HugeiconsIcon icon={ArrowUpRight01Icon} size={16} />
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              ) : label === "Services" ? (
                 <div className="mobile-nav-group" key={label}>
                   <button
                     className="mobile-nav-services-toggle"
@@ -416,21 +482,23 @@ function Index() {
                     {label}
                     <span aria-hidden="true">{servicesOpen ? "−" : "+"}</span>
                   </button>
-                  {servicesOpen && <div className="mobile-nav-submenu">
-                    {serviceMenuItems.map(([itemLabel, itemHref]) => (
-                      <a key={itemLabel} href={itemHref} onClick={() => setMenuOpen(false)}>
-                        {itemLabel}
-                      </a>
-                    ))}
-                  </div>}
+                  {servicesOpen && (
+                    <div className="mobile-nav-submenu">
+                      {serviceMenuItems.map(([itemLabel, itemHref]) => (
+                        <a key={itemLabel} href={itemHref} onClick={() => setMenuOpen(false)}>
+                          {itemLabel}
+                        </a>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ) : (
                 <a key={label} href={href} onClick={() => setMenuOpen(false)}>
                   {label}
                   <HugeiconsIcon icon={ArrowUpRight01Icon} size={18} />
                 </a>
-              )
-            ))}
+              ),
+            )}
           </nav>
         )}
       </header>
@@ -451,16 +519,23 @@ function Index() {
         <div className="sentinel-hero-inner">
           <div className="sentinel-topbar">
             <a className="sentinel-brand" href="#top" aria-label="ConSentinel home">
-              <span className="sentinel-mark" aria-hidden="true">◎</span>
+              <span className="sentinel-mark" aria-hidden="true">
+                ◎
+              </span>
               <strong>ConSentinel</strong>
             </a>
             <nav className="sentinel-nav" aria-label="ConSentinel navigation">
-              <a href="#top">⌂ <span>Explore</span></a>
+              <a href="#top">
+                ⌂ <span>Explore</span>
+              </a>
               <i aria-hidden="true" />
-              <a href="#services">▦ <span>Product</span></a>
+              <a href="#services">
+                ▦ <span>Product</span>
+              </a>
             </nav>
             <a className="sentinel-cta" href="#contact">
-              <span>30 mins meeting</span><b>›</b>
+              <span>30 mins meeting</span>
+              <b>›</b>
             </a>
             <button
               className="sentinel-menu-button"
@@ -469,28 +544,38 @@ function Index() {
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen((open) => !open)}
             >
-              <span /><span />
+              <span />
+              <span />
             </button>
           </div>
           {menuOpen && (
             <nav className="sentinel-mobile-menu" aria-label="ConSentinel mobile navigation">
-              <a href="#top" onClick={() => setMenuOpen(false)}>Explore</a>
-              <a href="#services" onClick={() => setMenuOpen(false)}>Product</a>
-              <a href="#contact" onClick={() => setMenuOpen(false)}>30 mins meeting</a>
+              <a href="#top" onClick={() => setMenuOpen(false)}>
+                Explore
+              </a>
+              <a href="#services" onClick={() => setMenuOpen(false)}>
+                Product
+              </a>
+              <a href="#contact" onClick={() => setMenuOpen(false)}>
+                30 mins meeting
+              </a>
             </nav>
           )}
           <div className="sentinel-main">
             <div className="sentinel-copy">
-              <h1>Comprehensive Full Stack<br className="hidden sm:inline" /> Development Outsourcing</h1>
+              <h1>
+                Comprehensive Full Stack
+                <br className="hidden sm:inline" /> Development Outsourcing
+              </h1>
               <div className="sentinel-tagrow">
                 <span>Mastering Web, Mobile Native, and Cross-Platform Applications</span>
               </div>
             </div>
           </div>
           <div className="sentinel-bottom flex justify-center w-full">
-            <a className="sentinel-meet" href="#contact">
-              <b>Get in touch</b><span aria-hidden="true">›</span>
-            </a>
+            <AnimatedCtaButton href="#contact" className="sentinel-meet">
+              Get in touch
+            </AnimatedCtaButton>
           </div>
         </div>
       </section>
@@ -587,7 +672,10 @@ function Index() {
               <SectionEyebrow>What we offer</SectionEyebrow>
               <h2>Our core consulting services</h2>
             </div>
-            <p>We provide tailored consulting solutions to help businesses overcome challenges, seize opportunities, and achieve sustainable growth.</p>
+            <p>
+              We provide tailored consulting solutions to help businesses overcome challenges, seize
+              opportunities, and achieve sustainable growth.
+            </p>
           </div>
           <div className="services-grid">
             {offerServices.map((service, index) => {
@@ -632,13 +720,20 @@ function Index() {
           </div>
           <div className="work-grid">
             {recentProjects.map(([image, alt, title, category], index) => (
-              <article className="work-card" key={alt} data-reveal="fade-up" data-reveal-delay={String((index % 3) + 1)}>
+              <article
+                className="work-card"
+                key={alt}
+                data-reveal="fade-up"
+                data-reveal-delay={String((index % 3) + 1)}
+              >
                 <img src={image} alt={alt} width={1200} height={1104} />
                 <div className="work-hover-content">
                   <span>{category}</span>
                   <h3>{title}</h3>
                 </div>
-                <span className="work-hover-arrow" aria-hidden="true">↗</span>
+                <span className="work-hover-arrow" aria-hidden="true">
+                  ↗
+                </span>
               </article>
             ))}
           </div>
@@ -706,7 +801,10 @@ function Index() {
                         />
                       </div>
                     </TooltipTrigger>
-                    <TooltipContent side="top" className="font-sans font-semibold text-xs bg-slate-900 text-white border border-slate-700/80 shadow-xl px-3 py-1.5 rounded-lg z-50">
+                    <TooltipContent
+                      side="top"
+                      className="font-sans font-semibold text-xs bg-slate-900 text-white border border-slate-700/80 shadow-xl px-3 py-1.5 rounded-lg z-50"
+                    >
                       {client.name}
                     </TooltipContent>
                   </Tooltip>
@@ -851,31 +949,66 @@ function Index() {
         <div className="site-container footer-grid">
           <div className="footer-brand">
             <Logo inverse />
-            <p>Technology is constantly evolving, shaping the way we live and work. It encompasses innovation, automation, and connectivity.</p>
+            <p>
+              Technology is constantly evolving, shaping the way we live and work. It encompasses
+              innovation, automation, and connectivity.
+            </p>
             <div className="footer-socials" aria-label="Social links">
-              <a href="#contact" aria-label="Facebook">f</a>
-              <a href="#contact" aria-label="X">X</a>
-              <a href="#contact" aria-label="LinkedIn">in</a>
-              <a href="#contact" aria-label="Pinterest">p</a>
+              <a href="#contact" aria-label="Facebook">
+                f
+              </a>
+              <a href="#contact" aria-label="X">
+                X
+              </a>
+              <a href="#contact" aria-label="LinkedIn">
+                in
+              </a>
+              <a href="#contact" aria-label="Pinterest">
+                p
+              </a>
             </div>
           </div>
           <div className="footer-address">
             <h3>Contact</h3>
             <div className="footer-contact-row">
-              <span className="footer-contact-icon"><HugeiconsIcon icon={Location01Icon} size={17} /></span>
-              <div><span>Address</span><strong>37, Viswanathapuram Main Rd,<br />Azeez Nagar, Kodambakkam,<br />Chennai, Tamil Nadu 600024</strong></div>
+              <span className="footer-contact-icon">
+                <HugeiconsIcon icon={Location01Icon} size={17} />
+              </span>
+              <div>
+                <span>Address</span>
+                <strong>
+                  37, Viswanathapuram Main Rd,
+                  <br />
+                  Azeez Nagar, Kodambakkam,
+                  <br />
+                  Chennai, Tamil Nadu 600024
+                </strong>
+              </div>
             </div>
             <div className="footer-contact-row">
-              <span className="footer-contact-icon"><HugeiconsIcon icon={SmartPhone01Icon} size={17} /></span>
-              <div><span>Phone Number</span><strong>+91 44 3500 3204</strong></div>
+              <span className="footer-contact-icon">
+                <HugeiconsIcon icon={SmartPhone01Icon} size={17} />
+              </span>
+              <div>
+                <span>Phone Number</span>
+                <strong>+91 44 3500 3204</strong>
+              </div>
             </div>
             <div className="footer-contact-row">
-              <span className="footer-contact-icon"><HugeiconsIcon icon={Mail01Icon} size={17} /></span>
-              <div><span>Email</span><strong>info@naethra.com</strong></div>
+              <span className="footer-contact-icon">
+                <HugeiconsIcon icon={Mail01Icon} size={17} />
+              </span>
+              <div>
+                <span>Email</span>
+                <strong>info@naethra.com</strong>
+              </div>
             </div>
           </div>
           <div className="footer-copy">
-            <span>2026 © Copyrights <strong>Naethra Technologies</strong> | Designed by <strong>Naethra Technologies</strong></span>
+            <span>
+              2026 © Copyrights <strong>Naethra Technologies</strong> | Designed by{" "}
+              <strong>Naethra Technologies</strong>
+            </span>
             <div className="footer-links">
               <a href="#contact">Contact Us</a>
               <a href="#contact">Terms and Conditions</a>

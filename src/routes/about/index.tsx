@@ -7,6 +7,7 @@ import npMuraliImage from "@/assets/founders/NP_Murali.webp";
 import ramachandranImage from "@/assets/founders/Ramachandran.webp";
 import SiteFooter from "@/components/SiteFooter";
 import SectionEyebrow from "@/components/SectionEyebrow";
+import AnimatedCtaButton from "@/components/AnimatedCtaButton";
 
 export const Route = createFileRoute("/about/")({
   component: AboutPage,
@@ -142,9 +143,9 @@ function AboutPage() {
               Contact Us
             </Link>
           </nav>
-          <Link to="/" hash="contact" className="about-max-contact">
-            30 mins meeting <span aria-hidden="true">›</span>
-          </Link>
+          <AnimatedCtaButton href="/#contact" className="about-max-contact">
+            30 mins meeting
+          </AnimatedCtaButton>
         </div>
       </header>
 

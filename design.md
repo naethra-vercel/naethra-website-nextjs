@@ -11,15 +11,15 @@
 
 ## Design Tokens
 
-| Role | Value | CSS token |
-| --- | --- | --- |
-| Primary | `#2563EB` | `--about-primary` |
-| Accent / CTA | `#EA580C` | `--about-accent` |
-| Ink | `#1E293B` | `--about-ink` |
-| Background | `#F8FAFC` | `--about-background` |
-| Card | `#FFFFFF` | `--about-card` |
-| Muted text | `#475569` | `--about-muted` |
-| Border | `#E2E8F0` | `--about-border` |
+| Role         | Value     | CSS token            |
+| ------------ | --------- | -------------------- |
+| Primary      | `#2563EB` | `--about-primary`    |
+| Accent / CTA | `#EA580C` | `--about-accent`     |
+| Ink          | `#1E293B` | `--about-ink`        |
+| Background   | `#F8FAFC` | `--about-background` |
+| Card         | `#FFFFFF` | `--about-card`       |
+| Muted text   | `#475569` | `--about-muted`      |
+| Border       | `#E2E8F0` | `--about-border`     |
 
 ## Typography
 
@@ -27,6 +27,19 @@
 - Body: Work Sans, weights 400-600, 1.55-1.8 line-height for readable copy.
 - Navigation and metadata: uppercase, 0.12em tracking, compact text sizes.
 - Keep long-form copy below roughly 65rem and preserve generous section spacing.
+
+## Site-Wide Brand Rules
+
+- Use the homepage typography everywhere: `Manrope` for headings, navigation, and UI labels; `DM Sans` for body copy and form text.
+- Use the logo blue `#005B96` (`--blue`) as the primary theme color for buttons, links, focus states, and page accents. Do not introduce a new amber or purple CTA color on shared content, legal, or contact pages.
+- Keep the existing homepage button shape, spacing, hover behavior, and theme tokens. Page-specific backgrounds may change, but shared buttons must remain visually consistent.
+- Mobile page sections may use the source page's navy and violet bands, but interactive accents and CTA buttons remain logo blue.
+
+## Mobile Page Content Rules
+
+- Preserve the source page sequence: service hero, service introduction, Strong Track Record, Mobile App technology cluster, technology and quality sections, Large Skill Pool, Blogs, and Contact/Demo.
+- Prefer the supplied source wording and technology references over generic replacement marketing copy.
+- Use responsive, readable text blocks and preserve the timeline and technology-cluster relationships on small screens.
 
 ## Layout And Interaction
 
