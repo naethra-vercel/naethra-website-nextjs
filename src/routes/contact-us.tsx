@@ -18,6 +18,7 @@ function ContactPage() {
       title="Tell us what you are building"
       intro="Have a project we might love, or simply want to say hello? Send a few details and the team will get back to you."
       compact
+      footerVariant="simple"
     >
       <div className="contact-page-grid">
         <div>

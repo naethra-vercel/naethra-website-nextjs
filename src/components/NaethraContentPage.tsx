@@ -127,6 +127,7 @@ type ContentPageProps = {
   intro?: string;
   children: ReactNode;
   compact?: boolean;
+  footerVariant?: "simple" | "detailed";
 };
 
 export default function NaethraContentPage({
@@ -135,6 +136,7 @@ export default function NaethraContentPage({
   intro,
   children,
   compact = false,
+  footerVariant = "detailed",
 }: ContentPageProps) {
   return (
     <main className="content-page">
@@ -147,7 +149,7 @@ export default function NaethraContentPage({
         </div>
       </section>
       <article className="content-page-body site-container">{children}</article>
-      <SiteFooter className="content-page-footer" />
+      <SiteFooter className="content-page-footer" variant={footerVariant} />
     </main>
   );
 }
