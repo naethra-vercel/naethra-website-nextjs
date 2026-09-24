@@ -492,6 +492,10 @@
 .about-max-hero-media::after { position: absolute; inset: 0; background: linear-gradient(180deg, rgb(23 32 51 / .05), rgb(23 32 51 / .35)); content: ""; }
 .about-max-hero-media img { width: 100%; height: 100%; object-fit: cover; filter: saturate(.62) contrast(1.08); }
 .about-max-media-label { position: absolute; z-index: 1; right: 1.5rem; bottom: 1.5rem; color: #f1f2ee; font-size: .64rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.about-max-api-content { background: #e1a24a; padding-block: 2.5rem; }
+.about-max-api-content .site-container { display: grid; grid-template-columns: .32fr 1fr; gap: clamp(2rem, 8vw, 9rem); }
+.about-max-api-content .about-max-kicker { color: #d94f37; }
+.about-max-api-content p { max-width: 53rem; margin: 0; color: #172033; font-size: 1rem; line-height: 1.8; }
 .about-max-specialty { background: #f1f2ee; padding-block: clamp(5rem, 10vw, 10rem); }
 .about-max-section-grid { display: grid; grid-template-columns: .32fr 1fr; gap: clamp(2rem, 8vw, 9rem); }
 .about-max-section-index { color: #d94f37; }
@@ -518,11 +522,12 @@
 .about-max-team-heading .about-max-section-index span { color: #aeb9b5; }
 .about-max-team-heading h2 { color: #f1f2ee; }
 .about-max-team-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
-.about-max-team-card { display: flex; min-height: 32rem; flex-direction: column; justify-content: flex-end; overflow: hidden; background: #29364a; }
+.about-max-team-card { display: flex; min-height: 34rem; flex-direction: column; justify-content: flex-end; overflow: hidden; border: 1px solid rgb(241 242 238 / .12); background: #29364a; box-shadow: 0 1.5rem 3rem rgb(0 0 0 / .16); transition: transform 240ms ease, box-shadow 240ms ease; }
+.about-max-team-card:hover { transform: translateY(-.45rem); box-shadow: 0 2rem 4rem rgb(0 0 0 / .25); }
 .about-max-team-card:nth-child(2) { background: #d94f37; }
 .about-max-team-card:nth-child(3) { background: #51615b; }
-.about-max-team-card img { width: 100%; height: 14rem; object-fit: cover; filter: grayscale(1) contrast(1.05); mix-blend-mode: screen; opacity: .74; }
-.about-max-team-card > div { padding: 1.5rem; }
+.about-max-team-card img { width: 100%; height: 16rem; object-fit: cover; object-position: center top; filter: saturate(.82) contrast(1.04); }
+.about-max-team-card > div { padding: 1.6rem; }
 .about-max-team-meta { display: flex; justify-content: space-between; margin-bottom: 2.8rem; color: rgb(241 242 238 / .68); font-size: .65rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
 .about-max-team-card h3 { margin: 0 0 .7rem; color: #f1f2ee; font-family: var(--font-display); font-size: 1.6rem; font-weight: 600; letter-spacing: -.04em; }
 .about-max-team-card p { max-height: 8rem; overflow: hidden; margin: 0; color: rgb(241 242 238 / .75); font-size: .75rem; line-height: 1.55; }
@@ -556,6 +561,7 @@
   .about-max-hero h1 { font-size: clamp(5rem, 25vw, 8rem); }
   .about-max-hero-media { min-height: 18rem; }
   .about-max-section-grid, .about-max-section-heading { grid-template-columns: 1fr; gap: 2rem; }
+  .about-max-api-content .site-container { grid-template-columns: 1fr; gap: 1rem; }
   .about-max-section-index { display: flex; gap: .7rem; }
   .about-max-section-index span { display: inline; margin: 0; }
   .about-max-specialty-content h2 { font-size: 2.8rem; }

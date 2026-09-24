@@ -1,8 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 
-import founderImage from "@/assets/putech-founder.jpg";
 import projectImage from "@/assets/putech-project.jpg";
-import teamImage from "@/assets/putech-team.jpg";
+import muraliImage from "@/assets/founders/Murali_Ramakrishnan.webp";
+import npMuraliImage from "@/assets/founders/NP_Murali.webp";
+import ramachandranImage from "@/assets/founders/Ramachandran.webp";
 
 export const Route = createFileRoute("/about/")({
   component: AboutPage,
@@ -15,12 +17,46 @@ const services = [
 ] as const;
 
 const teamMembers = [
-  ["Murali Ramakrishnan", "CEO", founderImage, "Murali Ramakrishnan holds a Bachelors degree in Computer Science and has an overall industry experience of 18 years. He has spent over 11 years with Tata Consultancy Services (TCS). He has worked in large IT Development projects and managed delivery for several large engagements. He was involved in setting up the offshore delivery center of Barclays. His areas of expertise include managing large delivery centers, transition management and Business Process Outsourcing (BPO) delivery. He has worked for client organizations such as Nedcor Group, Qwest, Concert, AT&T, among others."],
-  ["NP Murali", "COO", teamImage, "NP Murali (NP) holds a Bachelors degree in Mechanical Engineering and has a Masters Degree in Business Administration. He has worked with Tata Consultancy Services (TCS) for 5+ years executing projects in Activity Based Management (ABM), Business Process Reengineering (BPR) and BPO delivery. His areas of expertise include relationship management, transition management and development of new business lines in BPO and conceptualizing service guidelines for Finance & accounting (F&A) processes. NP has 11+ years of industry experience and has worked in IDBI Bank, ISRO and India Pistons Ltd."],
-  ["Ramachandran", "CFO", projectImage, "Ramachandran holds a degree in Commerce and has about 20 years of experience in Business Management. He is a first generation entrepreneur and has incubated several companies. He has extensive experience in managing the finance function of large corporations in India and the Middle East."],
+  ["Murali Ramakrishnan", "CEO", muraliImage, "Murali Ramakrishnan holds a Bachelors degree in Computer Science and has an overall industry experience of 18 years. He has spent over 11 years with Tata Consultancy Services (TCS). He has worked in large IT Development projects and managed delivery for several large engagements. He was involved in setting up the offshore delivery center of Barclays. His areas of expertise include managing large delivery centers, transition management and Business Process Outsourcing (BPO) delivery. He has worked for client organizations such as Nedcor Group, Qwest, Concert, AT&T, among others."],
+  ["NP Murali", "COO", npMuraliImage, "NP Murali (NP) holds a Bachelors degree in Mechanical Engineering and has a Masters Degree in Business Administration. He has worked with Tata Consultancy Services (TCS) for 5+ years executing projects in Activity Based Management (ABM), Business Process Reengineering (BPR) and BPO delivery. His areas of expertise include relationship management, transition management and development of new business lines in BPO and conceptualizing service guidelines for Finance & accounting (F&A) processes. NP has 11+ years of industry experience and has worked in IDBI Bank, ISRO and India Pistons Ltd."],
+  ["Ramachandran", "CFO", ramachandranImage, "Ramachandran holds a degree in Commerce and has about 20 years of experience in Business Management. He is a first generation entrepreneur and has incubated several companies. He has extensive experience in managing the finance function of large corporations in India and the Middle East."],
 ] as const;
 
+const WORDPRESS_ABOUT_API = import.meta.env["VITE_WORDPRESS_API_URL"];
+
+type WordPressAboutPage = {
+  title?: { rendered?: string };
+  content?: { rendered?: string };
+};
+
+function getWordPressText(markup: string) {
+  if (typeof document === "undefined") return "";
+  const container = document.createElement("div");
+  container.innerHTML = markup;
+  return container.textContent?.replace(/\s+/g, " ").trim() ?? "";
+}
+
 function AboutPage() {
+  const [wordpressPage, setWordpressPage] = useState<WordPressAboutPage | null>(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    if (!WORDPRESS_ABOUT_API) return () => controller.abort();
+
+    fetch(WORDPRESS_ABOUT_API, { signal: controller.signal })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((page: WordPressAboutPage | null) => {
+        if (page) setWordpressPage(page);
+      })
+      .catch(() => undefined);
+
+    return () => controller.abort();
+  }, []);
+
+  const wordpressTitle = getWordPressText(wordpressPage?.title?.rendered ?? "");
+  const wordpressContent = getWordPressText(wordpressPage?.content?.rendered ?? "");
+
   return (
     <main className="about-max about-single-page">
       <header className="about-max-header">
@@ -42,7 +78,7 @@ function AboutPage() {
         <div className="about-max-hero-grid">
           <div className="about-max-hero-copy">
             <span className="about-max-kicker">Independent technology partner</span>
-            <h1>About<br /><em>us.</em></h1>
+            <h1>{wordpressTitle || <>About<br /><em>us.</em></>}</h1>
             <p>People, systems, and practical technology built to move ambitious teams forward.</p>
             <a href="#specialty" className="about-max-scroll">Scroll to explore <span aria-hidden="true">↓</span></a>
           </div>
@@ -52,6 +88,15 @@ function AboutPage() {
           </div>
         </div>
       </section>
+
+      {wordpressContent && (
+        <section className="about-max-api-content" aria-label="WordPress About content">
+          <div className="site-container">
+            <span className="about-max-kicker">From WordPress</span>
+            <p>{wordpressContent}</p>
+          </div>
+        </section>
+      )}
 
       <section id="specialty" className="about-max-specialty">
         <div className="site-container about-max-section-grid">
