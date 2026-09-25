@@ -232,6 +232,7 @@ const offerServices = [
   // Top Row
   {
     title: "iOS, Android And Hybrid Mobility Applications",
+    href: "/mobile-app",
     description:
       "Our first mobile app project was delivered 2 years ago and since then mobile applications have been the fastest growing part..",
     icon: Smartphone,
@@ -240,6 +241,7 @@ const offerServices = [
   },
   {
     title: "Website Development",
+    href: "/web-app",
     description:
       "Our skilled and experienced development team offers a rich set of possible technology and user interface solutions, whatever your needs .Some areas where we've done work...",
     icon: Flag,
@@ -248,6 +250,7 @@ const offerServices = [
   },
   {
     title: "Content Management System",
+    href: "/cms",
     description:
       "We work on a number of open source Content Management Systems (CMS), which can be easily downloaded by anyone...",
     icon: Presentation,
@@ -258,6 +261,7 @@ const offerServices = [
   // Middle Row
   {
     title: "Java/J2ee Applications",
+    href: "/services/dot-net-application",
     description:
       "Our Java Competency Center solutions help your company fundamentally improve the way it builds software solutions using JEE..",
     icon: TrendingUp,
@@ -266,6 +270,7 @@ const offerServices = [
   },
   {
     title: "Php/Mysql Applications",
+    href: "/web-app",
     description:
       "PHP is a widely-used general-purpose scripting language that is especially suited for Web development...",
     icon: LayoutGrid,
@@ -274,6 +279,7 @@ const offerServices = [
   },
   {
     title: ".Net Applications",
+    href: "/services/dot-net-application",
     description:
       "Naethra provides full-cycle development services in Microsoft .NET to Independent Software Vendors (ISVs), product...",
     icon: Monitor,
@@ -284,6 +290,7 @@ const offerServices = [
   // Bottom Row
   {
     title: "FileMaker Development",
+    href: "/services/claris-filemaker-application",
     description:
       "We have over 100 person years experience in FileMaker skills. Our developers are certified FM developers and.",
     icon: FileCode,
@@ -292,6 +299,7 @@ const offerServices = [
   },
   {
     title: "Custom Web Publishing With PHP(CWP)",
+    href: "/services/custom-web-publishing",
     description:
       "With our Filemaker-to-Web solution, you can offer controlled public access to your data, while it remains connected...",
     icon: Laptop,
@@ -300,6 +308,7 @@ const offerServices = [
   },
   {
     title: "Cloud Solutions",
+    href: "/services/aws-cloud-support",
     description:
       "Cloud computing is the delivery of computing services—including servers, storage, databases, networking, software...",
     icon: CloudIconLucide,
@@ -699,8 +708,9 @@ function Index() {
             {offerServices.map((service, index) => {
               const Icon = service.icon;
               return (
-                <article
+                <a
                   className="service-card"
+                  href={service.href}
                   key={service.title}
                   data-reveal="fade-up"
                   data-reveal-delay={String((index % 3) + 1)}
@@ -719,7 +729,7 @@ function Index() {
                     <h3 className="service-card-title">{service.title}</h3>
                     <p className="service-card-desc">{service.description}</p>
                   </div>
-                </article>
+                </a>
               );
             })}
           </div>
