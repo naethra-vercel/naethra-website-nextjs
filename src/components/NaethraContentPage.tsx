@@ -1,5 +1,5 @@
 import { Menu, X, ArrowUpRight, ChevronDown } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
 import SiteFooter from "@/components/SiteFooter";
 import AnimatedCtaButton from "@/components/AnimatedCtaButton";
@@ -182,6 +182,7 @@ type ContentPageProps = {
   children: ReactNode;
   compact?: boolean;
   footerVariant?: "simple" | "detailed";
+  className?: string;
 };
 
 export default function NaethraContentPage({
@@ -191,19 +192,46 @@ export default function NaethraContentPage({
   children,
   compact = false,
   footerVariant = "detailed",
+  className = "",
 }: ContentPageProps) {
+  useEffect(() => {
+    const revealElements = document.querySelectorAll<HTMLElement>("[data-reveal]");
+    if (!revealElements.length) return;
+
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { rootMargin: "-8% 0px", threshold: 0.12 },
+    );
+
+    revealElements.forEach((element) => revealObserver.observe(element));
+
+    return () => revealObserver.disconnect();
+  }, []);
+
   return (
-    <main className="content-page">
+    <main className={['content-page', className].filter(Boolean).join(' ')}>
       <NaethraContentHeader />
-      <section className={`content-page-hero ${compact ? "content-page-hero-compact" : ""}`}>
+      <section
+        className={`content-page-hero ${compact ? "content-page-hero-compact" : ""}`}
+        data-reveal="hero"
+      >
         <div className="site-container">
           <p className="content-page-eyebrow">{eyebrow}</p>
           <h1>{title}</h1>
           {intro && <p className="content-page-intro">{intro}</p>}
         </div>
       </section>
-      <article className="content-page-body site-container">{children}</article>
-      <SiteFooter className="content-page-footer" variant={footerVariant} />
+      <article className="content-page-body site-container" data-reveal="fade-up">
+        {children}
+      </article>
+      <SiteFooter className="content-page-footer" variant={footerVariant} data-reveal="fade-up" />
     </main>
   );
 }

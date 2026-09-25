@@ -1,4 +1,5 @@
 import { type FormEvent, useState, type HTMLAttributes } from "react";
+import { Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 
 type SiteFooterProps = HTMLAttributes<HTMLElement> & {
   variant?: "simple" | "detailed";
@@ -31,88 +32,134 @@ export default function SiteFooter({
 
   return (
     <footer className={`site-footer-detailed ${className}`.trim()} {...props}>
-      <div className="site-container site-footer-detailed-top">
-        <div className="site-footer-contact-card">
-          <h2>Contact Us</h2>
-          <a href="tel:+914435003204">☎ +91 44 3500 3204</a>
-          <a href="mailto:info@naethra.com">✉ info(at)naethra.com</a>
+      <div className="site-container site-footer-detailed-shell">
+        <div className="site-footer-message-panel">
+          <h2>Send A Message</h2>
+          <form className="site-footer-message-form" onSubmit={handleSubmit}>
+            <div className="site-footer-field-row">
+              <label>
+                <span>Your Name</span>
+                <input aria-label="Your name" name="name" required />
+              </label>
+              <label>
+                <span>Your Email</span>
+                <input aria-label="Your email" name="email" type="email" required />
+              </label>
+            </div>
+            <div className="site-footer-field-row">
+              <label>
+                <span>Your Number</span>
+                <input aria-label="Your phone number" name="phone" type="tel" />
+              </label>
+              <label>
+                <span>Choose a Reason</span>
+                <select aria-label="Choose a reason" name="reason" defaultValue="">
+                  <option value="" disabled>
+                    Choose a Reason
+                  </option>
+                  <option>Flutter development</option>
+                  <option>Web application</option>
+                  <option>Mobile application</option>
+                  <option>FileMaker development</option>
+                  <option>Support and maintenance</option>
+                </select>
+              </label>
+            </div>
+            <label className="site-footer-message-field">
+              <span>Message here.</span>
+              <textarea aria-label="Your message" name="message" rows={4} required />
+            </label>
+            <button type="submit">{submitted ? "Message sent" : "Send a message"}</button>
+          </form>
+        </div>
+
+        <div className="site-footer-demo">
+          <h2>Request a Free Demo Today</h2>
+          <a href="/30-mins-meeting" className="site-footer-demo-card">
+            <span className="site-footer-demo-icon" aria-hidden="true">
+              ◉
+            </span>
+            <strong>Meet with Naethra Works</strong>
+            <small>Schedule a conversation about your next product.</small>
+          </a>
+        </div>
+      </div>
+
+      <div className="site-footer-map-block">
+        <div className="site-container site-footer-map-wrap">
           <iframe
             loading="lazy"
             title="Naethra Technologies office map"
             src="https://maps.google.com/maps?q=Naethra%20Technologies%20Private%20Limited%2C%2037%2C%20Viswanathapuram%20Main%20Rd%2C%20Kodambakkam%2C%20Chennai%20600024&t=m&z=15&output=embed"
           />
         </div>
-        <div className="site-footer-demo">
-          <h2>Request a Free Demo Today</h2>
-          <a href="/30-mins-meeting" className="site-footer-demo-card">
-            <span aria-hidden="true">◉</span>
-            <strong>Meet with Naethra Works</strong>
-            <small>Schedule a conversation about your next product.</small>
-          </a>
-        </div>
       </div>
+
       <div className="site-footer-detailed-bottom">
-        <div className="site-container site-footer-detailed-grid">
+        <div className="site-container footer-grid site-footer-detailed-grid">
           <div className="site-footer-about">
             <img src="/logo.png" alt="Naethra Technologies" width={150} height={33} />
             <p>
-              We want to be your trusted partner in custom data tool development, helping you and
-              your team get the most out of your tools, including Flutter Development, Ionic
-              Framework, Cordova, PHP, Java, MySQL, PostgreSQL, AJAX, and more for LAN/WAN, Web and
-              mobile deployments.
+              Technology is constantly evolving, shaping the way we live and work. It encompasses
+              innovation, automation, and connectivity.
             </p>
-            <iframe
-              loading="lazy"
-              title="Naethra Technologies location"
-              src="https://maps.google.com/maps?q=Naethra%20Technologies%20Private%20Limited%2C%2037%2C%20Viswanathapuram%20Main%20Rd%2C%20Kodambakkam%2C%20Chennai%20600024&t=m&z=14&output=embed"
-            />
+            <div className="site-footer-socials" aria-label="Social links">
+              <a href="https://www.facebook.com/naethratechnologies" aria-label="Facebook">f</a>
+              <a href="https://www.linkedin.com/company/naethra-technologies/" aria-label="LinkedIn">in</a>
+              <a href="https://twitter.com/naethratech" aria-label="X">X</a>
+            </div>
           </div>
-          <div className="site-footer-email">
-            <h2>Email Us</h2>
-            <form onSubmit={handleSubmit}>
-              <input aria-label="Your name" name="name" placeholder="Your name" required />
-              <input
-                aria-label="Your email"
-                name="email"
-                type="email"
-                placeholder="Your email"
-                required
-              />
-              <input aria-label="Your subject" name="subject" placeholder="Your subject" required />
-              <textarea
-                aria-label="Your message"
-                name="message"
-                placeholder="Your message"
-                rows={3}
-                required
-              />
-              <button type="submit">{submitted ? "SENT" : "SEND"}</button>
-            </form>
+
+          <div className="site-footer-contact-block">
+            <h2>Contact</h2>
+            <div className="site-footer-contact-list">
+              <div className="site-footer-contact-item">
+                <span className="site-footer-contact-icon"><MapPin size={18} aria-hidden="true" /></span>
+                <div>
+                  <span>Address</span>
+                  <strong>
+                    37, Viswanathapuram Main Rd,
+                    <br />
+                    Azeez Nagar, Kodambakkam,
+                    <br />
+                    Chennai, Tamil Nadu 600024
+                  </strong>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="site-footer-contact-details">
-            <h2>Contact Details</h2>
-            <address>
-              Naethra Technologies Pvt Ltd. New No:37, Old No: 22, Viswanathapuram Main Road,
-              Kodambakkam, Chennai
-              <br />
-              <br />
-              +91 4435003204, +91 4435003205
-              <br />
-              <br />
-              info@naethra.com
-              <br />
-              <br />
-              Monday - Friday: 10:00 AM - 07:30 PM Hrs
-            </address>
+
+          <div className="site-footer-contact-block site-footer-contact-secondary">
+            <div className="site-footer-contact-list">
+              <div className="site-footer-contact-item">
+                <span className="site-footer-contact-icon"><Phone size={18} aria-hidden="true" /></span>
+                <div>
+                  <span>Phone Number</span>
+                  <strong>+91 44 3500 3204</strong>
+                </div>
+              </div>
+              <div className="site-footer-contact-item">
+                <span className="site-footer-contact-icon"><Mail size={18} aria-hidden="true" /></span>
+                <div>
+                  <span>Email</span>
+                  <strong>info@naethra.com</strong>
+                </div>
+              </div>
+            </div>
           </div>
+
+        <div className="footer-copy site-footer-detailed-legal">
+          <span>
+            2026 © Copyrights <strong>Naethra Technologies</strong> | Designed by{" "}
+            <strong>Naethra Technologies</strong>
+          </span>
+          <FooterLinks />
         </div>
       </div>
-      <div className="site-footer-detailed-legal site-container">
-        <span>
-          2026 © Copyrights <strong>Naethra Technologies</strong>
-        </span>
-        <FooterLinks />
       </div>
+      <a className="site-footer-chat" href="mailto:info@naethra.com" aria-label="Email Naethra Technologies">
+        <MessageCircle size={25} aria-hidden="true" />
+      </a>
     </footer>
   );
 }
