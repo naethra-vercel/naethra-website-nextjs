@@ -1,4 +1,4 @@
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Award, CheckCircle2 } from "lucide-react";
 
 import { NaethraContentHeader } from "@/components/NaethraContentPage";
 import SiteFooter from "@/components/SiteFooter";
@@ -26,6 +26,46 @@ export default function ServiceDetailPage({ service }: { service: ServiceDetail 
             Talk to us <ArrowUpRight size={16} aria-hidden="true" />
           </a>
         </div>
+
+        {service.certifications && (
+          <section className="service-detail-certification-section">
+            <div className="site-container">
+              <div className="service-detail-certification-header">
+                <span className="certification-badge-pill">
+                  <Award size={16} aria-hidden="true" /> Official Certifications
+                </span>
+                <h2>{service.certifications.title}</h2>
+                {service.certifications.description && (
+                  <p>{service.certifications.description}</p>
+                )}
+              </div>
+              <div className="service-detail-certification-banner-card">
+                <img
+                  src={service.certifications.image}
+                  alt="Claris Partner & Certified FileMaker Developer Credentials"
+                  className="certification-banner-img"
+                  loading="lazy"
+                />
+              </div>
+              {service.certifications.badges && (
+                <div className="service-detail-certification-badges-grid">
+                  {service.certifications.badges.map((badge) => (
+                    <div key={badge.version} className="certification-badge-item">
+                      <div className="badge-icon">
+                        <CheckCircle2 size={16} aria-hidden="true" />
+                      </div>
+                      <div className="badge-text">
+                        <span className="badge-version">{badge.version}</span>
+                        <span className="badge-title">{badge.title}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </section>
+        )}
+
         {service.sections.map((section, index) => (
           <section
             className={`service-detail-section ${index % 2 ? "is-soft" : ""}`}

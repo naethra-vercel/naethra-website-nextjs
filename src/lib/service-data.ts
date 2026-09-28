@@ -16,6 +16,12 @@ export type ServiceDetail = {
   eyebrow: string;
   intro: string;
   heroImage: string;
+  certifications?: {
+    title: string;
+    description?: string;
+    image: string;
+    badges?: Array<{ version: string; title: string }>;
+  };
   sections: Array<{ title: string; body: string; image?: string; bullets?: string[] }>;
 };
 
@@ -154,6 +160,20 @@ export const serviceDetails: Record<string, ServiceDetail> = {
     intro:
       "One-stop FileMaker solutions for design, development, hosting, maintenance, and 24 x 7 support services.",
     heroImage: `${base}/2025/10/filemaker-ser-new-1.jpg`,
+    certifications: {
+      title: "Claris Partner & Certified FileMaker Developers",
+      description:
+        "Our team of certified FileMaker developers holds official credentials spanning FileMaker 13 through FileMaker 18. As a trusted Claris Partner, we deliver enterprise-grade FileMaker applications with proven expertise.",
+      image: `${base}/2025/10/slider-fm-new.jpg`,
+      badges: [
+        { version: "FileMaker 18", title: "Certified Developer" },
+        { version: "FileMaker 17", title: "Certified Developer" },
+        { version: "FileMaker 16", title: "Certified Developer" },
+        { version: "FileMaker 15", title: "Certified Developer" },
+        { version: "FileMaker 14", title: "Certified Developer" },
+        { version: "FileMaker 13", title: "Certified Developer" },
+      ],
+    },
     sections: [
       {
         title: "One-stop shop for FileMaker solutions",
