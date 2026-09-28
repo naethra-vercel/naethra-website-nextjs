@@ -1,7 +1,7 @@
 import { type FormEvent, useState, type HTMLAttributes } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Location01Icon, Mail01Icon, SmartPhone01Icon } from "@hugeicons/core-free-icons";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, ArrowRight, Sparkles, Video, Send } from "lucide-react";
 
 type SiteFooterProps = HTMLAttributes<HTMLElement> & {
   variant?: "simple" | "detailed";
@@ -61,21 +61,35 @@ export default function SiteFooter({
                 <textarea aria-label="Your message" name="message" rows={4} required placeholder="Message here.." />
               </label>
               <button type="submit" className="site-footer-send-btn">
-                {submitted ? "Message sent" : "Send a message"}
+                <span>{submitted ? "Message Sent!" : "Send a message"}</span>
+                <Send size={15} className="send-btn-icon" aria-hidden="true" />
               </button>
             </form>
           </div>
 
           <div className="site-footer-demo">
-            <h2>Request a Free Demo Today</h2>
+            <div className="site-footer-demo-header">
+              <span className="demo-tag">
+                <Sparkles size={13} aria-hidden="true" /> Live Meeting
+              </span>
+              <h2>Request a Free Demo Today</h2>
+            </div>
+            
             <a href="/30-mins-meeting" className="site-footer-demo-card">
-              <div className="target-icon-wrap" aria-hidden="true">
-                <div className="target-outer-circle">
-                  <div className="target-inner-circle" />
+              <div className="demo-card-glow" />
+              <div className="demo-icon-ring">
+                <div className="demo-icon-inner">
+                  <Video size={24} aria-hidden="true" />
                 </div>
               </div>
-              <strong>Meet with Naethra Works</strong>
-              <small>Schedule a conversation about your next product.</small>
+              <div className="demo-card-content">
+                <strong>Meet with Naethra Works</strong>
+                <small>Schedule a 30-minute interactive session to discuss your next product.</small>
+              </div>
+              <div className="demo-card-cta">
+                <span>Book 30 Mins Meeting</span>
+                <ArrowRight size={15} className="demo-cta-arrow" aria-hidden="true" />
+              </div>
             </a>
           </div>
         </div>

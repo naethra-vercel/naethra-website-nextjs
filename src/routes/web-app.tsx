@@ -13,11 +13,13 @@ import { NaethraContentHeader } from "@/components/NaethraContentPage";
 import SiteFooter from "@/components/SiteFooter";
 import angularIcon from "@/assets/icons/Angular.svg";
 import javaScriptIcon from "@/assets/icons/JavaScript.svg";
-import javaIcon from "@/assets/icons/Java.svg";
+import typeScriptIcon from "@/assets/icons/TypeScript.svg";
+import nextJsIcon from "@/assets/icons/Next.js.svg";
 import nodeIcon from "@/assets/icons/Node.js.svg";
 import phpIcon from "@/assets/icons/PHP.svg";
 import reactIcon from "@/assets/icons/React.svg";
-import dotNetIcon from "@/assets/icons/NET.svg";
+import jQueryIcon from "@/assets/icons/jQuery.svg";
+import heroImage from "@/assets/web/hero.png";
 
 export const Route = createFileRoute("/web-app")({ component: WebAppPage });
 
@@ -40,13 +42,14 @@ const outsourcingReasons = [
 ];
 
 const technologies = [
-  ["Angular", angularIcon],
   ["React", reactIcon],
-  ["Node.js", nodeIcon],
+  ["Next.js", nextJsIcon],
+  ["Angular", angularIcon],
+  ["TypeScript", typeScriptIcon],
   ["JavaScript", javaScriptIcon],
+  ["Node.js", nodeIcon],
+  ["jQuery", jQueryIcon],
   ["PHP", phpIcon],
-  [".NET", dotNetIcon],
-  ["Java", javaIcon],
 ] as const;
 
 const websiteReasons = [
@@ -72,7 +75,10 @@ function WebAppPage() {
     <main className="web-app-page">
       <NaethraContentHeader />
       <section className="web-app-hero">
-        <div className="web-app-hero-image" />
+        <div
+          className="web-app-hero-image"
+          style={{ backgroundImage: `url(${heroImage})` }}
+        />
         <div className="web-app-hero-overlay" />
       </section>
 
