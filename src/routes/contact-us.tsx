@@ -22,11 +22,7 @@ function ContactPage() {
       <div className="contact-page-premium-shell">
         <section className="contact-premium-contact-items">
           <article className="contact-premium-card" data-reveal="fade-up" data-reveal-delay="1">
-            <div className="contact-card-topline">
-              <span>01</span>
-              <span>Visit us</span>
-            </div>
-            <h3>Chennai, India</h3>
+            <h3>Visit us</h3>
             <p>Naethra Technologies Pvt Ltd. New No: 37, Old No: 22, Viswanathapuram Main Road, Kodambakkam, Chennai 600024</p>
             <a href="https://maps.google.com/?q=Naethra+Technologies+Private+Limited+Chennai" target="_blank" rel="noreferrer">
               Open map <span>→</span>
@@ -34,23 +30,15 @@ function ContactPage() {
           </article>
 
           <article className="contact-premium-card" data-reveal="fade-up" data-reveal-delay="2">
-            <div className="contact-card-topline">
-              <span>02</span>
-              <span>Call us</span>
-            </div>
-            <h3>+91 44 3500 3204</h3>
-            <p>Available Monday through Friday, 10:00 AM to 07:30 PM.</p>
+            <h3>Call us</h3>
+            <p>+91 44 3500 3204</p>
             <a href="tel:+914435003204">
               Call now <span>→</span>
             </a>
           </article>
 
           <article className="contact-premium-card" data-reveal="fade-up" data-reveal-delay="3">
-            <div className="contact-card-topline">
-              <span>03</span>
-              <span>Email us</span>
-            </div>
-            <h3>info@naethra.com</h3>
+            <h3>Email us</h3>
             <p>Share your roadmap, product idea, or strategy challenge with our team.</p>
             <a href="mailto:info@naethra.com">
               Send email <span>→</span>
@@ -59,34 +47,6 @@ function ContactPage() {
         </section>
 
         <section className="contact-premium-main">
-          <div className="contact-premium-story" data-reveal="fade-up" data-reveal-delay="1">
-            <p className="contact-premium-kicker">Come say hello.</p>
-            <h3>Whether you're launching a new product, modernizing an existing platform, or simply exploring an idea, we'd love to hear from you.</h3>
-            <div className="contact-premium-details">
-              <div>
-                <span className="contact-premium-icon">📍</span>
-                <div>
-                  <strong>Address</strong>
-                  <p>Naethra Technologies Pvt Ltd. New No: 37, Old No: 22, Viswanathapuram Main Road, Kodambakkam, Chennai 600024</p>
-                </div>
-              </div>
-              <div>
-                <span className="contact-premium-icon">☎</span>
-                <div>
-                  <strong>Phone</strong>
-                  <p>+91 44 3500 3204</p>
-                </div>
-              </div>
-              <div>
-                <span className="contact-premium-icon">✉</span>
-                <div>
-                  <strong>Email</strong>
-                  <p>info@naethra.com</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
           <form className="contact-premium-form" onSubmit={handleSubmit} data-reveal="fade-up" data-reveal-delay="2">
             <div className="contact-form-header">
               <p className="contact-premium-kicker">Tell us about your project.</p>
@@ -147,13 +107,6 @@ function ContactPage() {
         </section>
 
         <section className="contact-premium-map" data-reveal="image" data-reveal-delay="1">
-          <div className="contact-map-overlay">
-            <p>Naethra Technologies</p>
-            <h3>Chennai, India</h3>
-            <a href="https://maps.google.com/?q=Naethra+Technologies+Private+Limited+Chennai" target="_blank" rel="noreferrer">
-              Open in Google Maps →
-            </a>
-          </div>
           <iframe
             loading="lazy"
             title="Naethra Technologies office map"
@@ -168,31 +121,18 @@ function ContactPage() {
           </div>
           <div className="contact-process-grid">
             <article data-reveal="fade-up" data-reveal-delay="1">
-              <span>01</span>
               <h4>Understand</h4>
               <p>We start by understanding the problem, the users, and the business goal.</p>
             </article>
             <article data-reveal="fade-up" data-reveal-delay="2">
-              <span>02</span>
               <h4>Build</h4>
               <p>We turn ideas into scalable, production-ready digital products.</p>
             </article>
             <article data-reveal="fade-up" data-reveal-delay="3">
-              <span>03</span>
               <h4>Grow</h4>
               <p>We continue improving the product as your business evolves.</p>
             </article>
           </div>
-        </section>
-
-        <section className="contact-premium-cta" data-reveal="fade-up" data-reveal-delay="1">
-          <div>
-            <p className="contact-premium-kicker">Have something worth building?</p>
-            <h3>Let's turn your idea into a digital product people actually want to use.</h3>
-          </div>
-          <a className="button button-light" href="mailto:info@naethra.com">
-            Start a conversation →
-          </a>
         </section>
       </div>
     </NaethraContentPage>
