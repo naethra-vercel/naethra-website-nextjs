@@ -11,46 +11,11 @@ import {
 
 import { NaethraContentHeader } from "@/components/NaethraContentPage";
 import SiteFooter from "@/components/SiteFooter";
-import angularIcon from "@/assets/icons/Angular.svg";
-import javaScriptIcon from "@/assets/icons/JavaScript.svg";
-import typeScriptIcon from "@/assets/icons/TypeScript.svg";
-import nextJsIcon from "@/assets/icons/Next.js.svg";
-import nodeIcon from "@/assets/icons/Node.js.svg";
-import phpIcon from "@/assets/icons/PHP.svg";
-import reactIcon from "@/assets/icons/React.svg";
-import jQueryIcon from "@/assets/icons/jQuery.svg";
+import TechToolkitSection from "@/components/TechToolkitSection";
+import WhyOutsourceSection from "@/components/WhyOutsourceSection";
 import heroImage from "@/assets/web/hero.png";
 
 export const Route = createFileRoute("/web-app")({ component: WebAppPage });
-
-const outsourcingReasons = [
-  {
-    title: "Professionalism",
-    icon: BriefcaseBusiness,
-    text: "The best part of hiring talented developers from Indian companies is that they know advanced technologies and can be held accountable while remaining extremely professional. By choosing an experienced web development company, your eCommerce or SaaS application can reach the market on time and within budget.",
-  },
-  {
-    title: "An eye for detail",
-    icon: Eye,
-    text: "Web development teams understand that time is of the essence. We pay close attention to web application design and development, so your product can be completed on time with a pixel-perfect experience and the details needed to support your wider marketing strategy.",
-  },
-  {
-    title: "On-time delivery",
-    icon: FileText,
-    text: "A well-designed web application is essential for attracting customers and driving sales, but many teams do not have the time or expertise to build one alone. A full-stack delivery team can take care of front-end and back-end development while keeping progress visible.",
-  },
-];
-
-const technologies = [
-  ["React", reactIcon],
-  ["Next.js", nextJsIcon],
-  ["Angular", angularIcon],
-  ["TypeScript", typeScriptIcon],
-  ["JavaScript", javaScriptIcon],
-  ["Node.js", nodeIcon],
-  ["jQuery", jQueryIcon],
-  ["PHP", phpIcon],
-] as const;
 
 const websiteReasons = [
   {
@@ -120,29 +85,9 @@ function WebAppPage() {
         </div>
       </section>
 
-      <ReasonSection
-        className="web-app-reasons web-app-purple-section"
-        eyebrow="Why outsource"
-        title="6 reasons to outsource software development to India"
-        reasons={outsourcingReasons}
-      />
+      <WhyOutsourceSection />
 
-      <section className="web-app-tech">
-        <div className="site-container">
-          <p className="web-app-eyebrow">Our toolkit</p>
-          <h2>Web application</h2>
-          <div className="web-app-tech-grid">
-            {technologies.map(([label, icon]) => (
-              <div className="web-app-tech-item" key={label}>
-                <span>
-                  <img src={icon} alt="" />
-                </span>
-                <strong>{label}</strong>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <TechToolkitSection />
 
       <ReasonSection
         className="web-app-reasons web-app-purple-section web-app-website-reasons"
