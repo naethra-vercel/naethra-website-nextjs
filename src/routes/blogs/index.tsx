@@ -4,16 +4,27 @@ import { useState } from "react";
 
 import { NaethraContentHeader } from "@/components/NaethraContentPage";
 import SiteFooter from "@/components/SiteFooter";
-import { blogCategories, blogPosts } from "@/lib/blog-data";
+import { getPosts } from "@/lib/wordpress";
 
-export const Route = createFileRoute("/blogs/")({ component: BlogsPage });
+export const Route = createFileRoute("/blogs/")({
+  loader: async () => getPosts(1, 20),
+  component: BlogsPage,
+});
 
 function BlogsPage() {
-  const [activeCategory, setActiveCategory] = useState<(typeof blogCategories)[number]>("All");
+  const blogPosts = Route.useLoaderData();
+  const categories = [
+    "All",
+    ...Array.from(new Set(blogPosts.flatMap((post) => post.categories).filter(Boolean))).sort(
+      (a, b) => a.localeCompare(b),
+    ),
+  ];
+
+  const [activeCategory, setActiveCategory] = useState<string>("All");
   const filteredPosts =
     activeCategory === "All"
       ? blogPosts
-      : blogPosts.filter((post) => post.category === activeCategory);
+      : blogPosts.filter((post) => post.categories.includes(activeCategory));
   const [featuredPost, ...remainingPosts] = filteredPosts;
 
   return (
@@ -37,7 +48,7 @@ function BlogsPage() {
             <h2 id="blog-list-title">Read the thinking.</h2>
           </div>
           <div className="blogs-filters" aria-label="Filter articles">
-            {blogCategories.map((category) => (
+            {categories.map((category) => (
               <button
                 className={activeCategory === category ? "is-active" : ""}
                 key={category}
@@ -57,13 +68,17 @@ function BlogsPage() {
             className="blog-featured-card"
           >
             <div className="blog-card-image-wrap">
-              <img src={featuredPost.image} alt="" className="blog-card-image" />
+              {featuredPost.image ? (
+                <img src={featuredPost.image} alt="" className="blog-card-image" />
+              ) : (
+                <div className="blog-card-image blog-card-image-fallback" aria-hidden="true" />
+              )}
               <span className="blog-card-image-label">Featured / {featuredPost.category}</span>
             </div>
             <div className="blog-featured-copy">
               <div className="blog-card-meta">
                 <span>{featuredPost.date}</span>
-                <span>{featuredPost.readTime}</span>
+                <span>{featuredPost.author}</span>
               </div>
               <h3>{featuredPost.title}</h3>
               <p>{featuredPost.excerpt}</p>
@@ -72,6 +87,10 @@ function BlogsPage() {
               </span>
             </div>
           </Link>
+        )}
+
+        {!featuredPost && (
+          <p className="blogs-empty">No articles found for this filter.</p>
         )}
 
         <div className="blogs-grid">
@@ -83,7 +102,11 @@ function BlogsPage() {
               key={post.slug}
             >
               <div className="blog-card-image-wrap">
-                <img src={post.image} alt="" className="blog-card-image" loading="lazy" />
+                {post.image ? (
+                  <img src={post.image} alt="" className="blog-card-image" loading="lazy" />
+                ) : (
+                  <div className="blog-card-image blog-card-image-fallback" aria-hidden="true" />
+                )}
                 <span className="blog-card-arrow" aria-hidden="true">
                   <ArrowUpRight size={19} />
                 </span>
@@ -91,11 +114,11 @@ function BlogsPage() {
               <div className="blog-card-copy">
                 <div className="blog-card-meta">
                   <span>{post.category}</span>
-                  <span>{post.readTime}</span>
+                  <span>{post.author}</span>
                 </div>
                 <h3>{post.title}</h3>
                 <p>{post.excerpt}</p>
-                <time dateTime={post.date}>{post.date}</time>
+                <time dateTime={post.dateIso}>{post.date}</time>
               </div>
             </Link>
           ))}

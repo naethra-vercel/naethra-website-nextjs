@@ -79,7 +79,7 @@ export const services = [
 
 const base = "https://naethra.com/wp-content/uploads";
 
-export const serviceDetails: Record<string, ServiceDetail> = {
+export const serviceDetails = {
   cms: {
     slug: "cms",
     title: "Outsource CMS Development India",

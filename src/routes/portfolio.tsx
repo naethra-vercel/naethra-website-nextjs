@@ -3,9 +3,12 @@ import { createFileRoute } from "@tanstack/react-router";
 import { NaethraContentHeader } from "@/components/NaethraContentPage";
 import PortfolioCarousel from "@/components/PortfolioCarousel";
 import SiteFooter from "@/components/SiteFooter";
-import { portfolioProjects } from "@/lib/portfolio-data";
+import { getPortfolio } from "@/lib/wordpress";
 
-export const Route = createFileRoute("/portfolio")({ component: PortfolioPage });
+export const Route = createFileRoute("/portfolio")({
+  loader: async () => getPortfolio(50),
+  component: PortfolioPage,
+});
 
 const technologiesByCategory: Record<string, string[]> = {
   ".Net": [".NET", "C#", "SQL"],
@@ -17,6 +20,8 @@ const technologiesByCategory: Record<string, string[]> = {
 };
 
 function PortfolioPage() {
+  const portfolioProjects = Route.useLoaderData();
+
   return (
     <main className="portfolio-page">
       <NaethraContentHeader />
@@ -33,8 +38,8 @@ function PortfolioPage() {
 
       <section className="portfolio-index site-container" aria-label="Portfolio projects">
         <PortfolioCarousel
-          projects={portfolioProjects.map((project, index) => ({
-            id: `${project.category}-${index}-${project.title}`,
+          projects={portfolioProjects.map((project) => ({
+            id: project.id || project.slug,
             title: project.title,
             technologies: technologiesByCategory[project.category] ?? [project.category],
             image: project.image,

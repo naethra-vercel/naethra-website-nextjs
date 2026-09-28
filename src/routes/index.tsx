@@ -39,6 +39,7 @@ import { openNaethraAssistant } from "@/components/NaethraAIAssistant";
 import SectionEyebrow from "@/components/SectionEyebrow";
 import AnimatedCtaButton from "@/components/AnimatedCtaButton";
 import PlatformLoader from "@/components/PlatformLoader";
+import { getPosts } from "@/lib/wordpress";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -64,6 +65,7 @@ export const Route = createFileRoute("/")({
     ],
     links: [{ rel: "canonical", href: "/" }],
   }),
+  loader: async () => getPosts(1, 4),
   component: Index,
 });
 
@@ -154,23 +156,6 @@ const integrations = [
   ["Node", "#3b9658"],
   ["API", "#005b96"],
 ];
-
-const blogPosts = [
-  [
-    "Strategy",
-    "June 20, 2025",
-    "Why your business needs a thoughtful digital roadmap",
-    founderImage,
-  ],
-  [
-    "Planning",
-    "June 20, 2025",
-    "From goals to delivery: turning vision into measurable progress",
-    teamImage,
-  ],
-  ["Technology", "June 20, 2025", "Five ways modern teams can build better software", projectImage],
-  ["Growth", "June 20, 2025", "Digital transformation for service-based businesses", founderImage],
-] as const;
 
 const valuedClients = [
   { name: "Chemtools", logo: "https://naethra.com/wp-content/uploads/2023/04/Chemtools.webp" },
@@ -359,6 +344,7 @@ function Logo({ inverse = false }: { inverse?: boolean }) {
 }
 
 function Index() {
+  const blogPosts = Route.useLoaderData();
   const [menuOpen, setMenuOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -786,21 +772,25 @@ function Index() {
             </a>
           </div>
           <div className="insights-grid">
-            {blogPosts.map(([category, date, title, image], index) => (
+            {blogPosts.map((post, index) => (
               <a
-                href="#contact"
+                href={`/blogs/${post.slug}`}
                 className="insight-card"
-                key={title}
+                key={post.slug}
                 data-reveal="fade-up"
                 data-reveal-delay={String((index % 2) + 1)}
               >
-                <img src={image} alt="" width={1200} height={1104} />
+                {post.image ? (
+                  <img src={post.image} alt="" width={1200} height={1104} />
+                ) : (
+                  <div className="insight-card-fallback" aria-hidden="true" />
+                )}
                 <div className="insight-card-copy">
                   <div className="insight-meta">
-                    <span>{category}</span>
-                    <time>{date}</time>
+                    <span>{post.category}</span>
+                    <time dateTime={post.dateIso}>{post.date}</time>
                   </div>
-                  <h3>{title}</h3>
+                  <h3>{post.title}</h3>
                 </div>
                 <HugeiconsIcon className="insight-arrow" icon={ArrowUpRight01Icon} size={19} />
               </a>
