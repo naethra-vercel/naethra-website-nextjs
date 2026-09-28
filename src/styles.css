@@ -1617,6 +1617,182 @@
 .blogs-filters { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .45rem; }
 .blogs-filters button { min-height: 2.3rem; border: 1px solid var(--line); border-radius: 999px; background: transparent; padding: .45rem .85rem; color: var(--muted); cursor: pointer; font: inherit; font-size: .72rem; font-weight: 700; transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease, transform 180ms ease; }
 .blogs-filters button:hover, .blogs-filters button.is-active { border-color: var(--blue); background: var(--blue); color: #fff; transform: translateY(-2px); }
+/* Editorial Single-Column Blog List */
+.blog-editorial-list {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--line);
+  margin-top: 1.5rem;
+}
+
+.blog-editorial-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: clamp(1.5rem, 3vw, 2.5rem) 0;
+  border-bottom: 1px solid var(--line);
+  color: inherit;
+  text-decoration: none;
+  position: relative;
+  transition: background-color 200ms ease;
+}
+
+.blog-editorial-content {
+  flex: 1;
+  max-width: 50rem;
+}
+
+/* Brand theme blue category tag */
+.blog-editorial-tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 0.45rem;
+}
+
+/* Prominent, bold title typography (#111111) changing to brand blue on hover */
+.blog-editorial-headline {
+  margin: 0 0 0.5rem 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 2.8vw, 2.25rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  color: #111111;
+  transition: color 200ms ease;
+}
+
+.blog-editorial-item:hover .blog-editorial-headline {
+  color: var(--blue);
+}
+
+.blog-editorial-excerpt {
+  margin: 0;
+  color: var(--muted);
+  font-size: clamp(0.88rem, 1.4vw, 1rem);
+  line-height: 1.6;
+  max-width: 44rem;
+}
+
+/* Right-aligned metadata (read time in subtle grey #888888) */
+.blog-editorial-meta {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-shrink: 0;
+}
+
+.blog-editorial-readtime {
+  color: #888888;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.blog-editorial-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  color: #888888;
+  transition: all 220ms ease;
+}
+
+.blog-editorial-item:hover .blog-editorial-arrow {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: #ffffff;
+  transform: translate(3px, -3px);
+}
+
+/* Mobile Fallback Thumbnail */
+.blog-editorial-mobile-thumb {
+  display: none;
+  width: 5rem;
+  height: 5rem;
+  flex-shrink: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #e2e8f0;
+}
+
+.blog-editorial-mobile-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Floating Cursor Follow Preview Card */
+.blog-cursor-preview {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  will-change: transform;
+  opacity: 0;
+  transition: opacity 250ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.blog-cursor-preview.is-visible {
+  opacity: 1;
+}
+
+.blog-cursor-card-inner {
+  width: clamp(190px, 18vw, 240px);
+  aspect-ratio: 16 / 10;
+  background: #ffffff;
+  padding: 7px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.22), 0 8px 20px -6px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  transition: transform 250ms ease;
+}
+
+.blog-cursor-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 7px;
+}
+
+@media (max-width: 768px) {
+  .blog-cursor-preview {
+    display: none !important;
+  }
+
+  .blog-editorial-item {
+    align-items: flex-start;
+    gap: 1.25rem;
+    padding: 1.5rem 0;
+  }
+
+  .blog-editorial-mobile-thumb {
+    display: block;
+  }
+
+  .blog-editorial-meta {
+    margin-top: 0.5rem;
+  }
+
+  .blog-editorial-headline {
+    font-size: 1.25rem;
+  }
+
+  .blog-editorial-arrow {
+    width: 2rem;
+    height: 2rem;
+  }
+}
+
 .blog-featured-card { display: grid; grid-template-columns: 1.15fr .85fr; min-height: 31rem; margin-bottom: 1.25rem; border: 1px solid var(--line); background: var(--white); color: inherit; }
 .blog-card-image-wrap { position: relative; min-height: 15rem; overflow: hidden; background: #dbe5f2; }
 .blog-card-image { display: block; width: 100%; height: 100%; object-fit: cover; filter: saturate(.88); transition: transform 650ms cubic-bezier(.16, 1, .3, 1), filter 450ms ease; }
