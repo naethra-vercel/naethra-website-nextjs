@@ -785,6 +785,349 @@ export async function getCmsContent() {
   }
 }
 
+export type FileMakerContent = {
+  slug: string;
+  title: string;
+  eyebrow: string;
+  intro: string;
+  heroImage: string;
+  sections: Array<{ title: string; body: string; image?: string; bullets?: string[] }>;
+};
+
+const FILEMAKER_FALLBACK: FileMakerContent = {
+  slug: "claris-filemaker-application",
+  title: "Claris FileMaker Application",
+  eyebrow: "FileMaker solutions",
+  intro:
+    "One-stop FileMaker solutions for design, development, hosting, maintenance, and 24 x 7 support services.",
+  heroImage: "https://naethra.com/wp-content/uploads/2025/10/filemaker-ser-new-1.jpg",
+  sections: [
+    {
+      title: "One-stop shop for FileMaker solutions",
+      body: "We are full of people who are experts in the FileMaker field, from A-Z. We can assist with the design, development, implementation, and support of customised FileMaker solutions that connect with internal and external websites.",
+      bullets: [
+        "FileMaker Pro custom development",
+        "FileMaker Go development",
+        "WebDirect",
+        "Cloud",
+        "Integration",
+        "Consulting",
+        "Support and maintenance",
+        "Migration and conversion",
+      ],
+    },
+    {
+      title: "Experience across industries and locations",
+      body: "We have more than 20 years of market experience and industry know-how. More than 100 clients have chosen us for FileMaker projects across finance, construction, media, technology, retail, manufacturing, legal, education, health, and other sectors around the world.",
+      image: "https://naethra.com/wp-content/uploads/2022/12/naethra-filemaker.jpg",
+    },
+    {
+      title: "Integration, migration, and support",
+      body: "FileMaker data can be integrated and synchronised with other data sources through ODBC. We can also perform complete migrations and conversions from another database, then support the solution as it grows.",
+    },
+  ],
+};
+
+function extractClosingListItems(html: string) {
+  return Array.from(html.matchAll(/([^<>\n]{2,80}?)<\/li>/gi))
+    .map((match) => stripHtml(match[1] ?? ""))
+    .filter((text) => text.length > 1 && !/^https?:/i.test(text));
+}
+
+export function mapFileMakerContent(html: string): FileMakerContent {
+  const chunks = extractHtmlChunks(html);
+
+  const servicesBody =
+    findChunk(chunks, (text) => /experts in the filemaker/i.test(text)) ||
+    FILEMAKER_FALLBACK.sections[0]!.body;
+
+  const experienceBody = [
+    findChunk(chunks, (text) => /20 years of market experience/i.test(text)),
+    findChunk(chunks, (text) => /sectors\s*[–-]/i.test(text) || /finance,? construction/i.test(text)),
+    findChunk(chunks, (text) => /over 100 clients/i.test(text)),
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const integrationBody =
+    findChunk(chunks, (text) => /odbc/i.test(text) && /migration/i.test(text)) ||
+    findChunk(chunks, (text) => /integrated and synchronized/i.test(text)) ||
+    FILEMAKER_FALLBACK.sections[2]!.body;
+
+  const bullets = extractClosingListItems(html).filter((item) =>
+    /filemaker|webdirect|cloud|integration|consulting|support|migration/i.test(item),
+  );
+
+  const experienceImage = FILEMAKER_FALLBACK.sections[1]?.image;
+  const serviceBullets =
+    bullets.length > 0 ? bullets : FILEMAKER_FALLBACK.sections[0]?.bullets;
+
+  return {
+    slug: "claris-filemaker-application",
+    title:
+      extractHeadingText(html, "h1", /one-stop shop for filemaker/i) ||
+      FILEMAKER_FALLBACK.title,
+    eyebrow: FILEMAKER_FALLBACK.eyebrow,
+    intro:
+      extractHeadingText(html, "h5", /design.*develop.*hosting/i) ||
+      findChunk(chunks, (text) => /design\s*\|\s*develop/i.test(text)) ||
+      FILEMAKER_FALLBACK.intro,
+    heroImage: FILEMAKER_FALLBACK.heroImage,
+    sections: [
+      {
+        title:
+          extractHeadingText(html, "h5", /our filemaker services/i) ||
+          extractHeadingText(html, "h1", /one-stop shop for filemaker/i) ||
+          FILEMAKER_FALLBACK.sections[0]!.title,
+        body: servicesBody,
+        ...(serviceBullets ? { bullets: serviceBullets } : {}),
+      },
+      {
+        title: FILEMAKER_FALLBACK.sections[1]!.title,
+        body: experienceBody || FILEMAKER_FALLBACK.sections[1]!.body,
+        ...(experienceImage ? { image: experienceImage } : {}),
+      },
+      {
+        title: FILEMAKER_FALLBACK.sections[2]!.title,
+        body: integrationBody,
+      },
+    ],
+  };
+}
+
+export async function getFileMakerContent() {
+  try {
+    const page = await getPageBySlug("claris-filemaker-application");
+    if (!page?.contentHtml) return FILEMAKER_FALLBACK;
+    return mapFileMakerContent(page.contentHtml);
+  } catch {
+    return FILEMAKER_FALLBACK;
+  }
+}
+
+export type DotNetContent = {
+  slug: string;
+  title: string;
+  eyebrow: string;
+  intro: string;
+  heroImage: string;
+  sections: Array<{ title: string; body: string; image?: string; bullets?: string[] }>;
+};
+
+const DOT_NET_FALLBACK: DotNetContent = {
+  slug: "dot-net-application",
+  title: ".NET Application Development",
+  eyebrow: "Microsoft .NET development",
+  intro:
+    "Naethra provides full-cycle development services in Microsoft .NET for independent software vendors, product companies, and teams that need scalable custom applications.",
+  heroImage: "https://naethra.com/wp-content/uploads/2022/12/net-2.jpg",
+  sections: [
+    {
+      title: "Benefits of ASP.NET in development",
+      body: ".NET provides a steady, adaptable, user-friendly, dependable, and flexible platform with low maintenance cost and strong compatibility. It enables teams to build ecommerce and business applications for customers wherever they are.",
+      image: "https://naethra.com/wp-content/uploads/2022/12/net-2.jpg",
+    },
+    {
+      title: "Maintenance and support services",
+      body: "Naethra offers sustainable, constant specialist support that helps applications, websites, and digital products keep working smoothly. Prompt maintenance gives customers accuracy, continuity, and confidence after launch.",
+    },
+    {
+      title: "Why choose Naethra for .NET services?",
+      body: "We offer a broad range of ASP.NET and .NET web development services globally, with the proven capability to build robust, scalable custom applications that meet demanding business requirements.",
+    },
+  ],
+};
+
+export function mapDotNetContent(html: string): DotNetContent {
+  const chunks = extractHtmlChunks(html);
+
+  const intro =
+    [
+      findChunk(chunks, (text) => /asp\s*\.?\s*net/i.test(text) && /cross-platform/i.test(text)),
+      findChunk(chunks, (text) => /excelled in delivering customized web based applications/i.test(text)),
+    ]
+      .filter(Boolean)
+      .join(" ") || DOT_NET_FALLBACK.intro;
+
+  const benefitsBody =
+    findChunk(chunks, (text) => /highly steady|adaptable|low maintenance/i.test(text)) ||
+    DOT_NET_FALLBACK.sections[0]!.body;
+
+  const maintenanceBody =
+    findChunk(chunks, (text) => /sustainable|prompt maintenance|specialized backings/i.test(text)) ||
+    DOT_NET_FALLBACK.sections[1]!.body;
+
+  const whyBody =
+    findChunk(chunks, (text) => /wide range of asp|proven potential|scalable web and custom/i.test(text)) ||
+    DOT_NET_FALLBACK.sections[2]!.body;
+
+  const migrationBody = findChunk(
+    chunks,
+    (text) => /migrate to \.?net|flawless migration from legacy/i.test(text),
+  );
+
+  const benefitsImage = DOT_NET_FALLBACK.sections[0]?.image;
+
+  return {
+    slug: "dot-net-application",
+    title: DOT_NET_FALLBACK.title,
+    eyebrow: DOT_NET_FALLBACK.eyebrow,
+    intro,
+    heroImage: DOT_NET_FALLBACK.heroImage,
+    sections: [
+      {
+        title:
+          extractHeadingText(html, "h4", /benefits of asp/i) ||
+          DOT_NET_FALLBACK.sections[0]!.title,
+        body: benefitsBody,
+        ...(benefitsImage ? { image: benefitsImage } : {}),
+      },
+      {
+        title:
+          extractHeadingText(html, "h4", /maintenance and support/i) ||
+          DOT_NET_FALLBACK.sections[1]!.title,
+        body: maintenanceBody,
+      },
+      {
+        title:
+          extractHeadingText(html, "h4", /why choose naethra/i) ||
+          DOT_NET_FALLBACK.sections[2]!.title,
+        body: whyBody,
+      },
+      ...(migrationBody
+        ? [
+            {
+              title:
+                extractHeadingText(html, "h4", /migration of other applications/i) ||
+                "Why migrate other applications to ASP.NET",
+              body: migrationBody,
+            },
+          ]
+        : []),
+    ],
+  };
+}
+
+export async function getDotNetContent() {
+  try {
+    const page = await getPageBySlug("dot-net-application");
+    if (!page?.contentHtml) return DOT_NET_FALLBACK;
+    return mapDotNetContent(page.contentHtml);
+  } catch {
+    return DOT_NET_FALLBACK;
+  }
+}
+
+export type AwsContent = {
+  slug: string;
+  title: string;
+  eyebrow: string;
+  intro: string;
+  heroImage: string;
+  sections: Array<{ title: string; body: string; image?: string; bullets?: string[] }>;
+};
+
+const AWS_FALLBACK: AwsContent = {
+  slug: "aws-cloud-support",
+  title: "AWS and Cloud Support",
+  eyebrow: "Cloud infrastructure and support",
+  intro:
+    "Move from infrastructure pressure to dependable delivery with cloud architecture, deployment, monitoring, and support shaped around your product and team.",
+  heroImage: "https://naethra.com/wp-content/uploads/2022/09/web-app-img.jpg",
+  sections: [
+    {
+      title: "Managed services",
+      body: "We provide expert IT infrastructure support that can be remotely managed across servers, storage, desktop, and network management.",
+      bullets: [
+        "Remote IT infrastructure support",
+        "Servers, storage, desktop, and network management",
+        "Full ownership of your infrastructure",
+        "Multi-platform support for Windows, Linux, and Mac",
+      ],
+    },
+    {
+      title: "Cloud services",
+      body: "Expertise across AWS, Microsoft Azure, and GCP for hosting, migrations, infrastructure maintenance, and backup automation.",
+      bullets: [
+        "AWS, Microsoft Azure, and GCP",
+        "Cloud-based web hosting and support",
+        "On-premises to cloud migrations",
+        "Cloud infrastructure maintenance",
+        "Cloud-based backup automation",
+      ],
+    },
+    {
+      title: "Support beyond launch",
+      body: "Our team can stay close after deployment with proactive maintenance, technical guidance, and a clear route for the next stage of your application.",
+    },
+  ],
+};
+
+export function mapAwsContent(html: string): AwsContent {
+  const chunks = extractHtmlChunks(html);
+  const listItems = extractClosingListItems(html);
+
+  const managedBullets = listItems.filter((item) =>
+    /infrastructure|servers|storage|desktop|network|ownership|windows|linux|mac/i.test(item),
+  );
+  const cloudBullets = listItems.filter((item) =>
+    /aws|azure|gcp|cloud|migration|backup|hosting/i.test(item),
+  );
+
+  const managedBody =
+    managedBullets[0] ||
+    findChunk(chunks, (text) => /it infrastructure support/i.test(text)) ||
+    AWS_FALLBACK.sections[0]!.body;
+
+  const cloudBody =
+    cloudBullets[0] ||
+    findChunk(chunks, (text) => /expertise level experience on aws/i.test(text)) ||
+    AWS_FALLBACK.sections[1]!.body;
+
+  const managedList =
+    managedBullets.length > 0 ? managedBullets : AWS_FALLBACK.sections[0]?.bullets;
+  const cloudList =
+    cloudBullets.length > 0 ? cloudBullets : AWS_FALLBACK.sections[1]?.bullets;
+
+  return {
+    slug: "aws-cloud-support",
+    title: AWS_FALLBACK.title,
+    eyebrow: AWS_FALLBACK.eyebrow,
+    intro: AWS_FALLBACK.intro,
+    heroImage: AWS_FALLBACK.heroImage,
+    sections: [
+      {
+        title:
+          extractHeadingText(html, "h4", /managed services/i) ||
+          AWS_FALLBACK.sections[0]!.title,
+        body: managedBody,
+        ...(managedList ? { bullets: managedList } : {}),
+      },
+      {
+        title:
+          extractHeadingText(html, "h4", /cloud services/i) ||
+          AWS_FALLBACK.sections[1]!.title,
+        body: cloudBody,
+        ...(cloudList ? { bullets: cloudList } : {}),
+      },
+      {
+        title: AWS_FALLBACK.sections[2]!.title,
+        body: AWS_FALLBACK.sections[2]!.body,
+      },
+    ],
+  };
+}
+
+export async function getAwsContent() {
+  try {
+    const page = await getPageBySlug("aws-cloud-support");
+    if (!page?.contentHtml) return AWS_FALLBACK;
+    return mapAwsContent(page.contentHtml);
+  } catch {
+    return AWS_FALLBACK;
+  }
+}
+
 export type FlutterContent = {
   eyebrow: string;
   title: string;
