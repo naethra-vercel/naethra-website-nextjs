@@ -1438,6 +1438,86 @@ export async function getServicesPageContent() {
   }
 }
 
+export type HomeTestimonial = {
+  name: string;
+  role: string;
+  quote: string;
+  image: string;
+};
+
+const HOME_TESTIMONIALS_FALLBACK: HomeTestimonial[] = [
+  {
+    name: "Vasudha Bhushan",
+    role: "Manager, Software Technology & Engineering",
+    quote:
+      "We recently had the pleasure of outsourcing our application development to Naethra, and we are extremely satisfied with the results.",
+    image: "",
+  },
+  {
+    name: "Steve Chun",
+    role: "Howard Investments Inc., New York",
+    quote:
+      "Naethra continues to do great work for us. We look forward to additional development of our custom application.",
+    image: "",
+  },
+  {
+    name: "Sandeep Shah",
+    role: "Director, Rajdeep Automation",
+    quote:
+      "Their professionalism, detailed explanations, and commitment made the whole website development experience a pleasure.",
+    image: "",
+  },
+  {
+    name: "Shazad Din",
+    role: "Boro Blinds, Middlesbrough",
+    quote:
+      "These guys are FileMaker experts. They really know their stuff and deliver dependable results.",
+    image: "",
+  },
+];
+
+export function mapHomeTestimonials(html: string): HomeTestimonial[] {
+  const start = html.search(/what\s+naethra.?s\s+clients\s+say/i);
+  if (start < 0) return HOME_TESTIMONIALS_FALLBACK;
+
+  const endMatch = html.slice(start).search(/proud\s+to\s+have\s+picked/i);
+  const section = html.slice(start, endMatch > 0 ? start + endMatch : undefined);
+  const cleaned = section.replace(/<style[\s\S]*?<\/style>/gi, "");
+
+  const matches = Array.from(
+    cleaned.matchAll(
+      /(?:^|>)\s*([A-Za-z][^<\n]{1,80}?)\s*<\/div>\s*([^<\n]{2,140}?)\s*<\/div>\s*[“"]?([^<\n]{15,}?)[”"]?\s*<\/p>/g,
+    ),
+  );
+
+  const testimonials = matches
+    .map((match) => {
+      const name = stripHtml(match[1] ?? "");
+      const role = stripHtml(match[2] ?? "");
+      const quote = stripHtml(match[3] ?? "").replace(/^[“"']|[”"']$/g, "").trim();
+      if (!name || !quote || /^what\s+naethra/i.test(name)) return null;
+      return {
+        name,
+        role,
+        quote,
+        image: "",
+      };
+    })
+    .filter((item): item is HomeTestimonial => Boolean(item));
+
+  return testimonials.length > 0 ? testimonials : HOME_TESTIMONIALS_FALLBACK;
+}
+
+export async function getHomeTestimonials() {
+  try {
+    const page = await getPageBySlug("home");
+    if (!page?.contentHtml) return HOME_TESTIMONIALS_FALLBACK;
+    return mapHomeTestimonials(page.contentHtml);
+  } catch {
+    return HOME_TESTIMONIALS_FALLBACK;
+  }
+}
+
 export type FlutterContent = {
   eyebrow: string;
   title: string;

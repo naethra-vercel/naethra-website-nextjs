@@ -38,7 +38,7 @@ import IntegrationSection from "@/components/IntegrationSection";
 import { openNaethraAssistant } from "@/components/NaethraAIAssistant";
 import SectionEyebrow from "@/components/SectionEyebrow";
 import AnimatedCtaButton from "@/components/AnimatedCtaButton";
-import { getPosts } from "@/lib/wordpress";
+import { getHomeTestimonials, getPosts } from "@/lib/wordpress";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -64,7 +64,13 @@ export const Route = createFileRoute("/")({
     ],
     links: [{ rel: "canonical", href: "/" }],
   }),
-  loader: async () => getPosts(1, 4),
+  loader: async () => {
+    const [blogPosts, testimonials] = await Promise.all([
+      getPosts(1, 4),
+      getHomeTestimonials(),
+    ]);
+    return { blogPosts, testimonials };
+  },
   component: Index,
 });
 
@@ -301,33 +307,6 @@ const offerServices = [
   },
 ];
 
-const testimonials = [
-  [
-    "Vasudha Bhushan",
-    "Manager, Software Technology & Engineering",
-    "We recently had the pleasure of outsourcing our application development to Naethra, and we are extremely satisfied with the results.",
-    founderImage,
-  ],
-  [
-    "Steve Chun",
-    "Howard Investments Inc., New York",
-    "Naethra continues to do great work for us. We look forward to additional development of our custom application.",
-    teamImage,
-  ],
-  [
-    "Sandeep Shah",
-    "Director, Rajdeep Automation",
-    "Their professionalism, detailed explanations, and commitment made the whole website development experience a pleasure.",
-    projectImage,
-  ],
-  [
-    "Shazad Din",
-    "Boro Blinds, Middlesbrough",
-    "These guys are FileMaker experts. They really know their stuff and deliver dependable results.",
-    founderImage,
-  ],
-] as const;
-
 function Logo({ inverse = false }: { inverse?: boolean }) {
   return (
     <a href="#top" className="brand-mark" aria-label="Naethra Technologies home">
@@ -343,7 +322,12 @@ function Logo({ inverse = false }: { inverse?: boolean }) {
 }
 
 function Index() {
-  const blogPosts = Route.useLoaderData();
+  const { blogPosts, testimonials: loadedTestimonials } = Route.useLoaderData();
+  const testimonialImages = [founderImage, teamImage, projectImage, founderImage];
+  const testimonials = loadedTestimonials.map((item, index) => ({
+    ...item,
+    image: item.image || testimonialImages[index % testimonialImages.length]!,
+  }));
   const [menuOpen, setMenuOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -381,11 +365,12 @@ function Index() {
   }, []);
 
   useEffect(() => {
+    if (testimonials.length === 0) return;
     const rotation = window.setInterval(() => {
       setTestimonialIndex((index) => (index + 1) % testimonials.length);
     }, 5000);
     return () => window.clearInterval(rotation);
-  }, []);
+  }, [testimonials.length]);
 
   return (
     <main id="top" className="site-page">
@@ -832,16 +817,16 @@ function Index() {
         <div className="site-container testimonial-layout" data-reveal="fade-up">
           <div className="testimonial-visual">
             <img
-              src={activeTestimonial[3]}
-              alt={`${activeTestimonial[0]} testimonial portrait`}
+              src={activeTestimonial?.image}
+              alt={`${activeTestimonial?.name ?? "Customer"} testimonial portrait`}
               width={1200}
               height={1104}
             />
             <div className="testimonial-avatars" role="tablist" aria-label="Customer testimonials">
-              {testimonials.map(([name, , , image], index) => (
+              {testimonials.map(({ name, image }, index) => (
                 <button
                   type="button"
-                  key={name}
+                  key={`${name}-${index}`}
                   className={`testimonial-avatar ${index === testimonialIndex ? "is-active" : ""}`}
                   onClick={() => setTestimonialIndex(index)}
                   role="tab"
@@ -859,12 +844,12 @@ function Index() {
               Reviews from our <em>customers.</em>
             </h2>
             <HugeiconsIcon icon={QuoteDownIcon} size={48} className="quote-icon" />
-            <blockquote>“{activeTestimonial[2]}”</blockquote>
+            <blockquote>“{activeTestimonial?.quote}”</blockquote>
             <div className="quote-author">
-              <span className="quote-author-avatar">{activeTestimonial[0].slice(0, 1)}</span>
+              <span className="quote-author-avatar">{activeTestimonial?.name.slice(0, 1)}</span>
               <div>
-                <strong>{activeTestimonial[0]}</strong>
-                <small>{activeTestimonial[1]}</small>
+                <strong>{activeTestimonial?.name}</strong>
+                <small>{activeTestimonial?.role}</small>
               </div>
             </div>
           </div>
