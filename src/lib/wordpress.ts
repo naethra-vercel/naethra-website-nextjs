@@ -666,6 +666,363 @@ export async function getWebAppContent() {
   }
 }
 
+export type CmsContent = {
+  slug: string;
+  title: string;
+  eyebrow: string;
+  intro: string;
+  heroImage: string;
+  sections: Array<{ title: string; body: string; image?: string; bullets?: string[] }>;
+};
+
+const CMS_FALLBACK: CmsContent = {
+  slug: "cms",
+  title: "Outsource CMS Development India",
+  eyebrow: "Content management systems",
+  intro:
+    "Naethra offers cost-effective CMS development services using PHP, WordPress, Joomla, and Magento, with WooCommerce and payment gateway integration when your product needs it.",
+  heroImage: "https://naethra.com/wp-content/uploads/2022/06/web-app-changed.jpg",
+  sections: [
+    {
+      title: "Website and CMS development in India",
+      body: "For over 8 years, Indian website developers have delivered custom-tailored CMS solutions that are flexible and agile enough to adapt to a changing business model. From design and development to security enhancement, we create robust systems that fit the way your organisation works.",
+      image: "https://naethra.com/wp-content/uploads/2022/09/cms-details.jpg",
+    },
+    {
+      title: "A complete publishing system",
+      body: "Our teams customise open-source CMS frameworks like WordPress, Joomla, and Drupal. We deliver end-to-end content management packages with responsive design, integrated analytics, and less maintenance across ecommerce, learning management, real estate, and business listing applications.",
+    },
+    {
+      title: "Benefits of outsourcing CMS development",
+      body: "Outsourcing gives you access to specialist teams, reliable delivery, and a flexible cost model while your internal team stays focused on the work only it can do.",
+      image: "https://naethra.com/wp-content/uploads/2022/05/7-4-1.jpg",
+      bullets: [
+        "Quality assurance",
+        "Cost-effective services",
+        "Saving on infrastructure",
+        "24/7 services",
+        "Versatility",
+      ],
+    },
+  ],
+};
+
+export function mapCmsContent(html: string): CmsContent {
+  const chunks = extractHtmlChunks(html);
+  const intro =
+    findChunk(chunks, (text) => /cms development services/i.test(text)) || CMS_FALLBACK.intro;
+
+  const developmentBody = [
+    findChunk(chunks, (text) => /for over 8 years/i.test(text)),
+    findChunk(chunks, (text) => /end-to-end content management/i.test(text)),
+    findChunk(chunks, (text) => /open-source cms frameworks/i.test(text)),
+    findChunk(chunks, (text) => /endeavour to provide services in all technologies/i.test(text)),
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const benefitsIntro =
+    findChunk(chunks, (text) => /favored for outsourcing services/i.test(text)) ||
+    CMS_FALLBACK.sections[2]!.body;
+
+  const bulletTitles = [
+    extractHeadingText(html, "h4", /quality assurance/i),
+    extractHeadingText(html, "h4", /cost-effective services/i),
+    extractHeadingText(html, "h4", /saving on infrastructure/i),
+    extractHeadingText(html, "h4", /24\*?7 services|24\/7 services/i),
+    extractHeadingText(html, "h4", /versatility/i),
+  ].filter(Boolean);
+
+  const developmentImage = CMS_FALLBACK.sections[0]?.image;
+  const benefitsImage = CMS_FALLBACK.sections[2]?.image;
+  const benefitsBullets =
+    bulletTitles.length > 0 ? bulletTitles : CMS_FALLBACK.sections[2]?.bullets;
+
+  return {
+    slug: "cms",
+    title:
+      extractHeadingText(html, "h1", /outsource cms development/i) || CMS_FALLBACK.title,
+    eyebrow: CMS_FALLBACK.eyebrow,
+    intro,
+    heroImage: CMS_FALLBACK.heroImage,
+    sections: [
+      {
+        title:
+          extractHeadingText(html, "h2", /website and cms development/i) ||
+          CMS_FALLBACK.sections[0]!.title,
+        body: developmentBody || CMS_FALLBACK.sections[0]!.body,
+        ...(developmentImage ? { image: developmentImage } : {}),
+      },
+      {
+        title: CMS_FALLBACK.sections[1]!.title,
+        body:
+          [
+            findChunk(chunks, (text) => /open-source cms frameworks/i.test(text)),
+            findChunk(chunks, (text) => /endeavour to provide services in all technologies/i.test(text)),
+          ]
+            .filter(Boolean)
+            .join(" ") || CMS_FALLBACK.sections[1]!.body,
+      },
+      {
+        title:
+          extractHeadingText(html, "h2", /benefits of outsourcing cms/i) ||
+          CMS_FALLBACK.sections[2]!.title,
+        body: benefitsIntro,
+        ...(benefitsImage ? { image: benefitsImage } : {}),
+        ...(benefitsBullets ? { bullets: benefitsBullets } : {}),
+      },
+    ],
+  };
+}
+
+export async function getCmsContent() {
+  try {
+    const page = await getPageBySlug("cms");
+    if (!page?.contentHtml) return CMS_FALLBACK;
+    return mapCmsContent(page.contentHtml);
+  } catch {
+    return CMS_FALLBACK;
+  }
+}
+
+export type FlutterContent = {
+  eyebrow: string;
+  title: string;
+  intro: string;
+  calloutEyebrow: string;
+  calloutTitle: string;
+  calloutBody: string;
+  benefitsTitle: string;
+  benefits: string[];
+  closingTitle: string;
+  closingBody: string;
+};
+
+const FLUTTER_FALLBACK: FlutterContent = {
+  eyebrow: "Flutter application development",
+  title: "Build innovative apps with Flutter",
+  intro:
+    "Build innovative apps with Flutter for enhanced web and mobile experience.",
+  calloutEyebrow: "Why Flutter",
+  calloutTitle: "One thoughtful experience across the devices your customers use.",
+  calloutBody:
+    "Flutter app development is quickly transforming the world of native applications. With a single codebase, teams ship polished, responsive interfaces without treating mobile and web as separate worlds.",
+  benefitsTitle: "What we can help you ship",
+  benefits: [
+    "One codebase for iOS and Android",
+    "Fast, expressive interfaces",
+    "A flexible foundation for future web and mobile experiences",
+    "Support for upgrades, fixes, and extensions after launch",
+  ],
+  closingTitle: "A clear route to the next release",
+  closingBody:
+    "Whether you are starting from a product idea, extending an existing application, or resolving a difficult technical issue, we begin with the context and finish with a useful, supportable result.",
+};
+
+export function mapFlutterContent(html: string): FlutterContent {
+  const chunks = extractHtmlChunks(html);
+  const plain = stripHtml(html);
+
+  const benefitMatchers: Array<[RegExp, string]> = [
+    [/one codebase|efficient code building/i, "One codebase for iOS and Android"],
+    [/fast,? high-performance|smooth performance/i, "Fast, expressive interfaces"],
+    [/support for older devices|consistently across multiple platforms/i, "A flexible foundation for future web and mobile experiences"],
+    [/support and maintenance|bug fixing|feature updates/i, "Support for upgrades, fixes, and extensions after launch"],
+  ];
+
+  const benefits = benefitMatchers
+    .map(([matcher, fallback]) => {
+      if (matcher.test(plain)) return fallback;
+      const fromWp = findChunk(chunks, (text) => matcher.test(text));
+      return fromWp ? fallback : "";
+    })
+    .filter(Boolean);
+
+  const heroBenefits = ["Advanced Features", "Best User Experience", "Cost Effective"].filter(
+    (label) => plain.toLowerCase().includes(label.toLowerCase()),
+  );
+
+  return {
+    eyebrow: FLUTTER_FALLBACK.eyebrow,
+    title:
+      findChunk(chunks, (text) => /build innovative apps with flutter/i.test(text))
+        ?.replace(/\s+for enhanced.*$/i, "")
+        .trim() || FLUTTER_FALLBACK.title,
+    intro:
+      findChunk(chunks, (text) => /build innovative apps with flutter/i.test(text)) ||
+      findChunk(chunks, (text) => /leading flutter app development company/i.test(text)) ||
+      FLUTTER_FALLBACK.intro,
+    calloutEyebrow: FLUTTER_FALLBACK.calloutEyebrow,
+    calloutTitle:
+      findChunk(chunks, (text) => /persuasive reasons to choose flutter/i.test(text)) ||
+      FLUTTER_FALLBACK.calloutTitle,
+    calloutBody:
+      findChunk(chunks, (text) => /quickly transforming the world of native/i.test(text)) ||
+      FLUTTER_FALLBACK.calloutBody,
+    benefitsTitle: FLUTTER_FALLBACK.benefitsTitle,
+    benefits:
+      benefits.length > 0
+        ? benefits
+        : heroBenefits.length > 0
+          ? heroBenefits
+          : FLUTTER_FALLBACK.benefits,
+    closingTitle:
+      findChunk(chunks, (text) => /hire flutter app developers/i.test(text)) ||
+      FLUTTER_FALLBACK.closingTitle,
+    closingBody:
+      findChunk(chunks, (text) => /mobile app development using flutter/i.test(text)) ||
+      findChunk(chunks, (text) => /flutter mobile app development services are designed/i.test(text)) ||
+      FLUTTER_FALLBACK.closingBody,
+  };
+}
+
+export async function getFlutterContent() {
+  try {
+    const page = await getPageBySlug("flutter-app-development-company");
+    if (!page?.contentHtml) return FLUTTER_FALLBACK;
+    return mapFlutterContent(page.contentHtml);
+  } catch {
+    return FLUTTER_FALLBACK;
+  }
+}
+
+export type MobileAppContent = {
+  title: string;
+  introParagraphs: string[];
+  trackRecord: Array<{ title: string; body: string }>;
+  techTitle: string;
+  capabilities: Array<{ title: string; body: string }>;
+  skillPoolTitle: string;
+  skillPoolBody: string;
+  skillPoolImage: string;
+  callout: string;
+  blogTitle: string;
+  blogCategory: string;
+  blogHeadline: string;
+  blogExcerpt: string;
+  blogHref: string;
+  blogImage: string;
+};
+
+const MOBILE_APP_FALLBACK: MobileAppContent = {
+  title: "Mobile App Development Service",
+  introParagraphs: [
+    "We help our customers stay connected through interactive and functional mobile apps. We have strong capabilities across the app development lifecycle starting with Business analysis of the initial idea, UI/UX design, software development, Quality assurance and secure PlayStore deployment. We are technology agnostic and have strong capabilities in native iOS, Android and cross-platform technologies such as Angular, Cordova, Ionic native, Flutter and React native etc.",
+    "Do you want an innovative solution to support your business? Bring it to us! We deliver mobile solutions that fit your budget and are delivered on time.",
+  ],
+  trackRecord: [
+    {
+      title: "STRONG TRACK RECORD",
+      body: "Indian app developers are a popular choice for businesses looking to get the most bang for their buck. They are some of the most cost-effective developers in the world, while also being good at what they do. Indian app developers are skilled in a variety of programming languages, cutting-edge technology, and cross-platform mobile application development, so they can easily accommodate most outsourcing needs.",
+    },
+    {
+      title: "POPULAR DESTINATION",
+      body: "As the mobile app market continues to grow, so does the demand for skilled app developers. India has become a popular destination for companies looking to outsource their app development projects due to the vast pool of talented developers and lower cost of labor. Indian app developers can accommodate Native Android, iOS, and cross-platform application needs.",
+    },
+    {
+      title: "GOVERNMENT SUPPORT",
+      body: "In recent years, the Government of India has made significant strides to improve the business environment for Android app developers and entrepreneurs. Initiatives like Startup India have provided infrastructure and policy support, helping development firms and entrepreneurs thrive while mobile internet adoption continues to grow.",
+    },
+  ],
+  techTitle: "Mobile App",
+  capabilities: [
+    {
+      title: "FAMILIARITY WITH TECHNOLOGIES",
+      body: "Indian app developers working in cutting-edge mobile app development companies are familiar with Java, Android Studio, and other popular app development frameworks and toolsets. This allows teams to rapidly develop high-quality apps for a wide range of platforms and devices while keeping up with the latest mobile technology advancements.",
+    },
+    {
+      title: "DELIVERING HIGH-QUALITY STANDARDS",
+      body: "Indian IT companies working on digital solutions and application development services offer quality standards on par with the best in the world. They invest in training, daily scrum meetings, and stringent quality control measures. As a result, mobile application development companies provide excellent service at competitive prices.",
+    },
+    {
+      title: "GREAT TALENT",
+      body: "Indian app developers are some of the most talented in the world. They understand user experience and mobile app design, creating high-quality apps that are user-friendly and visually appealing. They also understand design thinking principles and how to create engaging interfaces for audiences in the United States and Europe.",
+    },
+  ],
+  skillPoolTitle: "LARGE SKILL POOL",
+  skillPoolBody:
+    "India is home to a large pool of skilled developers, making it an attractive location for app development companies. The cost of doing business in India is also relatively low, which lowers the overall project budget. This makes India an attractive destination for mobile app development companies.",
+  skillPoolImage: "https://naethra.com/wp-content/uploads/2022/07/mob-app-landing.jpg",
+  callout:
+    "If you are looking for a software development company or a Web and Mobile app development solution, Naethra Technologies is here to help you. We have put together a team that is dedicated to helping you achieve your goals.",
+  blogTitle: "Blogs",
+  blogCategory: "Hybrid App",
+  blogHeadline: "Hybrid App",
+  blogExcerpt:
+    "Hybrid App development is a kind of coding approach, rather than a particular variety of apps.",
+  blogHref: "/blogs/hybrid-app",
+  blogImage:
+    "https://naethra.com/wp-content/uploads/2022/08/hyprid-app-thegem-post-thumb-large.png",
+};
+
+export function mapMobileAppContent(html: string): MobileAppContent {
+  const chunks = extractHtmlChunks(html);
+
+  const mapCard = (fallback: { title: string; body: string }, matcher: RegExp) => {
+    const fromWp = extractSectionAfterHeading(html, matcher);
+    return {
+      title: extractHeadingText(html, "h3", matcher) || fallback.title,
+      body: fromWp || findChunk(chunks, (text) => matcher.test(text)) || fallback.body,
+    };
+  };
+
+  const introParagraphs = [
+    findChunk(chunks, (text) => /help our customers stay connected/i.test(text)),
+    findChunk(chunks, (text) => /innovative solution to support your business/i.test(text)),
+  ].filter(Boolean);
+
+  return {
+    title:
+      extractHeadingText(html, "h1", /mobile app development service/i) ||
+      MOBILE_APP_FALLBACK.title,
+    introParagraphs:
+      introParagraphs.length > 0 ? introParagraphs : MOBILE_APP_FALLBACK.introParagraphs,
+    trackRecord: [
+      mapCard(MOBILE_APP_FALLBACK.trackRecord[0]!, /strong track record/i),
+      mapCard(MOBILE_APP_FALLBACK.trackRecord[1]!, /popular destination/i),
+      mapCard(MOBILE_APP_FALLBACK.trackRecord[2]!, /government support/i),
+    ],
+    techTitle:
+      extractHeadingText(html, "h2", /^mobile app$/i) || MOBILE_APP_FALLBACK.techTitle,
+    capabilities: [
+      mapCard(MOBILE_APP_FALLBACK.capabilities[0]!, /familiarity with technologies/i),
+      mapCard(MOBILE_APP_FALLBACK.capabilities[1]!, /delivering high-quality standards/i),
+      mapCard(MOBILE_APP_FALLBACK.capabilities[2]!, /great talent/i),
+    ],
+    skillPoolTitle:
+      extractHeadingText(html, "h2", /large skill pool/i) || MOBILE_APP_FALLBACK.skillPoolTitle,
+    skillPoolBody:
+      findChunk(chunks, (text) => /large pool of skilled developers/i.test(text)) ||
+      MOBILE_APP_FALLBACK.skillPoolBody,
+    skillPoolImage: MOBILE_APP_FALLBACK.skillPoolImage,
+    callout:
+      findChunk(chunks, (text) => /software development company in india that suits your budget/i.test(text)) ||
+      findChunk(chunks, (text) => /naethra technologies in chennai/i.test(text)) ||
+      MOBILE_APP_FALLBACK.callout,
+    blogTitle:
+      extractHeadingText(html, "h4", /blogs/i) || MOBILE_APP_FALLBACK.blogTitle,
+    blogCategory: MOBILE_APP_FALLBACK.blogCategory,
+    blogHeadline:
+      findChunk(chunks, (text) => /^hybrid app$/i.test(text)) ||
+      MOBILE_APP_FALLBACK.blogHeadline,
+    blogExcerpt:
+      findChunk(chunks, (text) => /hybrid (app )?development is a kind of coding approach/i.test(text)) ||
+      MOBILE_APP_FALLBACK.blogExcerpt,
+    blogHref: MOBILE_APP_FALLBACK.blogHref,
+    blogImage: MOBILE_APP_FALLBACK.blogImage,
+  };
+}
+
+export async function getMobileAppContent() {
+  try {
+    const page = await getPageBySlug("mobile-app");
+    if (!page?.contentHtml) return MOBILE_APP_FALLBACK;
+    return mapMobileAppContent(page.contentHtml);
+  } catch {
+    return MOBILE_APP_FALLBACK;
+  }
+}
+
 export async function getPosts(page = 1, perPage = 20) {
   // List views omit full post HTML so the route payload stays small enough for
   // client navigations (full content is only loaded on the detail route).
