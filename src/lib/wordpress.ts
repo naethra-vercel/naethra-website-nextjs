@@ -534,6 +534,125 @@ export async function getWebAppContent() {
   }
 }
 
+export type CmsContent = {
+  slug: string;
+  title: string;
+  eyebrow: string;
+  intro: string;
+  heroImage: string;
+  sections: Array<{ title: string; body: string; image?: string; bullets?: string[] }>;
+};
+
+const CMS_FALLBACK: CmsContent = {
+  slug: "cms",
+  title: "Outsource CMS Development India",
+  eyebrow: "Content management systems",
+  intro:
+    "Naethra offers cost-effective CMS development services using PHP, WordPress, Joomla, and Magento, with WooCommerce and payment gateway integration when your product needs it.",
+  heroImage: "https://naethra.com/wp-content/uploads/2022/06/web-app-changed.jpg",
+  sections: [
+    {
+      title: "Website and CMS development in India",
+      body: "For over 8 years, Indian website developers have delivered custom-tailored CMS solutions that are flexible and agile enough to adapt to a changing business model. From design and development to security enhancement, we create robust systems that fit the way your organisation works.",
+      image: "https://naethra.com/wp-content/uploads/2022/09/cms-details.jpg",
+    },
+    {
+      title: "A complete publishing system",
+      body: "Our teams customise open-source CMS frameworks like WordPress, Joomla, and Drupal. We deliver end-to-end content management packages with responsive design, integrated analytics, and less maintenance across ecommerce, learning management, real estate, and business listing applications.",
+    },
+    {
+      title: "Benefits of outsourcing CMS development",
+      body: "Outsourcing gives you access to specialist teams, reliable delivery, and a flexible cost model while your internal team stays focused on the work only it can do.",
+      image: "https://naethra.com/wp-content/uploads/2022/05/7-4-1.jpg",
+      bullets: [
+        "Quality assurance",
+        "Cost-effective services",
+        "Saving on infrastructure",
+        "24/7 services",
+        "Versatility",
+      ],
+    },
+  ],
+};
+
+export function mapCmsContent(html: string): CmsContent {
+  const chunks = extractHtmlChunks(html);
+  const intro =
+    findChunk(chunks, (text) => /cms development services/i.test(text)) || CMS_FALLBACK.intro;
+
+  const developmentBody = [
+    findChunk(chunks, (text) => /for over 8 years/i.test(text)),
+    findChunk(chunks, (text) => /end-to-end content management/i.test(text)),
+    findChunk(chunks, (text) => /open-source cms frameworks/i.test(text)),
+    findChunk(chunks, (text) => /endeavour to provide services in all technologies/i.test(text)),
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const benefitsIntro =
+    findChunk(chunks, (text) => /favored for outsourcing services/i.test(text)) ||
+    CMS_FALLBACK.sections[2]!.body;
+
+  const bulletTitles = [
+    extractHeadingText(html, "h4", /quality assurance/i),
+    extractHeadingText(html, "h4", /cost-effective services/i),
+    extractHeadingText(html, "h4", /saving on infrastructure/i),
+    extractHeadingText(html, "h4", /24\*?7 services|24\/7 services/i),
+    extractHeadingText(html, "h4", /versatility/i),
+  ].filter(Boolean);
+
+  const developmentImage = CMS_FALLBACK.sections[0]?.image;
+  const benefitsImage = CMS_FALLBACK.sections[2]?.image;
+  const benefitsBullets =
+    bulletTitles.length > 0 ? bulletTitles : CMS_FALLBACK.sections[2]?.bullets;
+
+  return {
+    slug: "cms",
+    title:
+      extractHeadingText(html, "h1", /outsource cms development/i) || CMS_FALLBACK.title,
+    eyebrow: CMS_FALLBACK.eyebrow,
+    intro,
+    heroImage: CMS_FALLBACK.heroImage,
+    sections: [
+      {
+        title:
+          extractHeadingText(html, "h2", /website and cms development/i) ||
+          CMS_FALLBACK.sections[0]!.title,
+        body: developmentBody || CMS_FALLBACK.sections[0]!.body,
+        ...(developmentImage ? { image: developmentImage } : {}),
+      },
+      {
+        title: CMS_FALLBACK.sections[1]!.title,
+        body:
+          [
+            findChunk(chunks, (text) => /open-source cms frameworks/i.test(text)),
+            findChunk(chunks, (text) => /endeavour to provide services in all technologies/i.test(text)),
+          ]
+            .filter(Boolean)
+            .join(" ") || CMS_FALLBACK.sections[1]!.body,
+      },
+      {
+        title:
+          extractHeadingText(html, "h2", /benefits of outsourcing cms/i) ||
+          CMS_FALLBACK.sections[2]!.title,
+        body: benefitsIntro,
+        ...(benefitsImage ? { image: benefitsImage } : {}),
+        ...(benefitsBullets ? { bullets: benefitsBullets } : {}),
+      },
+    ],
+  };
+}
+
+export async function getCmsContent() {
+  try {
+    const page = await getPageBySlug("cms");
+    if (!page?.contentHtml) return CMS_FALLBACK;
+    return mapCmsContent(page.contentHtml);
+  } catch {
+    return CMS_FALLBACK;
+  }
+}
+
 export async function getPosts(page = 1, perPage = 20) {
   const posts = await wpFetch<WpPost[]>(
     `/posts?page=${page}&per_page=${perPage}&_embed&status=publish`,
