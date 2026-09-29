@@ -2,6 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, ArrowUpRight, Clock3 } from "lucide-react";
 
 import BlogsEditorialList from "@/components/BlogsEditorialList";
+import BlogArticleContent from "@/components/BlogArticleContent";
 import { NaethraContentHeader } from "@/components/NaethraContentPage";
 import SiteFooter from "@/components/SiteFooter";
 import { estimateReadTime } from "@/lib/blog-utils";
@@ -30,7 +31,7 @@ function BlogDetailPage() {
       <NaethraContentHeader />
 
       <article>
-        <header className="relative overflow-hidden border-b border-[var(--line)] bg-[var(--blue-soft)]">
+        <header className="relative overflow-hidden border-b border-[var(--line)] bg-[linear-gradient(135deg,#e8edf6_0%,#f3f5fa_55%,#ffffff_100%)]">
           <div
             className="pointer-events-none absolute -right-24 -top-24 size-80 rounded-full bg-primary/10 blur-3xl"
             aria-hidden="true"
@@ -50,11 +51,13 @@ function BlogDetailPage() {
                 All articles
               </Link>
 
-              <p className="m-0 text-[0.7rem] font-extrabold uppercase tracking-[0.14em] text-primary">
-                {post.category}
-              </p>
+              <div className="flex flex-wrap items-center gap-3">
+                <p className="m-0 rounded-full border border-[var(--line)] bg-white/80 px-3 py-1 text-[0.68rem] font-extrabold uppercase tracking-[0.14em] text-primary">
+                  {post.category}
+                </p>
+              </div>
 
-              <h1 className="mt-4 font-display text-[clamp(2.4rem,5.5vw,4.6rem)] font-bold leading-[0.96] tracking-[-0.06em] text-[#111]">
+              <h1 className="mt-5 font-display text-[clamp(2.4rem,5.5vw,4.6rem)] font-bold leading-[0.96] tracking-[-0.06em] text-ink">
                 {post.title}
               </h1>
 
@@ -80,49 +83,21 @@ function BlogDetailPage() {
         </header>
 
         <div className="site-container py-10 md:py-14 lg:py-16">
-          <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[minmax(0,1fr)_14.5rem] lg:items-start lg:gap-12 xl:gap-16">
+          <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[minmax(0,1fr)_15rem] lg:items-start lg:gap-12 xl:gap-16">
             <div className="min-w-0">
               {post.image ? (
-                <figure className="mb-10 overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--blue-soft)] shadow-[0_24px_50px_rgb(20_32_51_/_0.1)] md:mb-12">
+                <figure className="group mb-10 overflow-hidden rounded-[5px] border border-[rgb(0_91_150_/_0.22)] bg-[var(--blue-soft)] shadow-[0_16px_40px_rgb(20_32_51_/_0.08)] transition-[border-color,box-shadow,transform] duration-300 ease-out hover:-translate-y-0.5 hover:border-primary hover:shadow-[0_22px_48px_rgb(0_91_150_/_0.18)] md:mb-12">
                   <img
                     src={post.image}
                     alt=""
-                    className="aspect-[16/9] w-full object-cover"
+                    className="aspect-[16/9] w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
                   />
                 </figure>
               ) : null}
 
-              <div
-                className="blog-detail-html w-full max-w-none text-[1.05rem] text-[var(--muted)] leading-[1.8]
-                  [&_.elementor]:contents
-                  [&_.elementor-section]:mb-6 [&_.elementor-section]:block
-                  [&_.elementor-container]:block [&_.elementor-container]:w-full
-                  [&_.elementor-row]:block [&_.elementor-row]:w-full
-                  [&_.elementor-column]:block [&_.elementor-column]:w-full [&_.elementor-column]:max-w-none
-                  [&_.elementor-widget-wrap]:block [&_.elementor-widget-wrap]:w-full
-                  [&_.elementor-widget]:mb-4
-                  [&_.elementor-heading-title]:m-0 [&_.elementor-heading-title]:font-display [&_.elementor-heading-title]:text-[clamp(1.35rem,2.4vw,1.85rem)] [&_.elementor-heading-title]:font-bold [&_.elementor-heading-title]:tracking-[-0.035em] [&_.elementor-heading-title]:text-ink
-                  [&_.title-h2]:m-0 [&_.title-h2]:font-display [&_.title-h2]:text-[clamp(1.35rem,2.4vw,1.85rem)] [&_.title-h2]:font-bold [&_.title-h2]:tracking-[-0.035em] [&_.title-h2]:text-ink
-                  [&_.title-h4]:m-0 [&_.title-h4]:font-display [&_.title-h4]:text-[1.15rem] [&_.title-h4]:font-bold [&_.title-h4]:text-ink
-                  [&_:is(.thegem-extended-blog-grid,.portfolio,.portfolio-preloader-wrapper,.portfolio-set,.portfolio-item,.portfolio-navigator,.portfolio-sharing-pane,.socials-sharing,.gem-button-container)]:hidden
-                  [&_a]:font-bold [&_a]:text-primary [&_a]:underline [&_a]:underline-offset-[0.15em]
-                  [&_blockquote]:my-6 [&_blockquote]:border-l-[3px] [&_blockquote]:border-primary [&_blockquote]:pl-4 [&_blockquote]:font-display [&_blockquote]:text-[1.15rem] [&_blockquote]:tracking-[-0.02em] [&_blockquote]:text-ink
-                  [&_code]:font-mono [&_code]:text-[0.9em]
-                  [&_figure]:my-6
-                  [&_h1]:mt-8 [&_h1]:mb-3 [&_h1]:font-display [&_h1]:tracking-[-0.035em] [&_h1]:text-ink [&_h1]:leading-tight
-                  [&_h2]:mt-8 [&_h2]:mb-3 [&_h2]:font-display [&_h2]:text-[clamp(1.35rem,2.4vw,1.85rem)] [&_h2]:tracking-[-0.035em] [&_h2]:text-ink [&_h2]:leading-tight
-                  [&_h3]:mt-7 [&_h3]:mb-2.5 [&_h3]:font-display [&_h3]:text-[1.2rem] [&_h3]:tracking-[-0.035em] [&_h3]:text-ink [&_h3]:leading-tight
-                  [&_h4]:mt-6 [&_h4]:mb-2 [&_h4]:font-display [&_h4]:tracking-[-0.035em] [&_h4]:text-ink
-                  [&_img]:my-6 [&_img]:mx-auto [&_img]:block [&_img]:h-auto [&_img]:max-w-full [&_img]:rounded-xl
-                  [&_li]:mb-2
-                  [&_ol]:mb-5 [&_ol]:pl-5
-                  [&_p]:mb-5 [&_p]:max-w-[42rem]
-                  [&_pre]:my-5 [&_pre]:overflow-x-auto [&_pre]:rounded-xl [&_pre]:border [&_pre]:border-[var(--line)] [&_pre]:bg-[#eef2f8] [&_pre]:p-4 [&_pre]:font-mono [&_pre]:text-[0.9em]
-                  [&_ul]:mb-5 [&_ul]:max-w-[42rem] [&_ul]:pl-5"
-                dangerouslySetInnerHTML={{ __html: post.contentHtml }}
-              />
+              <BlogArticleContent html={post.contentHtml} />
 
-              <div className="mt-10 flex flex-col gap-4 rounded-2xl border border-[var(--line)] bg-white/80 p-6 shadow-[0_16px_40px_rgb(20_32_51_/_0.06)] sm:flex-row sm:items-center sm:justify-between">
+              <div className="mt-12 flex flex-col gap-4 rounded-2xl border border-[var(--line)] bg-white p-6 shadow-[0_16px_40px_rgb(20_32_51_/_0.06)] sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <p className="m-0 text-[0.7rem] font-extrabold uppercase tracking-[0.12em] text-primary">
                     Next step
@@ -142,7 +117,7 @@ function BlogDetailPage() {
             </div>
 
             <aside className="hidden lg:block">
-              <div className="sticky top-28 space-y-5 rounded-2xl border border-[var(--line)] bg-white/80 p-5 shadow-[0_14px_34px_rgb(20_32_51_/_0.06)]">
+              <div className="sticky top-28 space-y-5 rounded-2xl border border-[var(--line)] bg-white p-5 shadow-[0_14px_34px_rgb(20_32_51_/_0.06)]">
                 <p className="m-0 text-[0.65rem] font-extrabold uppercase tracking-[0.14em] text-primary">
                   Article
                 </p>

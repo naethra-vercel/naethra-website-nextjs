@@ -10,5 +10,5 @@ export const Route = createFileRoute("/services/aws-cloud-support")({
 
 function AwsPage() {
   const service = Route.useLoaderData();
-  return <ServiceDetailPage service={service} />;
+  return <ServiceDetailPage service={service} heroBanner />;
 }

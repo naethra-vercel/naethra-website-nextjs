@@ -12,6 +12,7 @@ import BlogsEditorialList from "@/components/BlogsEditorialList";
 import { NaethraContentHeader } from "@/components/NaethraContentPage";
 import SiteFooter from "@/components/SiteFooter";
 import { getPosts } from "@/lib/wordpress";
+import blogsHeroImage from "@/assets/blogs/hero.png";
 
 export const Route = createFileRoute("/blogs/")({
   loader: async () => getPosts(1, 20),
@@ -203,14 +204,12 @@ function BlogsPage() {
     <main className="blogs-page">
       <NaethraContentHeader />
       <section className="blogs-hero">
-        <div className="site-container blogs-hero-inner">
-          <p className="blogs-kicker">Naethra / Journal</p>
-          <h1>Ideas for building what comes next.</h1>
-          <p className="blogs-hero-copy">
-            Practical notes on product strategy, application development, integrations, and the
-            decisions that make digital work more useful.
-          </p>
-        </div>
+        <h1 className="sr-only">Ideas for building what comes next.</h1>
+        <img
+          className="blogs-hero-banner"
+          src={blogsHeroImage}
+          alt=""
+        />
       </section>
 
       <section className="blogs-index site-container" aria-labelledby="blog-list-title">

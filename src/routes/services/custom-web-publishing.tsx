@@ -10,5 +10,5 @@ export const Route = createFileRoute("/services/custom-web-publishing")({
 
 function CustomWebPublishingPage() {
   const service = Route.useLoaderData();
-  return <ServiceDetailPage service={service} />;
+  return <ServiceDetailPage service={service} heroBanner />;
 }

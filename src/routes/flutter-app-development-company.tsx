@@ -3,6 +3,7 @@ import { Check, Smartphone, Zap } from "lucide-react";
 
 import NaethraContentPage, { ContentSection } from "@/components/NaethraContentPage";
 import { getFlutterContent } from "@/lib/wordpress";
+import flutterHeroImage from "@/assets/flutter/hero.png";
 
 export const Route = createFileRoute("/flutter-app-development-company")({
   loader: async () => getFlutterContent(),
@@ -13,7 +14,12 @@ function FlutterPage() {
   const content = Route.useLoaderData();
 
   return (
-    <NaethraContentPage eyebrow={content.eyebrow} title={content.title} intro={content.intro}>
+    <NaethraContentPage
+      eyebrow={content.eyebrow}
+      title={content.title}
+      intro={content.intro}
+      heroBannerImage={flutterHeroImage}
+    >
       <div className="content-callout">
         <div>
           <p className="content-page-eyebrow">{content.calloutEyebrow}</p>

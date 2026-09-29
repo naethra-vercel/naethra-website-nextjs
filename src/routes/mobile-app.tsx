@@ -20,6 +20,7 @@ import androidIcon from "@/assets/icons/Android.svg";
 import appleIcon from "@/assets/icons/Apple.svg";
 import reactIcon from "@/assets/icons/React.svg";
 import dartIcon from "@/assets/icons/Dart.svg";
+import mobileHeroImage from "@/assets/mobile/hero.png";
 import { getMobileAppContent } from "@/lib/wordpress";
 
 export const Route = createFileRoute("/mobile-app")({
@@ -47,8 +48,7 @@ function MobileAppPage() {
     <main className="mobile-app-page">
       <NaethraContentHeader />
       <section className="mobile-app-hero">
-        <div className="mobile-app-hero-image" />
-        <div className="mobile-app-hero-overlay" />
+        <img className="mobile-app-hero-banner" src={mobileHeroImage} alt="" />
       </section>
       <section className="mobile-app-intro">
         <div className="site-container mobile-app-narrow">

@@ -10,5 +10,5 @@ export const Route = createFileRoute("/cms")({
 
 function CmsPage() {
   const service = Route.useLoaderData();
-  return <ServiceDetailPage service={service} />;
+  return <ServiceDetailPage service={service} heroBanner />;
 }

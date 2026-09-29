@@ -19,6 +19,7 @@ import nodeIcon from "@/assets/icons/Node.js.svg";
 import phpIcon from "@/assets/icons/PHP.svg";
 import reactIcon from "@/assets/icons/React.svg";
 import dotNetIcon from "@/assets/icons/NET.svg";
+import webHeroImage from "@/assets/web/hero.png";
 import { getWebAppContent } from "@/lib/wordpress";
 
 export const Route = createFileRoute("/web-app")({
@@ -59,8 +60,7 @@ function WebAppPage() {
     <main className="web-app-page">
       <NaethraContentHeader />
       <section className="web-app-hero">
-        <div className="web-app-hero-image" />
-        <div className="web-app-hero-overlay" />
+        <img className="web-app-hero-banner" src={webHeroImage} alt="" />
       </section>
 
       <section className="web-app-quote-band">

@@ -183,6 +183,7 @@ type ContentPageProps = {
   compact?: boolean;
   footerVariant?: "simple" | "detailed";
   className?: string;
+  heroBannerImage?: string;
 };
 
 export default function NaethraContentPage({
@@ -193,6 +194,7 @@ export default function NaethraContentPage({
   compact = false,
   footerVariant = "detailed",
   className = "",
+  heroBannerImage,
 }: ContentPageProps) {
   useEffect(() => {
     const revealElements = document.querySelectorAll<HTMLElement>("[data-reveal]");
@@ -218,16 +220,23 @@ export default function NaethraContentPage({
   return (
     <main className={['content-page', className].filter(Boolean).join(' ')}>
       <NaethraContentHeader />
-      <section
-        className={`content-page-hero ${compact ? "content-page-hero-compact" : ""}`}
-        data-reveal="hero"
-      >
-        <div className="site-container">
-          <p className="content-page-eyebrow">{eyebrow}</p>
-          <h1>{title}</h1>
-          {intro && <p className="content-page-intro">{intro}</p>}
-        </div>
-      </section>
+      {heroBannerImage ? (
+        <section className="content-page-hero content-page-hero-banner" data-reveal="hero">
+          <h1 className="sr-only">{title}</h1>
+          <img className="content-page-hero-banner-img" src={heroBannerImage} alt="" />
+        </section>
+      ) : (
+        <section
+          className={`content-page-hero ${compact ? "content-page-hero-compact" : ""}`}
+          data-reveal="hero"
+        >
+          <div className="site-container">
+            <p className="content-page-eyebrow">{eyebrow}</p>
+            <h1>{title}</h1>
+            {intro && <p className="content-page-intro">{intro}</p>}
+          </div>
+        </section>
+      )}
       <article className="content-page-body site-container" data-reveal="fade-up">
         {children}
       </article>

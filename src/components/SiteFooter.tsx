@@ -1,5 +1,5 @@
 import { type FormEvent, useState, type HTMLAttributes } from "react";
-import { Mail, MapPin, MessageCircle, Phone } from "lucide-react";
+import { Mail, MapPin, Phone } from "lucide-react";
 
 type SiteFooterProps = HTMLAttributes<HTMLElement> & {
   variant?: "simple" | "detailed";
@@ -96,7 +96,7 @@ export default function SiteFooter({
       </div>
 
       <div className="site-footer-detailed-bottom">
-        <div className="site-container footer-grid site-footer-detailed-grid">
+        <div className="site-container site-footer-detailed-grid">
           <div className="site-footer-about">
             <img src="/logo.png" alt="Naethra Technologies" width={150} height={33} />
             <p>
@@ -147,8 +147,9 @@ export default function SiteFooter({
               </div>
             </div>
           </div>
+        </div>
 
-        <div className="footer-copy site-footer-detailed-legal">
+        <div className="site-container site-footer-detailed-legal">
           <span>
             2026 © Copyrights <strong>Naethra Technologies</strong> | Designed by{" "}
             <strong>Naethra Technologies</strong>
@@ -156,10 +157,6 @@ export default function SiteFooter({
           <FooterLinks />
         </div>
       </div>
-      </div>
-      <a className="site-footer-chat" href="mailto:info@naethra.com" aria-label="Email Naethra Technologies">
-        <MessageCircle size={25} aria-hidden="true" />
-      </a>
     </footer>
   );
 }

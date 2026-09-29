@@ -10,5 +10,5 @@ export const Route = createFileRoute("/services/dot-net-application")({
 
 function DotNetPage() {
   const service = Route.useLoaderData();
-  return <ServiceDetailPage service={service} />;
+  return <ServiceDetailPage service={service} heroBanner />;
 }

@@ -10,6 +10,12 @@ import {
   Workflow,
 } from "lucide-react";
 
+import awsHeroImage from "@/assets/aws/hero.png";
+import cmsHeroImage from "@/assets/cms/hero.png";
+import customWebPublishHeroImage from "@/assets/custom-web-publish/hero.png";
+import dotNetHeroImage from "@/assets/dot-net/hero.png";
+import filemakerHeroImage from "@/assets/filemaker/hero.png";
+
 export type ServiceDetail = {
   slug: string;
   title: string;
@@ -86,7 +92,7 @@ export const serviceDetails = {
     eyebrow: "Content management systems",
     intro:
       "Naethra offers cost-effective CMS development services using PHP, WordPress, Joomla, and Magento, with WooCommerce and payment gateway integration when your product needs it.",
-    heroImage: `${base}/2022/06/web-app-changed.jpg`,
+    heroImage: cmsHeroImage,
     sections: [
       {
         title: "Website and CMS development in India",
@@ -117,7 +123,7 @@ export const serviceDetails = {
     eyebrow: "FileMaker integrations",
     intro:
       "FileMaker Custom Web Publishing integrates a FileMaker database with a custom website, giving teams secure control over how business data is published and used on the web.",
-    heroImage: `${base}/2022/12/filemaker-server.jpg`,
+    heroImage: customWebPublishHeroImage,
     sections: [
       {
         title: "Publish the data your users need",
@@ -153,7 +159,7 @@ export const serviceDetails = {
     eyebrow: "FileMaker solutions",
     intro:
       "One-stop FileMaker solutions for design, development, hosting, maintenance, and 24 x 7 support services.",
-    heroImage: `${base}/2025/10/filemaker-ser-new-1.jpg`,
+    heroImage: filemakerHeroImage,
     sections: [
       {
         title: "One-stop shop for FileMaker solutions",
@@ -186,7 +192,7 @@ export const serviceDetails = {
     eyebrow: "Microsoft .NET development",
     intro:
       "Naethra provides full-cycle development services in Microsoft .NET for independent software vendors, product companies, and teams that need scalable custom applications.",
-    heroImage: `${base}/2022/12/net-2.jpg`,
+    heroImage: dotNetHeroImage,
     sections: [
       {
         title: "Benefits of ASP.NET in development",
@@ -209,7 +215,7 @@ export const serviceDetails = {
     eyebrow: "Cloud infrastructure and support",
     intro:
       "Move from infrastructure pressure to dependable delivery with cloud architecture, deployment, monitoring, and support shaped around your product and team.",
-    heroImage: `${base}/2022/09/web-app-img.jpg`,
+    heroImage: awsHeroImage,
     sections: [
       {
         title: "Cloud solutions that fit the business",

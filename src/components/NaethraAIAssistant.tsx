@@ -54,13 +54,17 @@ export function NaethraAIAssistant() {
     }
   }, [messages, isOpen, isLoading]);
 
-  // Listen for global trigger event
+  // Listen for global trigger events
   useEffect(() => {
     if (typeof window === "undefined") return;
 
     const handleOpen = () => setIsOpen(true);
     window.addEventListener("open-naethra-assistant", handleOpen);
-    return () => window.removeEventListener("open-naethra-assistant", handleOpen);
+    window.addEventListener("open-jarvis", handleOpen);
+    return () => {
+      window.removeEventListener("open-naethra-assistant", handleOpen);
+      window.removeEventListener("open-jarvis", handleOpen);
+    };
   }, []);
 
   const handleSendMessage = async () => {

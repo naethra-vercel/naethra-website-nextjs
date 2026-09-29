@@ -1,3 +1,10 @@
+import awsHeroImage from "@/assets/aws/hero.png";
+import cmsHeroImage from "@/assets/cms/hero.png";
+import customWebPublishHeroImage from "@/assets/custom-web-publish/hero.png";
+import dotNetHeroImage from "@/assets/dot-net/hero.png";
+import filemakerHeroImage from "@/assets/filemaker/hero.png";
+import { extractBlogArticleHtml } from "@/lib/blog-html";
+
 const WP_BASE =
   import.meta.env["VITE_WORDPRESS_API_URL"]?.replace(/\/$/, "") ||
   "https://naethra.com/wp-json/wp/v2";
@@ -215,120 +222,6 @@ function stripHtml(markup: string) {
     .trim();
 }
 
-function findMatchingClose(html: string, openIndex: number): number {
-  const tagMatch = html.slice(openIndex).match(/^<([a-zA-Z0-9:-]+)\b[^>]*>/);
-  if (!tagMatch) return -1;
-  const tag = tagMatch[1]?.toLowerCase() ?? "";
-  if (!tag) return -1;
-
-  // Self-closing style open tags.
-  if (/\/>$/.test(tagMatch[0])) return openIndex + tagMatch[0].length;
-
-  let depth = 0;
-  const token = new RegExp(`<(/)?${tag}\\b[^>]*>`, "gi");
-  token.lastIndex = openIndex;
-
-  let match: RegExpExecArray | null;
-  while ((match = token.exec(html))) {
-    const isClose = Boolean(match[1]);
-    const full = match[0];
-    if (!isClose && /\/>$/.test(full)) continue;
-
-    depth += isClose ? -1 : 1;
-    if (depth === 0) return match.index + full.length;
-  }
-
-  return -1;
-}
-
-function removeMatchingBlocks(html: string, openPattern: RegExp, shouldRemove: (block: string) => boolean) {
-  let result = "";
-  let cursor = 0;
-  const pattern = new RegExp(openPattern.source, openPattern.flags.includes("g") ? openPattern.flags : `${openPattern.flags}g`);
-
-  while (cursor < html.length) {
-    pattern.lastIndex = cursor;
-    const match = pattern.exec(html);
-    if (!match) {
-      result += html.slice(cursor);
-      break;
-    }
-
-    const start = match.index;
-    result += html.slice(cursor, start);
-
-    const end = findMatchingClose(html, start);
-    if (end < 0) {
-      result += match[0];
-      cursor = start + match[0].length;
-      continue;
-    }
-
-    const block = html.slice(start, end);
-    if (shouldRemove(block)) {
-      cursor = end;
-      continue;
-    }
-
-    result += block;
-    cursor = end;
-  }
-
-  return result;
-}
-
-/** Strip TheGem / Elementor related-posts chrome from WP content. */
-export function sanitizeBlogHtml(html: string) {
-  if (!html) return "";
-
-  let cleaned = html;
-
-  cleaned = removeMatchingBlocks(
-    cleaned,
-    /<(div|section)\b[^>]*(?:thegem-extended-blog-grid|portfolio-preloader-wrapper|portfolio-set|portfolio-sharing-pane|socials-sharing|gem-button-container)[^>]*>/gi,
-    (block) =>
-      /thegem-extended-blog-grid|portfolio-preloader-wrapper|portfolio-set|portfolio-sharing-pane|socials-sharing|View all posts|Clear Filters|Most popular/i.test(
-        block,
-      ),
-  );
-
-  cleaned = removeMatchingBlocks(
-    cleaned,
-    /<section\b[^>]*elementor-(?:top-)?section[^>]*>/gi,
-    (block) => {
-      const isRelatedChrome =
-        /Most popular|Clear Filters|thegem-extended-blog-grid|filters_text_labels_clear_text|View all posts/i.test(
-          block,
-        );
-      const isArticleMedia = /wp-image-|attachment-|size-large|FileMaker_And_Moisture/i.test(block);
-      return isRelatedChrome && !isArticleMedia;
-    },
-  );
-
-  // WP/Elementor posts often ship white text meant for dark theme sections.
-  cleaned = cleaned.replace(/\sstyle=(["'])(.*?)\1/gi, (_full, quote: string, styleValue: string) => {
-    const next = styleValue
-      .replace(
-        /(^|;)\s*color\s*:\s*(#fff(?:fff)?|white|rgb\(\s*255\s*,\s*255\s*,\s*255\s*\)|rgba\(\s*255\s*,\s*255\s*,\s*255\s*,\s*[\d.]+\s*\))\s*/gi,
-        "$1",
-      )
-      .replace(/;;+/g, ";")
-      .replace(/^;\s*|;$/g, "")
-      .trim();
-
-    return next ? ` style=${quote}${next}${quote}` : "";
-  });
-
-  cleaned = cleaned
-    .replace(/<section\b[^>]*>\s*<\/section>/gi, "")
-    .replace(/<div\b[^>]*>\s*<\/div>/gi, "")
-    .replace(/\b(Most popular|Clear Filters)\b/gi, "")
-    .replace(/\n{3,}/g, "\n\n")
-    .trim();
-
-  return cleaned;
-}
-
 function formatDate(iso: string) {
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return iso;
@@ -378,12 +271,12 @@ function estimateReadTimeFromText(...parts: string[]) {
 export function mapWpPost(post: WpPost, options?: { includeContent?: boolean }): WpBlogPost {
   const includeContent = options?.includeContent !== false;
   const rawContent = includeContent ? (post.content?.rendered ?? "") : "";
-  const contentHtml = includeContent ? sanitizeBlogHtml(rawContent) : "";
+  const title = stripHtml(post.title?.rendered ?? "Untitled");
+  const contentHtml = includeContent ? extractBlogArticleHtml(rawContent, title) : "";
   const categories = getCategories(post);
   const image = post._embedded?.["wp:featuredmedia"]?.[0]?.source_url ?? "";
   const dateIso = post.date ?? "";
   const author = post._embedded?.author?.[0]?.name?.trim() || "Naethra";
-  const title = stripHtml(post.title?.rendered ?? "Untitled");
   const excerpt = stripHtml(post.excerpt?.rendered ?? "");
 
   return {
@@ -681,7 +574,7 @@ const CMS_FALLBACK: CmsContent = {
   eyebrow: "Content management systems",
   intro:
     "Naethra offers cost-effective CMS development services using PHP, WordPress, Joomla, and Magento, with WooCommerce and payment gateway integration when your product needs it.",
-  heroImage: "https://naethra.com/wp-content/uploads/2022/06/web-app-changed.jpg",
+  heroImage: cmsHeroImage,
   sections: [
     {
       title: "Website and CMS development in India",
@@ -800,7 +693,7 @@ const FILEMAKER_FALLBACK: FileMakerContent = {
   eyebrow: "FileMaker solutions",
   intro:
     "One-stop FileMaker solutions for design, development, hosting, maintenance, and 24 x 7 support services.",
-  heroImage: "https://naethra.com/wp-content/uploads/2025/10/filemaker-ser-new-1.jpg",
+  heroImage: filemakerHeroImage,
   sections: [
     {
       title: "One-stop shop for FileMaker solutions",
@@ -920,7 +813,7 @@ const DOT_NET_FALLBACK: DotNetContent = {
   eyebrow: "Microsoft .NET development",
   intro:
     "Naethra provides full-cycle development services in Microsoft .NET for independent software vendors, product companies, and teams that need scalable custom applications.",
-  heroImage: "https://naethra.com/wp-content/uploads/2022/12/net-2.jpg",
+  heroImage: dotNetHeroImage,
   sections: [
     {
       title: "Benefits of ASP.NET in development",
@@ -1033,7 +926,7 @@ const AWS_FALLBACK: AwsContent = {
   eyebrow: "Cloud infrastructure and support",
   intro:
     "Move from infrastructure pressure to dependable delivery with cloud architecture, deployment, monitoring, and support shaped around your product and team.",
-  heroImage: "https://naethra.com/wp-content/uploads/2022/09/web-app-img.jpg",
+  heroImage: awsHeroImage,
   sections: [
     {
       title: "Managed services",
@@ -1143,7 +1036,7 @@ const CWP_FALLBACK: CustomWebPublishingContent = {
   eyebrow: "FileMaker integrations",
   intro:
     "FileMaker Custom Web Publishing integrates a FileMaker database with a custom website, giving teams secure control over how business data is published and used on the web.",
-  heroImage: "https://naethra.com/wp-content/uploads/2022/12/filemaker-server.jpg",
+  heroImage: customWebPublishHeroImage,
   sections: [
     {
       title: "Publish the data your users need",
