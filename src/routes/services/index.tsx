@@ -4,10 +4,13 @@ import { useEffect } from "react";
 
 import { NaethraContentHeader } from "@/components/NaethraContentPage";
 import SiteFooter from "@/components/SiteFooter";
-import { services } from "@/lib/service-data";
+import { getServicesPageContent } from "@/lib/wordpress";
 import servicesHeaderImage from "@/assets/services/header.png";
 
-export const Route = createFileRoute("/services/")({ component: ServicesPage });
+export const Route = createFileRoute("/services/")({
+  loader: async () => getServicesPageContent(),
+  component: ServicesPage,
+});
 
 const servicePresentation: Record<
   string,
@@ -106,6 +109,8 @@ const servicePresentation: Record<
 };
 
 function ServicesPage() {
+  const content = Route.useLoaderData();
+
   useEffect(() => {
     const cards = document.querySelectorAll<HTMLElement>(".service-slide");
 
@@ -139,15 +144,15 @@ function ServicesPage() {
         />
         <div className="services-hero-overlay" />
         <div className="services-hero-copy site-container">
-          <p>What we do</p>
-          <h1>Technology that works for the way you work.</h1>
-          <span>One engineering squad creating websites, proprietary FileMaker products, and mobile applications.</span>
+          <p>{content.eyebrow}</p>
+          <h1>{content.title}</h1>
+          <span>{content.subtitle}</span>
         </div>
       </section>
       <section className="services-index">
         <div className="services-index-inner site-container">
           <div className="services-card-list">
-            {services.map(({ title, description, href }, index) => {
+            {content.items.map(({ title, description, href }, index) => {
               const presentation = servicePresentation[title] ?? {
                 benefits: [description],
                 tags: [],

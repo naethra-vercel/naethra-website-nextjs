@@ -1128,6 +1128,316 @@ export async function getAwsContent() {
   }
 }
 
+export type CustomWebPublishingContent = {
+  slug: string;
+  title: string;
+  eyebrow: string;
+  intro: string;
+  heroImage: string;
+  sections: Array<{ title: string; body: string; image?: string; bullets?: string[] }>;
+};
+
+const CWP_FALLBACK: CustomWebPublishingContent = {
+  slug: "custom-web-publishing",
+  title: "Custom Web Publishing",
+  eyebrow: "FileMaker integrations",
+  intro:
+    "FileMaker Custom Web Publishing integrates a FileMaker database with a custom website, giving teams secure control over how business data is published and used on the web.",
+  heroImage: "https://naethra.com/wp-content/uploads/2022/12/filemaker-server.jpg",
+  sections: [
+    {
+      title: "Publish the data your users need",
+      body: "FileMaker has an API that enables access through PHP, a standard tool for web development. With CWP, a website can securely publish all or a portion of your data to a few remote users or the entire web.",
+      bullets: [
+        "Angular",
+        "PHP",
+        "JavaScript and jQuery",
+        "HTML5, AJAX and CSS3",
+        "MySQL",
+        "FileMaker Data API",
+      ],
+    },
+    {
+      title: "Custom web publishing with PHP",
+      body: "The FileMaker API for PHP provides an object-oriented interface to FileMaker Pro databases. Because the web pages are built as a custom application, your team has complete control over the interface and how users interact with the data.",
+      image: "https://naethra.com/wp-content/uploads/2022/12/filemaker-api-php.jpg",
+      bullets: [
+        "Integrate your database with another website",
+        "Determine how users interact with data",
+        "Control how data displays in web browsers",
+      ],
+    },
+    {
+      title: "A dependable publishing stack",
+      body: "FileMaker Server brings together the web server, Web Publishing Engine, PHP engine, database server, and Admin Console. Our team can design, build, and support the connection between those layers.",
+    },
+  ],
+};
+
+export function mapCustomWebPublishingContent(html: string): CustomWebPublishingContent {
+  const chunks = extractHtmlChunks(html);
+  const listItems = extractClosingListItems(html);
+
+  const intro =
+    [
+      findChunk(chunks, (text) => /custom web publishing/i.test(text) && /integrate a filemaker database/i.test(text)),
+      findChunk(chunks, (text) => /with cwp, a website can be developed/i.test(text)),
+    ]
+      .filter(Boolean)
+      .join(" ") || CWP_FALLBACK.intro;
+
+  const techBullets = listItems.filter((item) =>
+    /angular|php|javascript|jquery|html|ajax|css|mysql|data api|fm data/i.test(item),
+  );
+
+  const phpCapabilityBullets = listItems.filter((item) =>
+    /integrate your database|interact with data|displays in web browsers/i.test(item),
+  );
+
+  const phpBody =
+    findChunk(chunks, (text) => /filemaker api for php provides an object-oriented/i.test(text)) ||
+    CWP_FALLBACK.sections[1]!.body;
+
+  const stackBody = [
+    findChunk(chunks, (text) => /web server:/i.test(text)),
+    findChunk(chunks, (text) => /web publishing engine:/i.test(text)),
+    findChunk(chunks, (text) => /php engine:/i.test(text)),
+    findChunk(chunks, (text) => /database server:/i.test(text)),
+    findChunk(chunks, (text) => /admin console:/i.test(text)),
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const publishBody =
+    findChunk(chunks, (text) => /application programming interface \(api\)/i.test(text)) ||
+    findChunk(chunks, (text) => /enable access through php/i.test(text)) ||
+    CWP_FALLBACK.sections[0]!.body;
+
+  const phpImage = CWP_FALLBACK.sections[1]?.image;
+  const techList = techBullets.length > 0 ? techBullets : CWP_FALLBACK.sections[0]?.bullets;
+  const phpList =
+    phpCapabilityBullets.length > 0
+      ? phpCapabilityBullets
+      : CWP_FALLBACK.sections[1]?.bullets;
+
+  return {
+    slug: "custom-web-publishing",
+    title: CWP_FALLBACK.title,
+    eyebrow: CWP_FALLBACK.eyebrow,
+    intro,
+    heroImage: CWP_FALLBACK.heroImage,
+    sections: [
+      {
+        title: CWP_FALLBACK.sections[0]!.title,
+        body: publishBody,
+        ...(techList ? { bullets: techList } : {}),
+      },
+      {
+        title:
+          extractHeadingText(html, "h4", /custom web publishing with php/i) ||
+          CWP_FALLBACK.sections[1]!.title,
+        body: phpBody,
+        ...(phpImage ? { image: phpImage } : {}),
+        ...(phpList ? { bullets: phpList } : {}),
+      },
+      {
+        title: CWP_FALLBACK.sections[2]!.title,
+        body: stackBody || CWP_FALLBACK.sections[2]!.body,
+      },
+    ],
+  };
+}
+
+export async function getCustomWebPublishingContent() {
+  try {
+    const page = await getPageBySlug("custom-web-publishing");
+    if (!page?.contentHtml) return CWP_FALLBACK;
+    return mapCustomWebPublishingContent(page.contentHtml);
+  } catch {
+    return CWP_FALLBACK;
+  }
+}
+
+export type ServicesPageItem = {
+  title: string;
+  description: string;
+  href: string;
+};
+
+export type ServicesPageContent = {
+  eyebrow: string;
+  title: string;
+  subtitle: string;
+  items: ServicesPageItem[];
+};
+
+const SERVICES_FALLBACK: ServicesPageContent = {
+  eyebrow: "What we do",
+  title: "Technology that works for the way you work.",
+  subtitle:
+    "One engineering squad creating websites, proprietary FileMaker products, and mobile applications.",
+  items: [
+    {
+      title: "iOS, Android and hybrid mobility applications",
+      description:
+        "Build connected mobile experiences across native and cross-platform technologies.",
+      href: "/mobile-app",
+    },
+    {
+      title: "Website development",
+      description: "Websites and application experiences shaped around your product and users.",
+      href: "/web-app",
+    },
+    {
+      title: "Content management system",
+      description: "Flexible CMS solutions with publishing workflows, integrations, and analytics.",
+      href: "/cms",
+    },
+    {
+      title: "Java/J2EE applications",
+      description: "Enterprise Java solutions that improve the way your business builds software.",
+      href: "/services/dot-net-application",
+    },
+    {
+      title: "PHP/MySQL applications",
+      description: "Practical, scalable PHP and database applications for growing organisations.",
+      href: "/web-app",
+    },
+    {
+      title: ".NET applications",
+      description: "Full-cycle Microsoft .NET development for robust custom applications.",
+      href: "/services/dot-net-application",
+    },
+    {
+      title: "FileMaker development",
+      description: "Certified FileMaker development, integrations, and custom business tools.",
+      href: "/services/claris-filemaker-application",
+    },
+    {
+      title: "Custom web publishing with PHP",
+      description: "Publish FileMaker data securely through custom web applications.",
+      href: "/services/custom-web-publishing",
+    },
+    {
+      title: "Cloud solutions",
+      description: "Cloud infrastructure, support, and application delivery that can scale with you.",
+      href: "/services/aws-cloud-support",
+    },
+  ],
+};
+
+function findServiceDescription(chunks: string[], titleMatcher: RegExp, descriptionMatcher: RegExp) {
+  const titled = chunks.find((text) => titleMatcher.test(text));
+  if (titled && titled.length > 40 && descriptionMatcher.test(titled)) {
+    return titled.replace(titleMatcher, "").trim() || titled;
+  }
+  return findChunk(chunks, (text) => descriptionMatcher.test(text));
+}
+
+export function mapServicesPageContent(html: string): ServicesPageContent {
+  const chunks = extractHtmlChunks(html);
+  const plain = stripHtml(html);
+
+  const mapItem = (
+    fallback: ServicesPageItem,
+    titleMatcher: RegExp,
+    descriptionMatcher: RegExp,
+  ): ServicesPageItem => {
+    const titleFromWp =
+      chunks.find((text) => titleMatcher.test(text) && text.length < 90)?.trim() ||
+      plain.match(titleMatcher)?.[0] ||
+      "";
+
+    const description =
+      findServiceDescription(chunks, titleMatcher, descriptionMatcher) || fallback.description;
+
+    return {
+      title: titleFromWp
+        ? titleFromWp
+            .replace(/\s+/g, " ")
+            .replace(/\bJave\b/i, "Java")
+            .replace(/\s*\(CWP\)\s*$/i, "")
+            .replace(/\bIOS\b/g, "iOS")
+            .replace(/\bANDROID\b/g, "Android")
+            .replace(/\bHYBRID MOBILITY APPLICATIONS\b/i, "hybrid mobility applications")
+            .replace(/\bWEBSITE DEVELOPMENT\b/i, "Website development")
+            .replace(/\bCONTENT MANAGEMENT SYSTEM\b/i, "Content management system")
+            .replace(/\bJAVE?\/J2EE APPLICATIONS\b/i, "Java/J2EE applications")
+            .replace(/\bPHP\/MYSQL APPLICATIONS\b/i, "PHP/MySQL applications")
+            .replace(/\b\.?\s*Net Applications\b/i, ".NET applications")
+            .replace(/\bFileMaker Development\b/i, "FileMaker development")
+            .replace(/\bCustom Web Publishing with PHP\b/i, "Custom web publishing with PHP")
+            .replace(/\bCloud Solutions\b/i, "Cloud solutions")
+        : fallback.title,
+      description: description.replace(/…$/, "…").trim() || fallback.description,
+      href: fallback.href,
+    };
+  };
+
+  return {
+    eyebrow: SERVICES_FALLBACK.eyebrow,
+    title: SERVICES_FALLBACK.title,
+    subtitle: SERVICES_FALLBACK.subtitle,
+    items: [
+      mapItem(
+        SERVICES_FALLBACK.items[0]!,
+        /ios,? android and hybrid mobility applications/i,
+        /first mobile app project|mobile applications have been the fastest/i,
+      ),
+      mapItem(
+        SERVICES_FALLBACK.items[1]!,
+        /website development/i,
+        /skilled and experienced development team|technology and user interface solutions/i,
+      ),
+      mapItem(
+        SERVICES_FALLBACK.items[2]!,
+        /content management system/i,
+        /open source content management systems|easily downloaded by anyone/i,
+      ),
+      mapItem(
+        SERVICES_FALLBACK.items[3]!,
+        /jav[ea]?\/j2ee applications/i,
+        /java competency center|improve the way it builds software/i,
+      ),
+      mapItem(
+        SERVICES_FALLBACK.items[4]!,
+        /php\/mysql applications/i,
+        /widely-used general-purpose scripting language|especially suited for web development/i,
+      ),
+      mapItem(
+        SERVICES_FALLBACK.items[5]!,
+        /\.?net applications/i,
+        /full-cycle development services in microsoft \.?net|independent software vendors/i,
+      ),
+      mapItem(
+        SERVICES_FALLBACK.items[6]!,
+        /filemaker development/i,
+        /100 person years|certified fm developers/i,
+      ),
+      mapItem(
+        SERVICES_FALLBACK.items[7]!,
+        /custom web publishing with php/i,
+        /filemaker-to-web solution|controlled public access to your data/i,
+      ),
+      mapItem(
+        SERVICES_FALLBACK.items[8]!,
+        /cloud solutions/i,
+        /cloud computing is the delivery of computing services/i,
+      ),
+    ],
+  };
+}
+
+export async function getServicesPageContent() {
+  try {
+    const page = await getPageBySlug("services");
+    if (!page?.contentHtml) return SERVICES_FALLBACK;
+    return mapServicesPageContent(page.contentHtml);
+  } catch {
+    return SERVICES_FALLBACK;
+  }
+}
+
 export type FlutterContent = {
   eyebrow: string;
   title: string;
