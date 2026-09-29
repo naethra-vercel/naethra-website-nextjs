@@ -38,7 +38,6 @@ import IntegrationSection from "@/components/IntegrationSection";
 import { openNaethraAssistant } from "@/components/NaethraAIAssistant";
 import SectionEyebrow from "@/components/SectionEyebrow";
 import AnimatedCtaButton from "@/components/AnimatedCtaButton";
-import PlatformLoader from "@/components/PlatformLoader";
 import { getPosts } from "@/lib/wordpress";
 
 export const Route = createFileRoute("/")({
@@ -390,7 +389,6 @@ function Index() {
 
   return (
     <main id="top" className="site-page">
-      <PlatformLoader />
       <header className={`site-header ${isScrolled ? "is-scrolled" : ""}`}>
         <div className="site-container header-inner">
           <Logo />

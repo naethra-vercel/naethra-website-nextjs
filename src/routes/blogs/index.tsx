@@ -1,7 +1,14 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowUpRight } from "lucide-react";
-import { useState } from "react";
+import { createFileRoute } from "@tanstack/react-router";
+import { ChevronDown } from "lucide-react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 
+import BlogsEditorialList from "@/components/BlogsEditorialList";
 import { NaethraContentHeader } from "@/components/NaethraContentPage";
 import SiteFooter from "@/components/SiteFooter";
 import { getPosts } from "@/lib/wordpress";
@@ -10,6 +17,172 @@ export const Route = createFileRoute("/blogs/")({
   loader: async () => getPosts(1, 20),
   component: BlogsPage,
 });
+
+function BlogFilters({
+  categories,
+  activeCategory,
+  onSelect,
+}: {
+  categories: string[];
+  activeCategory: string;
+  onSelect: (category: string) => void;
+}) {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const measureRef = useRef<HTMLDivElement>(null);
+  const [visibleCount, setVisibleCount] = useState(categories.length);
+  const [moreOpen, setMoreOpen] = useState(false);
+
+  const measure = useCallback(() => {
+    const wrap = wrapRef.current;
+    const measureEl = measureRef.current;
+    if (!wrap || !measureEl) return;
+
+    const available = wrap.clientWidth;
+    const items = Array.from(measureEl.querySelectorAll<HTMLElement>("[data-filter-measure]"));
+    const moreWidth =
+      measureEl.querySelector<HTMLElement>("[data-filter-more-measure]")?.offsetWidth ?? 72;
+    const gap = 6;
+
+    if (items.length === 0) {
+      setVisibleCount(0);
+      return;
+    }
+
+    let used = 0;
+    let fit = items.length;
+
+    for (let i = 0; i < items.length; i += 1) {
+      const item = items[i];
+      if (!item) break;
+      const width = item.offsetWidth;
+      const next = used + (i > 0 ? gap : 0) + width;
+      const remaining = items.length - (i + 1);
+      const reserve = remaining > 0 ? gap + moreWidth : 0;
+
+      if (next + reserve > available) {
+        fit = i;
+        break;
+      }
+
+      used = next;
+    }
+
+    setVisibleCount(Math.max(1, Math.min(fit, items.length)));
+  }, []);
+
+  useLayoutEffect(() => {
+    measure();
+  }, [categories, activeCategory, measure]);
+
+  useEffect(() => {
+    const wrap = wrapRef.current;
+    if (!wrap || typeof ResizeObserver === "undefined") return;
+
+    const observer = new ResizeObserver(() => measure());
+    observer.observe(wrap);
+    window.addEventListener("resize", measure);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [measure]);
+
+  useEffect(() => {
+    if (!moreOpen) return;
+
+    const onPointerDown = (event: PointerEvent) => {
+      const target = event.target as Node;
+      if (wrapRef.current?.contains(target)) return;
+      setMoreOpen(false);
+    };
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMoreOpen(false);
+    };
+
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [moreOpen]);
+
+  const visible = categories.slice(0, visibleCount);
+  const overflow = categories.slice(visibleCount);
+  const activeInOverflow = overflow.includes(activeCategory);
+
+  return (
+    <div className="blogs-filters" aria-label="Filter articles" ref={wrapRef}>
+      <div className="blogs-filters-measure" aria-hidden="true" ref={measureRef}>
+        {categories.map((category) => (
+          <button
+            type="button"
+            key={`measure-${category}`}
+            data-filter-measure={category}
+            tabIndex={-1}
+          >
+            {category}
+          </button>
+        ))}
+        <button type="button" data-filter-more-measure tabIndex={-1}>
+          More
+          <ChevronDown size={12} aria-hidden="true" />
+        </button>
+      </div>
+
+      <div className="blogs-filters-row">
+        {visible.map((category) => (
+          <button
+            className={activeCategory === category ? "is-active" : ""}
+            key={category}
+            type="button"
+            onClick={() => {
+              onSelect(category);
+              setMoreOpen(false);
+            }}
+          >
+            {category}
+          </button>
+        ))}
+
+        {overflow.length > 0 && (
+          <div className={`blogs-filters-more ${moreOpen ? "is-open" : ""}`}>
+            <button
+              type="button"
+              className={`blogs-filters-more-trigger ${activeInOverflow ? "is-active" : ""}`}
+              aria-expanded={moreOpen}
+              aria-haspopup="listbox"
+              onClick={() => setMoreOpen((open) => !open)}
+            >
+              More
+              <ChevronDown size={12} aria-hidden="true" />
+            </button>
+            {moreOpen && (
+              <div className="blogs-filters-more-menu" role="listbox" aria-label="More categories">
+                {overflow.map((category) => (
+                  <button
+                    key={category}
+                    type="button"
+                    role="option"
+                    aria-selected={activeCategory === category}
+                    className={activeCategory === category ? "is-active" : ""}
+                    onClick={() => {
+                      onSelect(category);
+                      setMoreOpen(false);
+                    }}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 function BlogsPage() {
   const blogPosts = Route.useLoaderData();
@@ -25,7 +198,6 @@ function BlogsPage() {
     activeCategory === "All"
       ? blogPosts
       : blogPosts.filter((post) => post.categories.includes(activeCategory));
-  const [featuredPost, ...remainingPosts] = filteredPosts;
 
   return (
     <main className="blogs-page">
@@ -47,83 +219,16 @@ function BlogsPage() {
             <p className="blogs-kicker">The latest thinking</p>
             <h2 id="blog-list-title">Read the thinking.</h2>
           </div>
-          <div className="blogs-filters" aria-label="Filter articles">
-            {categories.map((category) => (
-              <button
-                className={activeCategory === category ? "is-active" : ""}
-                key={category}
-                type="button"
-                onClick={() => setActiveCategory(category)}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
+          <BlogFilters
+            categories={categories}
+            activeCategory={activeCategory}
+            onSelect={setActiveCategory}
+          />
         </div>
 
-        {featuredPost && (
-          <Link
-            to="/blogs/$slug"
-            params={{ slug: featuredPost.slug }}
-            className="blog-featured-card"
-          >
-            <div className="blog-card-image-wrap">
-              {featuredPost.image ? (
-                <img src={featuredPost.image} alt="" className="blog-card-image" />
-              ) : (
-                <div className="blog-card-image blog-card-image-fallback" aria-hidden="true" />
-              )}
-              <span className="blog-card-image-label">Featured / {featuredPost.category}</span>
-            </div>
-            <div className="blog-featured-copy">
-              <div className="blog-card-meta">
-                <span>{featuredPost.date}</span>
-                <span>{featuredPost.author}</span>
-              </div>
-              <h3>{featuredPost.title}</h3>
-              <p>{featuredPost.excerpt}</p>
-              <span className="blog-read-link">
-                Read article <ArrowUpRight size={17} aria-hidden="true" />
-              </span>
-            </div>
-          </Link>
-        )}
-
-        {!featuredPost && (
-          <p className="blogs-empty">No articles found for this filter.</p>
-        )}
-
-        <div className="blogs-grid">
-          {remainingPosts.map((post) => (
-            <Link
-              to="/blogs/$slug"
-              params={{ slug: post.slug }}
-              className="blog-card"
-              key={post.slug}
-            >
-              <div className="blog-card-image-wrap">
-                {post.image ? (
-                  <img src={post.image} alt="" className="blog-card-image" loading="lazy" />
-                ) : (
-                  <div className="blog-card-image blog-card-image-fallback" aria-hidden="true" />
-                )}
-                <span className="blog-card-arrow" aria-hidden="true">
-                  <ArrowUpRight size={19} />
-                </span>
-              </div>
-              <div className="blog-card-copy">
-                <div className="blog-card-meta">
-                  <span>{post.category}</span>
-                  <span>{post.author}</span>
-                </div>
-                <h3>{post.title}</h3>
-                <p>{post.excerpt}</p>
-                <time dateTime={post.dateIso}>{post.date}</time>
-              </div>
-            </Link>
-          ))}
-        </div>
+        <BlogsEditorialList posts={filteredPosts} />
       </section>
+
       <SiteFooter className="content-page-footer blogs-footer" />
     </main>
   );

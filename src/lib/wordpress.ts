@@ -13,6 +13,7 @@ export type WpBlogPost = {
   categories: string[];
   image: string;
   contentHtml: string;
+  readTime: string;
 };
 
 export type WpPortfolioProject = {
@@ -189,10 +190,11 @@ const PORTFOLIO_IMAGE_FALLBACKS: Record<string, string> = {
 };
 
 async function wpFetch<T>(path: string): Promise<T> {
+  // Avoid custom headers like User-Agent — browsers treat them as
+  // non-simple and WordPress CORS preflight rejects them.
   const res = await fetch(`${WP_BASE}${path}`, {
     headers: {
       Accept: "application/json",
-      "User-Agent": "NaethraFrontend/1.0",
     },
   });
   if (!res.ok) throw new Error(`WP ${res.status}: ${path}`);
@@ -211,6 +213,120 @@ function stripHtml(markup: string) {
     .replace(/&gt;/g, ">")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+function findMatchingClose(html: string, openIndex: number): number {
+  const tagMatch = html.slice(openIndex).match(/^<([a-zA-Z0-9:-]+)\b[^>]*>/);
+  if (!tagMatch) return -1;
+  const tag = tagMatch[1]?.toLowerCase() ?? "";
+  if (!tag) return -1;
+
+  // Self-closing style open tags.
+  if (/\/>$/.test(tagMatch[0])) return openIndex + tagMatch[0].length;
+
+  let depth = 0;
+  const token = new RegExp(`<(/)?${tag}\\b[^>]*>`, "gi");
+  token.lastIndex = openIndex;
+
+  let match: RegExpExecArray | null;
+  while ((match = token.exec(html))) {
+    const isClose = Boolean(match[1]);
+    const full = match[0];
+    if (!isClose && /\/>$/.test(full)) continue;
+
+    depth += isClose ? -1 : 1;
+    if (depth === 0) return match.index + full.length;
+  }
+
+  return -1;
+}
+
+function removeMatchingBlocks(html: string, openPattern: RegExp, shouldRemove: (block: string) => boolean) {
+  let result = "";
+  let cursor = 0;
+  const pattern = new RegExp(openPattern.source, openPattern.flags.includes("g") ? openPattern.flags : `${openPattern.flags}g`);
+
+  while (cursor < html.length) {
+    pattern.lastIndex = cursor;
+    const match = pattern.exec(html);
+    if (!match) {
+      result += html.slice(cursor);
+      break;
+    }
+
+    const start = match.index;
+    result += html.slice(cursor, start);
+
+    const end = findMatchingClose(html, start);
+    if (end < 0) {
+      result += match[0];
+      cursor = start + match[0].length;
+      continue;
+    }
+
+    const block = html.slice(start, end);
+    if (shouldRemove(block)) {
+      cursor = end;
+      continue;
+    }
+
+    result += block;
+    cursor = end;
+  }
+
+  return result;
+}
+
+/** Strip TheGem / Elementor related-posts chrome from WP content. */
+export function sanitizeBlogHtml(html: string) {
+  if (!html) return "";
+
+  let cleaned = html;
+
+  cleaned = removeMatchingBlocks(
+    cleaned,
+    /<(div|section)\b[^>]*(?:thegem-extended-blog-grid|portfolio-preloader-wrapper|portfolio-set|portfolio-sharing-pane|socials-sharing|gem-button-container)[^>]*>/gi,
+    (block) =>
+      /thegem-extended-blog-grid|portfolio-preloader-wrapper|portfolio-set|portfolio-sharing-pane|socials-sharing|View all posts|Clear Filters|Most popular/i.test(
+        block,
+      ),
+  );
+
+  cleaned = removeMatchingBlocks(
+    cleaned,
+    /<section\b[^>]*elementor-(?:top-)?section[^>]*>/gi,
+    (block) => {
+      const isRelatedChrome =
+        /Most popular|Clear Filters|thegem-extended-blog-grid|filters_text_labels_clear_text|View all posts/i.test(
+          block,
+        );
+      const isArticleMedia = /wp-image-|attachment-|size-large|FileMaker_And_Moisture/i.test(block);
+      return isRelatedChrome && !isArticleMedia;
+    },
+  );
+
+  // WP/Elementor posts often ship white text meant for dark theme sections.
+  cleaned = cleaned.replace(/\sstyle=(["'])(.*?)\1/gi, (_full, quote: string, styleValue: string) => {
+    const next = styleValue
+      .replace(
+        /(^|;)\s*color\s*:\s*(#fff(?:fff)?|white|rgb\(\s*255\s*,\s*255\s*,\s*255\s*\)|rgba\(\s*255\s*,\s*255\s*,\s*255\s*,\s*[\d.]+\s*\))\s*/gi,
+        "$1",
+      )
+      .replace(/;;+/g, ";")
+      .replace(/^;\s*|;$/g, "")
+      .trim();
+
+    return next ? ` style=${quote}${next}${quote}` : "";
+  });
+
+  cleaned = cleaned
+    .replace(/<section\b[^>]*>\s*<\/section>/gi, "")
+    .replace(/<div\b[^>]*>\s*<\/div>/gi, "")
+    .replace(/\b(Most popular|Clear Filters)\b/gi, "")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+
+  return cleaned;
 }
 
 function formatDate(iso: string) {
@@ -248,17 +364,32 @@ function titleCase(value: string) {
     .join(" ");
 }
 
-export function mapWpPost(post: WpPost): WpBlogPost {
-  const contentHtml = post.content?.rendered ?? "";
+function estimateReadTimeFromText(...parts: string[]) {
+  const text = parts
+    .join(" ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  const words = text ? text.split(" ").length : 0;
+  const minutes = Math.max(1, Math.round(words / 200));
+  return `${minutes} min`;
+}
+
+export function mapWpPost(post: WpPost, options?: { includeContent?: boolean }): WpBlogPost {
+  const includeContent = options?.includeContent !== false;
+  const rawContent = includeContent ? (post.content?.rendered ?? "") : "";
+  const contentHtml = includeContent ? sanitizeBlogHtml(rawContent) : "";
   const categories = getCategories(post);
   const image = post._embedded?.["wp:featuredmedia"]?.[0]?.source_url ?? "";
   const dateIso = post.date ?? "";
   const author = post._embedded?.author?.[0]?.name?.trim() || "Naethra";
+  const title = stripHtml(post.title?.rendered ?? "Untitled");
+  const excerpt = stripHtml(post.excerpt?.rendered ?? "");
 
   return {
     slug: post.slug ?? "",
-    title: stripHtml(post.title?.rendered ?? "Untitled"),
-    excerpt: stripHtml(post.excerpt?.rendered ?? ""),
+    title,
+    excerpt,
     date: dateIso ? formatDate(dateIso) : "",
     dateIso,
     author,
@@ -266,6 +397,7 @@ export function mapWpPost(post: WpPost): WpBlogPost {
     categories,
     image,
     contentHtml,
+    readTime: estimateReadTimeFromText(title, excerpt, rawContent || contentHtml),
   };
 }
 
@@ -535,10 +667,12 @@ export async function getWebAppContent() {
 }
 
 export async function getPosts(page = 1, perPage = 20) {
+  // List views omit full post HTML so the route payload stays small enough for
+  // client navigations (full content is only loaded on the detail route).
   const posts = await wpFetch<WpPost[]>(
-    `/posts?page=${page}&per_page=${perPage}&_embed&status=publish`,
+    `/posts?page=${page}&per_page=${perPage}&_embed&status=publish&_fields=id,date,slug,title,excerpt,_links,_embedded`,
   );
-  return posts.map(mapWpPost);
+  return posts.map((post) => mapWpPost(post, { includeContent: false }));
 }
 
 export async function getPostBySlug(slug: string) {
@@ -546,7 +680,7 @@ export async function getPostBySlug(slug: string) {
     `/posts?slug=${encodeURIComponent(slug)}&_embed&status=publish`,
   );
   const post = posts[0];
-  return post ? mapWpPost(post) : null;
+  return post ? mapWpPost(post, { includeContent: true }) : null;
 }
 
 export async function getPortfolio(perPage = 50) {
