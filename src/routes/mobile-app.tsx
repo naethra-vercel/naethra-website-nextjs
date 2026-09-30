@@ -13,7 +13,6 @@ import {
 } from "lucide-react";
 
 import { NaethraContentHeader } from "@/components/NaethraContentPage";
-import SiteFooter from "@/components/SiteFooter";
 import ionicIcon from "@/assets/icons/Ionic.svg";
 import flutterIcon from "@/assets/icons/Flutter.svg";
 import androidIcon from "@/assets/icons/Android.svg";
@@ -163,7 +162,6 @@ function MobileAppPage() {
           </div>
         </div>
       </section>
-      <SiteFooter className="mobile-app-footer" />
     </main>
   );
 }

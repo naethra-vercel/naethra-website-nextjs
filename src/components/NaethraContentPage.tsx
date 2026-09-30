@@ -1,7 +1,6 @@
 import { Menu, X, ArrowUpRight, ChevronDown } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 
-import SiteFooter from "@/components/SiteFooter";
 import AnimatedCtaButton from "@/components/AnimatedCtaButton";
 
 const mobileItems = [["Flutter", "/flutter-app-development-company"]] as const;
@@ -181,7 +180,6 @@ type ContentPageProps = {
   intro?: string;
   children: ReactNode;
   compact?: boolean;
-  footerVariant?: "simple" | "detailed";
   className?: string;
   heroBannerImage?: string;
 };
@@ -192,7 +190,6 @@ export default function NaethraContentPage({
   intro,
   children,
   compact = false,
-  footerVariant = "detailed",
   className = "",
   heroBannerImage,
 }: ContentPageProps) {
@@ -240,7 +237,6 @@ export default function NaethraContentPage({
       <article className="content-page-body site-container" data-reveal="fade-up">
         {children}
       </article>
-      <SiteFooter className="content-page-footer" variant={footerVariant} data-reveal="fade-up" />
     </main>
   );
 }

@@ -17,6 +17,7 @@ import { SmoothScroll } from "@/components/ui/smooth-scroll";
 import { JarvisAIAssistant } from "@/components/JarvisAIAssistant";
 import { FakeJobsDisclaimerModal } from "@/components/FakeJobsDisclaimerModal";
 import { ScrollToTopButton } from "@/components/ScrollToTopButton";
+import SiteFooter from "@/components/SiteFooter";
 import { JarvisArcReactor, openJarvis } from "@/components/JarvisArcReactor";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
@@ -201,6 +202,7 @@ function RootComponent() {
         <SpotlightCursor />
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
+        {pathname !== "/" && <SiteFooter />}
         <JarvisAIAssistant />
         {pathname === "/" && <FakeJobsDisclaimerModal />}
         <ScrollToTopButton />

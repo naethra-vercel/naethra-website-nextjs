@@ -10,7 +10,6 @@ import {
 
 import BlogsEditorialList from "@/components/BlogsEditorialList";
 import { NaethraContentHeader } from "@/components/NaethraContentPage";
-import SiteFooter from "@/components/SiteFooter";
 import { getPosts } from "@/lib/wordpress";
 import blogsHeroImage from "@/assets/blogs/hero.png";
 
@@ -228,7 +227,6 @@ function BlogsPage() {
         <BlogsEditorialList posts={filteredPosts} />
       </section>
 
-      <SiteFooter className="content-page-footer blogs-footer" />
     </main>
   );
 }

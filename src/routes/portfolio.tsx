@@ -2,7 +2,6 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { NaethraContentHeader } from "@/components/NaethraContentPage";
 import PortfolioCarousel from "@/components/PortfolioCarousel";
-import SiteFooter from "@/components/SiteFooter";
 import { getPortfolio } from "@/lib/wordpress";
 
 export const Route = createFileRoute("/portfolio")({
@@ -48,7 +47,6 @@ function PortfolioPage() {
         />
       </section>
 
-      <SiteFooter className="content-page-footer portfolio-footer" />
     </main>
   );
 }

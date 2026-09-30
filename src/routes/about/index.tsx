@@ -5,7 +5,6 @@ import { useEffect } from "react";
 import muraliImage from "@/assets/founders/Murali_Ramakrishnan.webp";
 import npMuraliImage from "@/assets/founders/NP_Murali.webp";
 import ramachandranImage from "@/assets/founders/Ramachandran.webp";
-import SiteFooter from "@/components/SiteFooter";
 import SectionEyebrow from "@/components/SectionEyebrow";
 import { NaethraContentHeader } from "@/components/NaethraContentPage";
 import { getAboutContent } from "@/lib/wordpress";
@@ -58,13 +57,42 @@ function AboutPage() {
     <main className="about-max about-single-page">
       <NaethraContentHeader />
 
-      <section id="specialty" className="about-max-specialty">
-        <div className="site-container about-max-specialty-inner">
-          <SectionEyebrow>Our specialty</SectionEyebrow>
-          <div className="about-max-specialty-content">
-            <h2>{about.specialtyHeadline}</h2>
-            <p className="about-specialty-lead">{about.specialtyLead}</p>
-            <p className="about-specialty-copy">{about.specialtyCopy}</p>
+      <section
+        id="specialty"
+        className="relative isolate overflow-hidden bg-[#f4f7fc] pt-[clamp(5rem,9vw,8rem)] pb-10 sm:pb-12"
+      >
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-24 top-0 size-[28rem] rounded-full bg-[radial-gradient(circle,rgb(0_91_150/0.14),transparent_68%)] blur-2xl"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -left-20 bottom-0 size-[22rem] rounded-full bg-[radial-gradient(circle,rgb(20_32_51/0.06),transparent_70%)] blur-2xl"
+        />
+
+        <div className="site-container relative">
+          <div className="flex flex-col gap-8 lg:gap-10">
+            <div className="flex flex-col gap-6 sm:gap-8">
+              <SectionEyebrow>Our specialty</SectionEyebrow>
+              <div className="grid items-end gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:gap-16">
+                <h2 className="max-w-3xl !font-display text-[clamp(2.4rem,5.5vw,4.75rem)] !font-semibold !leading-[0.95] !tracking-[-0.07em] !text-[#142033]">
+                  {about.specialtyHeadline}
+                </h2>
+                <p className="max-w-md text-base leading-relaxed text-[#4b5870] sm:text-lg lg:pb-2">
+                  {about.specialtyLead}
+                </p>
+              </div>
+            </div>
+
+            <div className="relative border-t border-[#005b96]/15 pt-6 lg:pt-8">
+              <span
+                aria-hidden="true"
+                className="absolute left-0 top-0 h-0.5 w-20 bg-[#005b96] sm:w-28"
+              />
+              <p className="max-w-3xl text-[0.95rem] leading-[1.8] text-[#637086] sm:text-base">
+                {about.specialtyCopy}
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -136,8 +164,6 @@ function AboutPage() {
           </div>
         </div>
       </section>
-
-      <SiteFooter className="about-max-footer" />
     </main>
   );
 }

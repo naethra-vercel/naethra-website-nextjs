@@ -11,7 +11,6 @@ import {
 } from "lucide-react";
 
 import { NaethraContentHeader } from "@/components/NaethraContentPage";
-import SiteFooter from "@/components/SiteFooter";
 import angularIcon from "@/assets/icons/Angular.svg";
 import javaScriptIcon from "@/assets/icons/JavaScript.svg";
 import javaIcon from "@/assets/icons/Java.svg";
@@ -134,7 +133,6 @@ function WebAppPage() {
           </a>
         </div>
       </section>
-      <SiteFooter className="web-app-footer" />
     </main>
   );
 }

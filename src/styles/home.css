@@ -343,7 +343,6 @@
 .content-page .content-page-body,
 .content-page .content-page-footer,
 .content-page .contact-premium-card,
-.content-page .contact-premium-story,
 .content-page .contact-premium-form,
 .content-page .contact-premium-map,
 .content-page .contact-premium-process,
@@ -418,7 +417,7 @@
 .about-max-specialty-content p { max-width: 48rem; color: #68736f; font-size: 1rem; line-height: 1.8; }
 .about-max-specialty-content .about-specialty-lead { color: #172033; font-size: clamp(1.05rem, 1.8vw, 1.35rem); line-height: 1.55; }
 .about-max-specialty-content .about-specialty-copy { margin: 3rem auto 0; border-top: 2px solid var(--about-accent); padding: 1.25rem 0 0; }
-.about-max-services { background: var(--about-background); padding-block: clamp(5rem, 9vw, 8rem); }
+.about-max-services { background: var(--about-background); padding: 2.5rem 0 2.5rem; }
 .about-max-section-heading { display: flex; flex-direction: column; align-items: center; margin-bottom: 4.5rem; text-align: center; }
 .about-max-section-heading h2 { max-width: 43rem; margin: 0; font-family: var(--font-display); font-size: clamp(2.7rem, 6vw, 6.5rem); font-weight: 500; letter-spacing: -.09em; line-height: .88; }
 .about-max-service-list { width: 100%; border-top: 1px solid var(--about-border); }
@@ -429,7 +428,7 @@
 .about-max-service-row h3 { margin: 0; font-family: var(--font-display); font-size: clamp(1.1rem, 2vw, 1.8rem); font-weight: 600; letter-spacing: -.04em; text-transform: uppercase; }
 .about-max-service-row p { margin: 0; color: var(--about-muted); font-size: .84rem; line-height: 1.55; }
 .about-max-service-arrow { color: var(--about-accent); }
-.about-max-team { background: var(--about-background); color: var(--about-ink); padding-block: clamp(5rem, 9vw, 8rem); }
+.about-max-team { background: var(--about-background); color: var(--about-ink); padding: 2.5rem 0 clamp(5rem, 9vw, 8rem); }
 .about-max-team-heading { margin-bottom: 4rem; }
 .about-max-team-heading h2 { color: var(--about-ink); }
 .about-team-list { display: grid; gap: 1.5rem; }

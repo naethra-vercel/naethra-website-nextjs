@@ -4,7 +4,6 @@ import { ArrowLeft, ArrowUpRight, Clock3 } from "lucide-react";
 import BlogsEditorialList from "@/components/BlogsEditorialList";
 import BlogArticleContent from "@/components/BlogArticleContent";
 import { NaethraContentHeader } from "@/components/NaethraContentPage";
-import SiteFooter from "@/components/SiteFooter";
 import { estimateReadTime } from "@/lib/blog-utils";
 import { getPostBySlug, getPosts } from "@/lib/wordpress";
 
@@ -186,7 +185,6 @@ function BlogDetailPage() {
         </section>
       ) : null}
 
-      <SiteFooter className="content-page-footer blogs-footer" />
     </main>
   );
 }

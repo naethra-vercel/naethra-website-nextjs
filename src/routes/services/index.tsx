@@ -3,7 +3,6 @@ import { ArrowUpRight } from "lucide-react";
 import { useEffect } from "react";
 
 import { NaethraContentHeader } from "@/components/NaethraContentPage";
-import SiteFooter from "@/components/SiteFooter";
 import { getServicesPageContent } from "@/lib/wordpress";
 import servicesHeaderImage from "@/assets/services/header.png";
 
@@ -195,7 +194,6 @@ function ServicesPage() {
           </div>
         </div>
       </section>
-      <SiteFooter className="service-page-footer" />
     </main>
   );
 }

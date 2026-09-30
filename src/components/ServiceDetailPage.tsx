@@ -1,7 +1,6 @@
 import { ArrowUpRight } from "lucide-react";
 
 import { NaethraContentHeader } from "@/components/NaethraContentPage";
-import SiteFooter from "@/components/SiteFooter";
 import type { ServiceDetail } from "@/lib/service-data";
 
 export default function ServiceDetailPage({
@@ -65,7 +64,6 @@ export default function ServiceDetailPage({
           </section>
         ))}
       </article>
-      <SiteFooter className="service-page-footer" />
     </main>
   );
 }

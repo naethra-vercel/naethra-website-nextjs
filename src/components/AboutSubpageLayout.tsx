@@ -2,7 +2,6 @@ import type { ReactNode } from "react";
 
 import SectionEyebrow from "@/components/SectionEyebrow";
 import { NaethraContentHeader } from "@/components/NaethraContentPage";
-import SiteFooter from "@/components/SiteFooter";
 
 type AboutSubpageLayoutProps = {
   eyebrow: string;
@@ -30,8 +29,6 @@ export default function AboutSubpageLayout({
       </section>
 
       <div className="about-subpage-content site-container">{children}</div>
-
-      <SiteFooter className="about-subpage-footer" />
     </main>
   );
 }

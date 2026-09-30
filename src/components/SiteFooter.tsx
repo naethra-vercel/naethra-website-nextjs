@@ -1,29 +1,16 @@
 import { type FormEvent, useState, type HTMLAttributes } from "react";
-import { Mail, MapPin, Phone } from "lucide-react";
+import { ExternalLink, Mail, MapPin, Phone } from "lucide-react";
 
-type SiteFooterProps = HTMLAttributes<HTMLElement> & {
-  variant?: "simple" | "detailed";
-};
+const MAP_EMBED =
+  "https://maps.google.com/maps?q=37%2C%20Viswanathapuram%20Main%20Rd%2C%20Azeez%20Nagar%2C%20Kodambakkam%2C%20Chennai%2C%20Tamil%20Nadu%20600024&t=m&z=14&output=embed&iwloc=near";
 
-export default function SiteFooter({
-  className = "",
-  variant = "detailed",
-  ...props
-}: SiteFooterProps) {
+const MAP_LINK =
+  "https://maps.google.com/?q=37,+Viswanathapuram+Main+Rd,+Kodambakkam,+Chennai+600024";
+
+type SiteFooterProps = HTMLAttributes<HTMLElement>;
+
+export default function SiteFooter({ className = "", ...props }: SiteFooterProps) {
   const [submitted, setSubmitted] = useState(false);
-
-  if (variant === "simple") {
-    return (
-      <footer className={`site-footer-simple ${className}`.trim()} {...props}>
-        <div className="site-container">
-          <span>
-            2026 © Copyrights <strong>Naethra Technologies</strong>
-          </span>
-          <FooterLinks />
-        </div>
-      </footer>
-    );
-  }
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -87,10 +74,16 @@ export default function SiteFooter({
 
       <div className="site-footer-map-block">
         <div className="site-container site-footer-map-wrap">
+          <a className="site-footer-map-open" href={MAP_LINK} target="_blank" rel="noreferrer">
+            Open in Maps
+            <ExternalLink size={14} aria-hidden="true" />
+          </a>
           <iframe
             loading="lazy"
             title="Naethra Technologies office map"
-            src="https://maps.google.com/maps?q=Naethra%20Technologies%20Private%20Limited%2C%2037%2C%20Viswanathapuram%20Main%20Rd%2C%20Kodambakkam%2C%20Chennai%20600024&t=m&z=15&output=embed"
+            src={MAP_EMBED}
+            allowFullScreen
+            referrerPolicy="no-referrer-when-downgrade"
           />
         </div>
       </div>
@@ -104,9 +97,15 @@ export default function SiteFooter({
               innovation, automation, and connectivity.
             </p>
             <div className="site-footer-socials" aria-label="Social links">
-              <a href="https://www.facebook.com/naethratechnologies" aria-label="Facebook">f</a>
-              <a href="https://www.linkedin.com/company/naethra-technologies/" aria-label="LinkedIn">in</a>
-              <a href="https://twitter.com/naethratech" aria-label="X">X</a>
+              <a href="https://www.facebook.com/naethratechnologies" aria-label="Facebook">
+                f
+              </a>
+              <a href="https://www.linkedin.com/company/naethra-technologies/" aria-label="LinkedIn">
+                in
+              </a>
+              <a href="https://twitter.com/naethratech" aria-label="X">
+                X
+              </a>
             </div>
           </div>
 
@@ -114,7 +113,9 @@ export default function SiteFooter({
             <h2>Contact</h2>
             <div className="site-footer-contact-list">
               <div className="site-footer-contact-item">
-                <span className="site-footer-contact-icon"><MapPin size={18} aria-hidden="true" /></span>
+                <span className="site-footer-contact-icon">
+                  <MapPin size={18} aria-hidden="true" />
+                </span>
                 <div>
                   <span>Address</span>
                   <strong>
@@ -132,17 +133,25 @@ export default function SiteFooter({
           <div className="site-footer-contact-block site-footer-contact-secondary">
             <div className="site-footer-contact-list">
               <div className="site-footer-contact-item">
-                <span className="site-footer-contact-icon"><Phone size={18} aria-hidden="true" /></span>
+                <span className="site-footer-contact-icon">
+                  <Phone size={18} aria-hidden="true" />
+                </span>
                 <div>
                   <span>Phone Number</span>
-                  <strong>+91 44 3500 3204</strong>
+                  <strong>
+                    <a href="tel:+914435003204">+91 44 3500 3204</a>
+                  </strong>
                 </div>
               </div>
               <div className="site-footer-contact-item">
-                <span className="site-footer-contact-icon"><Mail size={18} aria-hidden="true" /></span>
+                <span className="site-footer-contact-icon">
+                  <Mail size={18} aria-hidden="true" />
+                </span>
                 <div>
                   <span>Email</span>
-                  <strong>info@naethra.com</strong>
+                  <strong>
+                    <a href="mailto:info@naethra.com">info@naethra.com</a>
+                  </strong>
                 </div>
               </div>
             </div>
@@ -154,20 +163,14 @@ export default function SiteFooter({
             2026 © Copyrights <strong>Naethra Technologies</strong> | Designed by{" "}
             <strong>Naethra Technologies</strong>
           </span>
-          <FooterLinks />
+          <nav className="footer-links" aria-label="Footer links">
+            <a href="/contact-us">Contact Us</a>
+            <a href="/terms-and-conditions">Terms and Conditions</a>
+            <a href="/privacy-policy">Privacy Policy</a>
+            <a href="/disclaimer-and-notification">Disclaimer and Notification</a>
+          </nav>
         </div>
       </div>
     </footer>
-  );
-}
-
-function FooterLinks() {
-  return (
-    <nav className="footer-links" aria-label="Footer links">
-      <a href="/contact-us">Contact Us</a>
-      <a href="/terms-and-conditions">Terms and Conditions</a>
-      <a href="/privacy-policy">Privacy Policy</a>
-      <a href="/disclaimer-and-notification">Disclaimer and Notification</a>
-    </nav>
   );
 }
