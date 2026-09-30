@@ -1340,34 +1340,48 @@ export type HomeTestimonial = {
 
 const HOME_TESTIMONIALS_FALLBACK: HomeTestimonial[] = [
   {
-    name: "Vasudha Bhushan",
-    role: "Manager, Software Technology & Engineering",
+    name: "Steve Chun",
+    role: "Miller/Howard Investments Inc., NY ,United States",
     quote:
-      "We recently had the pleasure of outsourcing our application development to Naethra, and we are extremely satisfied with the results.",
-    image: "",
+      "Continues to do great work for us. Look forward to additional development of our custom app.",
+    image: "https://naethra.com/wp-content/uploads/2022/07/profile-2.png",
   },
   {
-    name: "Steve Chun",
-    role: "Howard Investments Inc., New York",
+    name: "Konstantinos",
+    role: "New South Wales,Australia",
     quote:
-      "Naethra continues to do great work for us. We look forward to additional development of our custom application.",
-    image: "",
+      "Great to deal with, professional, and much cheaper than using an Australian company. will use them again in the future.",
+    image: "https://naethra.com/wp-content/uploads/2022/07/profile-2.png",
+  },
+  {
+    name: "Shazad din BORO BLINDS",
+    role: "Middlesbrough, England",
+    quote:
+      "These guys are filemaker experts. They really know Their stuff. Thanks for all your great work.",
+    image: "https://naethra.com/wp-content/uploads/2022/07/profile-2.png",
   },
   {
     name: "Sandeep Shah",
-    role: "Director, Rajdeep Automation",
+    role: "Director, Rajdeep Automation Pvt Ltd",
     quote:
-      "Their professionalism, detailed explanations, and commitment made the whole website development experience a pleasure.",
-    image: "",
+      "We would like to thank you for your efforts, detailed explanation and professionalism towards the website development. Been a pleasure working with you and looking forward to expand our co operation to other areas.",
+    image: "https://naethra.com/wp-content/uploads/2022/07/profile-2.png",
   },
   {
-    name: "Shazad Din",
-    role: "Boro Blinds, Middlesbrough",
+    name: "Vasudha Bhushan",
+    role: "Manager Software Technology and Engineering, AECO Energy, Australia",
     quote:
-      "These guys are FileMaker experts. They really know their stuff and deliver dependable results.",
-    image: "",
+      "We are recently had the pleasure of outsourcing our application development to your team (FMNaethra), and we are extremely satisfied with the results. Your team did an outstanding job of understanding our requirements and delivering a solution that meets our needs perfectly. From the beginning, your team demonstrated a thorough understanding of our needs. There have been numerous design changes that we did during the project, and we appreciate the flexibility your team showed in accommodating these changes. Your willingness to adapt and implement modifications as per our feedback was commendable.Overall, working with your organization has been a positive experience. Your professionalism, expertise, and commitment to delivering a high-quality product were evident throughout the project. We look forward to potential future collaborations and highly recommend your services to others. Thank you for your excellent work.",
+    image: "https://naethra.com/wp-content/uploads/2022/07/profile-2.png",
   },
 ];
+
+function extractByClass(html: string, className: string) {
+  const match = html.match(
+    new RegExp(`<[^>]*class=["'][^"']*${className}[^"']*["'][^>]*>([\\s\\S]*?)<\\/`, "i"),
+  );
+  return match ? stripHtml(match[1] ?? "") : "";
+}
 
 export function mapHomeTestimonials(html: string): HomeTestimonial[] {
   const start = html.search(/what\s+naethra.?s\s+clients\s+say/i);
@@ -1377,24 +1391,20 @@ export function mapHomeTestimonials(html: string): HomeTestimonial[] {
   const section = html.slice(start, endMatch > 0 ? start + endMatch : undefined);
   const cleaned = section.replace(/<style[\s\S]*?<\/style>/gi, "");
 
-  const matches = Array.from(
-    cleaned.matchAll(
-      /(?:^|>)\s*([A-Za-z][^<\n]{1,80}?)\s*<\/div>\s*([^<\n]{2,140}?)\s*<\/div>\s*[“"]?([^<\n]{15,}?)[”"]?\s*<\/p>/g,
-    ),
-  );
+  const blocks = cleaned.split(/class=["'][^"']*gem-testimonial-item/i).slice(1);
 
-  const testimonials = matches
-    .map((match) => {
-      const name = stripHtml(match[1] ?? "");
-      const role = stripHtml(match[2] ?? "");
-      const quote = stripHtml(match[3] ?? "").replace(/^[“"']|[”"']$/g, "").trim();
-      if (!name || !quote || /^what\s+naethra/i.test(name)) return null;
-      return {
-        name,
-        role,
-        quote,
-        image: "",
-      };
+  const testimonials = blocks
+    .map((block) => {
+      const name = extractByClass(block, "gem-testimonial-name");
+      const role = extractByClass(block, "gem-testimonial-position");
+      const quote = extractByClass(block, "gem-testimonial-text")
+        .replace(/^[“"']+|[”"']+$/g, "")
+        .trim();
+      const imageMatch = block.match(/<img[^>]+src=["']([^"']+)["']/i);
+      const image = imageMatch?.[1] ?? "";
+
+      if (!name || !quote) return null;
+      return { name, role, quote, image };
     })
     .filter((item): item is HomeTestimonial => Boolean(item));
 
