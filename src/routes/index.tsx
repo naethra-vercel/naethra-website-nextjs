@@ -323,7 +323,7 @@ function Logo({ inverse = false }: { inverse?: boolean }) {
 
 function Index() {
   const { blogPosts, testimonials: loadedTestimonials } = Route.useLoaderData();
-  const testimonialImages = [founderImage, teamImage, projectImage, founderImage];
+  const testimonialImages = [founderImage, teamImage, projectImage, founderImage, teamImage];
   const testimonials = loadedTestimonials.map((item, index) => ({
     ...item,
     image: item.image || testimonialImages[index % testimonialImages.length]!,
