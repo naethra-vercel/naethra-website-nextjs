@@ -59,7 +59,7 @@ function AboutPage() {
 
       <section
         id="specialty"
-        className="relative isolate overflow-hidden bg-[#f4f7fc] pt-[clamp(5rem,9vw,8rem)] pb-10 sm:pb-12"
+        className="relative isolate overflow-hidden bg-[#f4f7fc] pt-[clamp(2rem,4vw,3.25rem)] pb-10 sm:pb-12"
       >
         <div
           aria-hidden="true"

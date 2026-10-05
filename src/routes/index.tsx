@@ -17,8 +17,15 @@ import {
   SparklesIcon,
   UserGroupIcon,
 } from "@hugeicons/core-free-icons";
-import { type CSSProperties, type FormEvent, useEffect, useState } from "react";
+import { type CSSProperties, type FormEvent, useEffect, useRef, useState } from "react";
 
+import aboutElevateImage from "@/assets/design/about-section/about-elevate.jpg";
+import aboutInnovateImage from "@/assets/design/about-section/about-innovate.jpg";
+import aboutIntegrateImage from "@/assets/design/about-section/about-integrate.jpg";
+import digitalMarketingImage from "@/assets/design/recent-projects/digital-marketing.jpg";
+import financeStrategyImage from "@/assets/design/recent-projects/finance-strategy.jpg";
+import marketingResearchImage from "@/assets/design/recent-projects/marketing-research.jpg";
+import processOptimizationImage from "@/assets/design/recent-projects/process-optimization.jpg";
 import founderImage from "@/assets/putech-founder.jpg";
 import projectImage from "@/assets/putech-project.jpg";
 import teamImage from "@/assets/putech-team.jpg";
@@ -201,14 +208,19 @@ const valuedClients = [
 
 const recentProjects = [
   [
-    projectImage,
-    "Team collaborating on a software project",
+    digitalMarketingImage,
+    "Digital marketing campaign visuals",
     "Business Development",
     "Digital Marketing",
   ],
-  [teamImage, "Product team reviewing a digital experience", "Finance strategy", "Finance"],
-  [projectImage, "Team presenting project analytics", "Process optimization", "Operations"],
-  [founderImage, "Technology team working together", "Marketing research", "Growth"],
+  [financeStrategyImage, "Finance strategy planning session", "Finance strategy", "Finance"],
+  [
+    processOptimizationImage,
+    "Process optimization workflow review",
+    "Process optimization",
+    "Operations",
+  ],
+  [marketingResearchImage, "Marketing research and growth insights", "Marketing research", "Growth"],
 ] as const;
 
 const consultingServices = [
@@ -333,7 +345,39 @@ function Index() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [contactSubmitted, setContactSubmitted] = useState(false);
   const [testimonialIndex, setTestimonialIndex] = useState(0);
+  const [quoteExpanded, setQuoteExpanded] = useState(false);
+  const [quoteOverflows, setQuoteOverflows] = useState(false);
+  const quoteRef = useRef<HTMLQuoteElement>(null);
   const activeTestimonial = testimonials[testimonialIndex] ?? testimonials[0];
+
+  useEffect(() => {
+    setQuoteExpanded(false);
+  }, [testimonialIndex]);
+
+  useEffect(() => {
+    const node = quoteRef.current;
+    if (!node) return;
+
+    const measure = () => {
+      if (quoteExpanded) {
+        const probe = document.createElement("blockquote");
+        probe.className = "testimonial-quote is-clamped";
+        probe.textContent = `“${activeTestimonial?.quote ?? ""}”`;
+        probe.style.cssText =
+          "position:absolute;visibility:hidden;pointer-events:none;width:" +
+          `${node.clientWidth}px`;
+        node.parentElement?.appendChild(probe);
+        setQuoteOverflows(probe.scrollHeight > probe.clientHeight + 1);
+        probe.remove();
+        return;
+      }
+      setQuoteOverflows(node.scrollHeight > node.clientHeight + 1);
+    };
+
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [activeTestimonial?.quote, quoteExpanded, testimonialIndex]);
 
   const handleContactSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -610,24 +654,24 @@ function Index() {
           <div className="about-visual" data-reveal="image">
             <div className="about-image about-image-tall">
               <img
-                src={founderImage}
-                alt="Naethra team member working on a digital product"
+                src={aboutInnovateImage}
+                alt="Innovate — building modern digital products"
                 width={1200}
                 height={1104}
               />
             </div>
             <div className="about-image about-image-small">
               <img
-                src={teamImage}
-                alt="Naethra colleagues collaborating in a modern office"
+                src={aboutIntegrateImage}
+                alt="Integrate — connecting systems and teams"
                 width={1408}
                 height={1008}
               />
             </div>
             <div className="about-image about-image-wide">
               <img
-                src={projectImage}
-                alt="Naethra team discussing a software project"
+                src={aboutElevateImage}
+                alt="Elevate — scaling technology for growth"
                 width={1200}
                 height={1504}
               />
@@ -819,8 +863,8 @@ function Index() {
             <img
               src={activeTestimonial?.image}
               alt={`${activeTestimonial?.name ?? "Customer"} testimonial portrait`}
-              width={1200}
-              height={1104}
+              width={512}
+              height={512}
             />
             <div className="testimonial-avatars" role="tablist" aria-label="Customer testimonials">
               {testimonials.map(({ name, image }, index) => (
@@ -833,7 +877,7 @@ function Index() {
                   aria-selected={index === testimonialIndex}
                   aria-label={`Read testimonial from ${name}`}
                 >
-                  <img src={image} alt="" width={1200} height={1104} />
+                  <img src={image} alt="" width={96} height={96} />
                 </button>
               ))}
             </div>
@@ -844,7 +888,24 @@ function Index() {
               Reviews from our <em>customers.</em>
             </h2>
             <HugeiconsIcon icon={QuoteDownIcon} size={48} className="quote-icon" />
-            <blockquote>“{activeTestimonial?.quote}”</blockquote>
+            <div className="testimonial-quote-block">
+              <blockquote
+                ref={quoteRef}
+                className={`testimonial-quote ${quoteExpanded ? "is-expanded" : "is-clamped"}`}
+              >
+                “{activeTestimonial?.quote}”
+              </blockquote>
+              {quoteOverflows || quoteExpanded ? (
+                <button
+                  type="button"
+                  className="testimonial-more"
+                  onClick={() => setQuoteExpanded((open) => !open)}
+                  aria-expanded={quoteExpanded}
+                >
+                  {quoteExpanded ? "Less" : "More"}
+                </button>
+              ) : null}
+            </div>
             <div className="quote-author">
               <span className="quote-author-avatar">{activeTestimonial?.name.slice(0, 1)}</span>
               <div>

@@ -15,6 +15,7 @@ import cmsHeroImage from "@/assets/cms/hero.png";
 import customWebPublishHeroImage from "@/assets/custom-web-publish/hero.png";
 import dotNetHeroImage from "@/assets/dot-net/hero.png";
 import filemakerHeroImage from "@/assets/filemaker/hero.png";
+import filemakerServicesImage from "@/assets/filemaker/services.png";
 
 export type ServiceDetail = {
   slug: string;
@@ -178,7 +179,7 @@ export const serviceDetails = {
       {
         title: "Experience across industries and locations",
         body: "We have more than 20 years of market experience and industry know-how. More than 100 clients have chosen us for FileMaker projects across finance, construction, media, technology, retail, manufacturing, legal, education, health, and other sectors around the world.",
-        image: `${base}/2022/12/naethra-filemaker.jpg`,
+        image: filemakerServicesImage,
       },
       {
         title: "Integration, migration, and support",

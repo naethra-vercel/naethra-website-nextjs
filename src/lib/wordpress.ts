@@ -3,6 +3,7 @@ import cmsHeroImage from "@/assets/cms/hero.png";
 import customWebPublishHeroImage from "@/assets/custom-web-publish/hero.png";
 import dotNetHeroImage from "@/assets/dot-net/hero.png";
 import filemakerHeroImage from "@/assets/filemaker/hero.png";
+import filemakerServicesImage from "@/assets/filemaker/services.png";
 import { extractBlogArticleHtml } from "@/lib/blog-html";
 
 const WP_BASE =
@@ -712,7 +713,7 @@ const FILEMAKER_FALLBACK: FileMakerContent = {
     {
       title: "Experience across industries and locations",
       body: "We have more than 20 years of market experience and industry know-how. More than 100 clients have chosen us for FileMaker projects across finance, construction, media, technology, retail, manufacturing, legal, education, health, and other sectors around the world.",
-      image: "https://naethra.com/wp-content/uploads/2022/12/naethra-filemaker.jpg",
+      image: filemakerServicesImage,
     },
     {
       title: "Integration, migration, and support",
