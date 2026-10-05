@@ -49,13 +49,13 @@ export const services = [
   {
     title: "Java/J2EE applications",
     description: "Enterprise Java solutions that improve the way your business builds software.",
-    href: "/services/dot-net-application",
+    href: "/services/java-j2ee-applications",
     icon: Code2,
   },
   {
     title: "PHP/MySQL applications",
     description: "Practical, scalable PHP and database applications for growing organisations.",
-    href: "/web-app",
+    href: "/services/php-mysql-applications",
     icon: Database,
   },
   {
@@ -67,7 +67,7 @@ export const services = [
   {
     title: "FileMaker development",
     description: "Certified FileMaker development, integrations, and custom business tools.",
-    href: "/services/custom-web-publishing",
+    href: "/services/claris-filemaker-application",
     icon: Workflow,
   },
   {

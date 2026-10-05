@@ -1,10 +1,13 @@
 <?php
 /**
- * Drop this into the TheGem child theme's functions.php (or a small custom plugin).
- * Enables REST access for Team Persons so the headless frontend can load /about team data.
+ * Drop this into the TheGem child theme's functions.php (or a small custom plugin / mu-plugin).
+ * Enables REST access for Team Persons + Teams taxonomy so the headless frontend can
+ * load the About page team (team-2x-2 / team-3x on naethra.com).
  *
- * Endpoint after save/flush:
+ * Endpoints after save/flush:
  *   GET https://naethra.com/wp-json/wp/v2/thegem_team_person?_embed&per_page=20
+ *   GET https://naethra.com/wp-json/wp/v2/thegem_teams
+ *   GET https://naethra.com/wp-json/wp/v2/thegem_team_person?thegem_teams=TERM_ID&_embed
  */
 
 add_filter("register_post_type_args", function ($args, $post_type) {
@@ -23,6 +26,18 @@ add_filter("register_post_type_args", function ($args, $post_type) {
       array_unique(array_merge($args["supports"], ["thumbnail", "editor", "page-attributes"])),
     );
   }
+
+  return $args;
+}, 20, 2);
+
+add_filter("register_taxonomy_args", function ($args, $taxonomy) {
+  if ($taxonomy !== "thegem_teams") {
+    return $args;
+  }
+
+  $args["show_in_rest"] = true;
+  $args["rest_base"] = "thegem_teams";
+  $args["rest_controller_class"] = "WP_REST_Terms_Controller";
 
   return $args;
 }, 20, 2);
@@ -80,6 +95,31 @@ add_action("rest_api_init", function () {
     "schema" => [
       "description" => "TheGem team person fields",
       "type" => "object",
+      "context" => ["view", "edit"],
+      "readonly" => true,
+    ],
+  ]);
+
+  register_rest_field("thegem_team_person", "teams", [
+    "get_callback" => function ($object) {
+      $terms = get_the_terms((int) $object["id"], "thegem_teams");
+      if (empty($terms) || is_wp_error($terms)) {
+        return [];
+      }
+
+      return array_values(
+        array_map(static function ($term) {
+          return [
+            "id" => (int) $term->term_id,
+            "slug" => $term->slug,
+            "name" => $term->name,
+          ];
+        }, $terms),
+      );
+    },
+    "schema" => [
+      "description" => "TheGem team category terms for this person",
+      "type" => "array",
       "context" => ["view", "edit"],
       "readonly" => true,
     ],
