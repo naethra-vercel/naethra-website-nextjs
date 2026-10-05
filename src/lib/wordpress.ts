@@ -1021,6 +1021,260 @@ export async function getAwsContent() {
   }
 }
 
+export type JavaContent = {
+  slug: string;
+  title: string;
+  eyebrow: string;
+  intro: string;
+  heroImage: string;
+  sections: Array<{ title: string; body: string; image?: string; bullets?: string[] }>;
+};
+
+const JAVA_FALLBACK: JavaContent = {
+  slug: "java-j2ee-applications",
+  title: "Java Application Development Services",
+  eyebrow: "Java / J2EE development",
+  intro:
+    "Java/J2EE: a mature, platform-independent stack for building web, mobile and enterprise applications that hold up under real production load. We’ve been designing, building and supporting Java based systems for customers in India, the US and Canada for more than a decade.",
+  heroImage: dotNetHeroImage,
+  sections: [
+    {
+      title: "The frameworks we build enterprise Java on",
+      body: "Most of our Java work starts from a familiar MVC shape — Controller, Model, and View — whether through Struts and JSP on an older codebase or Spring MVC on a newer one. Where a project calls for more, we layer in Spring Boot, Spring Security, and Spring DAO, and pair the backend with Angular when the UI needs to move beyond JSP.",
+    },
+    {
+      title: "Getting Java systems to talk to the outside world",
+      body: "A good share of our Java work is integrating existing applications with Twilio, PagerDuty, Jira, and telecom-grade SMS/WAP gateways through a thin REST or SOAP layer that keeps the core application swappable.",
+    },
+    {
+      title: "Data, persistence & reporting",
+      body: "On the data side we work across PostgreSQL, MySQL and Oracle, almost always through Hibernate or JPA. For generated output we use Jasper Reports, CKEditor, and Excel, Word and PDF export.",
+    },
+    {
+      title: "Our Java application services",
+      body: "Build, integrate and modernize business-critical Java applications with experienced application development, API integration and long-term maintenance capabilities.",
+      bullets: [
+        "Custom Java Application Development",
+        "Enterprise Web Applications",
+        "API & Third-Party Integrations",
+        "Billing & Invoicing Solutions",
+        "Monitoring & Observability Integrations",
+        "Java Modernization",
+        "Support & Long-Term Enhancement",
+      ],
+    },
+  ],
+};
+
+export function mapJavaContent(html: string): JavaContent {
+  const chunks = extractHtmlChunks(html);
+
+  const intro =
+    [
+      findChunk(chunks, (text) => /java\/j2ee/i.test(text) && /platform-independent/i.test(text)),
+      findChunk(chunks, (text) => /more than a decade/i.test(text) && /java based systems/i.test(text)),
+    ]
+      .filter(Boolean)
+      .join(" ") || JAVA_FALLBACK.intro;
+
+  const serviceBullets = [
+    extractHeadingText(html, "h5", /custom java application development/i),
+    extractHeadingText(html, "h5", /enterprise web applications/i),
+    extractHeadingText(html, "h5", /api & third-party integrations/i),
+    extractHeadingText(html, "h5", /billing & invoicing/i),
+    extractHeadingText(html, "h5", /monitoring & observability/i),
+    extractHeadingText(html, "h5", /java modernization/i),
+    extractHeadingText(html, "h5", /support & long-term enhancement/i),
+  ]
+    .map((text) => text.replace(/\u200b/g, "").trim())
+    .filter(Boolean);
+
+  const uniqueBullets = [...new Set(serviceBullets)];
+
+  return {
+    slug: "java-j2ee-applications",
+    title:
+      extractHeadingText(html, "h3", /java application development services/i) ||
+      JAVA_FALLBACK.title,
+    eyebrow: JAVA_FALLBACK.eyebrow,
+    intro,
+    heroImage: JAVA_FALLBACK.heroImage,
+    sections: [
+      {
+        title:
+          extractHeadingText(html, "h5", /frameworks we build enterprise java/i) ||
+          JAVA_FALLBACK.sections[0]!.title,
+        body:
+          [
+            findChunk(chunks, (text) => /classic mvc/i.test(text) || (/controller/i.test(text) && /spring mvc/i.test(text))),
+            findChunk(chunks, (text) => /spring boot/i.test(text) && /spring security/i.test(text)),
+          ]
+            .filter(Boolean)
+            .join(" ") || JAVA_FALLBACK.sections[0]!.body,
+      },
+      {
+        title:
+          extractHeadingText(html, "h5", /getting java systems to talk/i) ||
+          JAVA_FALLBACK.sections[1]!.title,
+        body:
+          findChunk(chunks, (text) => /twilio/i.test(text) && /pagerduty/i.test(text)) ||
+          JAVA_FALLBACK.sections[1]!.body,
+      },
+      {
+        title:
+          extractHeadingText(html, "h5", /data,? persistence/i) ||
+          JAVA_FALLBACK.sections[2]!.title,
+        body:
+          findChunk(chunks, (text) => /postgresql/i.test(text) && /hibernate/i.test(text)) ||
+          JAVA_FALLBACK.sections[2]!.body,
+      },
+      {
+        title:
+          extractHeadingText(html, "h4", /our java application services/i) ||
+          JAVA_FALLBACK.sections[3]!.title,
+        body:
+          findChunk(chunks, (text) => /build, integrate and modernize/i.test(text)) ||
+          JAVA_FALLBACK.sections[3]!.body,
+        ...(uniqueBullets.length > 0
+          ? { bullets: uniqueBullets }
+          : JAVA_FALLBACK.sections[3]?.bullets
+            ? { bullets: JAVA_FALLBACK.sections[3].bullets }
+            : {}),
+      },
+    ],
+  };
+}
+
+export async function getJavaContent() {
+  try {
+    const page = await getPageBySlug("java-j2ee-applications");
+    if (!page?.contentHtml) return JAVA_FALLBACK;
+    return mapJavaContent(page.contentHtml);
+  } catch {
+    return JAVA_FALLBACK;
+  }
+}
+
+export type PhpMysqlContent = {
+  slug: string;
+  title: string;
+  eyebrow: string;
+  intro: string;
+  heroImage: string;
+  sections: Array<{ title: string; body: string; image?: string; bullets?: string[] }>;
+};
+
+const PHP_MYSQL_FALLBACK: PhpMysqlContent = {
+  slug: "php-mysql-applications",
+  title: "PHP & MySQL Development Services",
+  eyebrow: "PHP / MySQL development",
+  intro:
+    "At Naethra Technologies, we provide custom PHP and MySQL development services to build reliable, secure and scalable web applications tailored to specific business requirements — from customer-facing websites and e-commerce platforms to enterprise portals, booking systems, inventory management, sales and billing applications, logistics systems and workflow-based business applications.",
+  heroImage: cmsHeroImage,
+  sections: [
+    {
+      title: "Custom PHP application development",
+      body: "Our PHP development expertise enables us to design and develop custom web applications based on individual business processes and operational requirements, including multiple user roles, administrative modules, approval workflows, dashboards, reports and business-specific functionality.",
+    },
+    {
+      title: "PHP framework expertise",
+      body: "We have hands-on experience with Yii, CakePHP, Zend, CodeIgniter and Laravel, and can work with an existing PHP application or develop a new one. Our experience includes traditional PHP applications and PHP backends integrated with Angular, JavaScript, jQuery and AJAX.",
+    },
+    {
+      title: "MySQL & database-driven applications",
+      body: "Our PHP development services include designing database-driven applications using MySQL, along with experience working with FileMaker, Microsoft SQL Server and PostgreSQL in different project environments.",
+    },
+    {
+      title: "Our PHP & MySQL capabilities",
+      body: "Whether you need a new PHP/MySQL application, modernization of an existing system, third-party integrations, or ongoing enhancement, Naethra can turn business requirements into a practical web solution.",
+      bullets: [
+        "Custom PHP Web Application Development",
+        "PHP & MySQL Application Development",
+        "Yii, CakePHP, Zend, CodeIgniter & Laravel",
+        "E-commerce Application Development",
+        "Booking & Reservation Systems",
+        "Inventory & Warehouse Management",
+        "Sales & Billing Applications",
+        "API & Third-Party Integrations",
+        "Existing PHP Application Maintenance & Enhancement",
+      ],
+    },
+  ],
+};
+
+export function mapPhpMysqlContent(html: string): PhpMysqlContent {
+  const chunks = extractHtmlChunks(html);
+  const listItems = extractClosingListItems(html);
+
+  const capabilityBullets = listItems.filter((item) =>
+    /php|mysql|yii|laravel|e-commerce|booking|inventory|billing|api|crm|database|reporting|maintenance/i.test(
+      item,
+    ),
+  );
+
+  return {
+    slug: "php-mysql-applications",
+    title:
+      extractHeadingText(html, "h1", /php\s*&\s*mysql development services/i) ||
+      PHP_MYSQL_FALLBACK.title,
+    eyebrow: PHP_MYSQL_FALLBACK.eyebrow,
+    intro:
+      findChunk(chunks, (text) => /custom php and mysql development services/i.test(text)) ||
+      PHP_MYSQL_FALLBACK.intro,
+    heroImage: PHP_MYSQL_FALLBACK.heroImage,
+    sections: [
+      {
+        title:
+          extractHeadingText(html, "h3", /custom php application development/i) ||
+          PHP_MYSQL_FALLBACK.sections[0]!.title,
+        body:
+          findChunk(chunks, (text) => /individual business processes/i.test(text)) ||
+          PHP_MYSQL_FALLBACK.sections[0]!.body,
+      },
+      {
+        title:
+          extractHeadingText(html, "h3", /php framework expertise/i) ||
+          PHP_MYSQL_FALLBACK.sections[1]!.title,
+        body:
+          findChunk(chunks, (text) => /yii|cakephp|codeigniter|laravel/i.test(text)) ||
+          PHP_MYSQL_FALLBACK.sections[1]!.body,
+      },
+      {
+        title:
+          extractHeadingText(html, "h4", /mysql & database-driven/i) ||
+          PHP_MYSQL_FALLBACK.sections[2]!.title,
+        body:
+          findChunk(chunks, (text) => /database-driven applications using mysql/i.test(text)) ||
+          PHP_MYSQL_FALLBACK.sections[2]!.body,
+      },
+      {
+        title:
+          extractHeadingText(html, "h4", /our php & mysql capabilities/i) ||
+          PHP_MYSQL_FALLBACK.sections[3]!.title,
+        body:
+          findChunk(chunks, (text) => /why choose naethra technologies for php/i.test(text)) ||
+          findChunk(chunks, (text) => /build a new php\/mysql application/i.test(text)) ||
+          PHP_MYSQL_FALLBACK.sections[3]!.body,
+        ...(capabilityBullets.length > 0
+          ? { bullets: capabilityBullets }
+          : PHP_MYSQL_FALLBACK.sections[3]?.bullets
+            ? { bullets: PHP_MYSQL_FALLBACK.sections[3].bullets }
+            : {}),
+      },
+    ],
+  };
+}
+
+export async function getPhpMysqlContent() {
+  try {
+    const page = await getPageBySlug("php-mysql-applications");
+    if (!page?.contentHtml) return PHP_MYSQL_FALLBACK;
+    return mapPhpMysqlContent(page.contentHtml);
+  } catch {
+    return PHP_MYSQL_FALLBACK;
+  }
+}
+
 export type CustomWebPublishingContent = {
   slug: string;
   title: string;
@@ -1189,12 +1443,12 @@ const SERVICES_FALLBACK: ServicesPageContent = {
     {
       title: "Java/J2EE applications",
       description: "Enterprise Java solutions that improve the way your business builds software.",
-      href: "/services/dot-net-application",
+      href: "/services/java-j2ee-applications",
     },
     {
       title: "PHP/MySQL applications",
       description: "Practical, scalable PHP and database applications for growing organisations.",
-      href: "/web-app",
+      href: "/services/php-mysql-applications",
     },
     {
       title: ".NET applications",

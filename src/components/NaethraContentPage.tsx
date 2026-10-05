@@ -7,6 +7,8 @@ const mobileItems = [["Flutter", "/flutter-app-development-company"]] as const;
 const serviceItems = [
   ["Content Management System", "/cms"],
   ["Custom Web Publishing", "/services/custom-web-publishing"],
+  ["Java/J2EE Applications", "/services/java-j2ee-applications"],
+  ["PHP/MySQL Applications", "/services/php-mysql-applications"],
   ["Dot Net Application", "/services/dot-net-application"],
   ["AWS & Cloud Support", "/services/aws-cloud-support"],
 ] as const;

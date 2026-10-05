@@ -30,6 +30,8 @@ import { Route as ServicesAwsCloudSupportRouteImport } from './routes/services/a
 import { Route as ServicesClarisFilemakerApplicationRouteImport } from './routes/services/claris-filemaker-application'
 import { Route as ServicesCustomWebPublishingRouteImport } from './routes/services/custom-web-publishing'
 import { Route as ServicesDotNetApplicationRouteImport } from './routes/services/dot-net-application'
+import { Route as ServicesJavaJ2eeApplicationsRouteImport } from './routes/services/java-j2ee-applications'
+import { Route as ServicesPhpMysqlApplicationsRouteImport } from './routes/services/php-mysql-applications'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -141,6 +143,18 @@ const ServicesDotNetApplicationRoute =
     path: '/services/dot-net-application',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ServicesJavaJ2eeApplicationsRoute =
+  ServicesJavaJ2eeApplicationsRouteImport.update({
+    id: '/services/java-j2ee-applications',
+    path: '/services/java-j2ee-applications',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ServicesPhpMysqlApplicationsRoute =
+  ServicesPhpMysqlApplicationsRouteImport.update({
+    id: '/services/php-mysql-applications',
+    path: '/services/php-mysql-applications',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -161,6 +175,8 @@ export interface FileRoutesByFullPath {
   '/services/claris-filemaker-application': typeof ServicesClarisFilemakerApplicationRoute
   '/services/custom-web-publishing': typeof ServicesCustomWebPublishingRoute
   '/services/dot-net-application': typeof ServicesDotNetApplicationRoute
+  '/services/java-j2ee-applications': typeof ServicesJavaJ2eeApplicationsRoute
+  '/services/php-mysql-applications': typeof ServicesPhpMysqlApplicationsRoute
   '/about/': typeof AboutIndexRoute
   '/blogs/': typeof BlogsIndexRoute
   '/services/': typeof ServicesIndexRoute
@@ -184,6 +200,8 @@ export interface FileRoutesByTo {
   '/services/claris-filemaker-application': typeof ServicesClarisFilemakerApplicationRoute
   '/services/custom-web-publishing': typeof ServicesCustomWebPublishingRoute
   '/services/dot-net-application': typeof ServicesDotNetApplicationRoute
+  '/services/java-j2ee-applications': typeof ServicesJavaJ2eeApplicationsRoute
+  '/services/php-mysql-applications': typeof ServicesPhpMysqlApplicationsRoute
   '/about': typeof AboutIndexRoute
   '/blogs': typeof BlogsIndexRoute
   '/services': typeof ServicesIndexRoute
@@ -208,6 +226,8 @@ export interface FileRoutesById {
   '/services/claris-filemaker-application': typeof ServicesClarisFilemakerApplicationRoute
   '/services/custom-web-publishing': typeof ServicesCustomWebPublishingRoute
   '/services/dot-net-application': typeof ServicesDotNetApplicationRoute
+  '/services/java-j2ee-applications': typeof ServicesJavaJ2eeApplicationsRoute
+  '/services/php-mysql-applications': typeof ServicesPhpMysqlApplicationsRoute
   '/about/': typeof AboutIndexRoute
   '/blogs/': typeof BlogsIndexRoute
   '/services/': typeof ServicesIndexRoute
@@ -233,6 +253,8 @@ export interface FileRouteTypes {
     | '/services/claris-filemaker-application'
     | '/services/custom-web-publishing'
     | '/services/dot-net-application'
+    | '/services/java-j2ee-applications'
+    | '/services/php-mysql-applications'
     | '/about/'
     | '/blogs/'
     | '/services/'
@@ -256,6 +278,8 @@ export interface FileRouteTypes {
     | '/services/claris-filemaker-application'
     | '/services/custom-web-publishing'
     | '/services/dot-net-application'
+    | '/services/java-j2ee-applications'
+    | '/services/php-mysql-applications'
     | '/about'
     | '/blogs'
     | '/services'
@@ -279,6 +303,8 @@ export interface FileRouteTypes {
     | '/services/claris-filemaker-application'
     | '/services/custom-web-publishing'
     | '/services/dot-net-application'
+    | '/services/java-j2ee-applications'
+    | '/services/php-mysql-applications'
     | '/about/'
     | '/blogs/'
     | '/services/'
@@ -303,6 +329,8 @@ export interface RootRouteChildren {
   ServicesClarisFilemakerApplicationRoute: typeof ServicesClarisFilemakerApplicationRoute
   ServicesCustomWebPublishingRoute: typeof ServicesCustomWebPublishingRoute
   ServicesDotNetApplicationRoute: typeof ServicesDotNetApplicationRoute
+  ServicesJavaJ2eeApplicationsRoute: typeof ServicesJavaJ2eeApplicationsRoute
+  ServicesPhpMysqlApplicationsRoute: typeof ServicesPhpMysqlApplicationsRoute
   AboutIndexRoute: typeof AboutIndexRoute
   BlogsIndexRoute: typeof BlogsIndexRoute
   ServicesIndexRoute: typeof ServicesIndexRoute
@@ -457,6 +485,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesDotNetApplicationRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/services/java-j2ee-applications': {
+      id: '/services/java-j2ee-applications'
+      path: '/services/java-j2ee-applications'
+      fullPath: '/services/java-j2ee-applications'
+      preLoaderRoute: typeof ServicesJavaJ2eeApplicationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/php-mysql-applications': {
+      id: '/services/php-mysql-applications'
+      path: '/services/php-mysql-applications'
+      fullPath: '/services/php-mysql-applications'
+      preLoaderRoute: typeof ServicesPhpMysqlApplicationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -480,6 +522,8 @@ const rootRouteChildren: RootRouteChildren = {
     ServicesClarisFilemakerApplicationRoute,
   ServicesCustomWebPublishingRoute: ServicesCustomWebPublishingRoute,
   ServicesDotNetApplicationRoute: ServicesDotNetApplicationRoute,
+  ServicesJavaJ2eeApplicationsRoute: ServicesJavaJ2eeApplicationsRoute,
+  ServicesPhpMysqlApplicationsRoute: ServicesPhpMysqlApplicationsRoute,
   AboutIndexRoute: AboutIndexRoute,
   BlogsIndexRoute: BlogsIndexRoute,
   ServicesIndexRoute: ServicesIndexRoute,

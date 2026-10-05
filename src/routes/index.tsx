@@ -89,6 +89,8 @@ const mobileMenuItems = [["Flutter", "/flutter-app-development-company"]] as con
 const serviceMenuItems = [
   ["Content Management System", "/cms"],
   ["Custom Web Publishing", "/services/custom-web-publishing"],
+  ["Java/J2EE Applications", "/services/java-j2ee-applications"],
+  ["PHP/MySQL Applications", "/services/php-mysql-applications"],
   ["Dot Net Application", "/services/dot-net-application"],
   ["AWS & Cloud Support", "/services/aws-cloud-support"],
 ] as const;
@@ -251,7 +253,7 @@ const offerServices = [
   // Middle Row
   {
     title: "Java/J2ee Applications",
-    href: "/services/dot-net-application",
+    href: "/services/java-j2ee-applications",
     description:
       "Our Java Competency Center solutions help your company fundamentally improve the way it builds software solutions using JEE..",
     icon: TrendingUp,
@@ -260,7 +262,7 @@ const offerServices = [
   },
   {
     title: "Php/Mysql Applications",
-    href: "/web-app",
+    href: "/services/php-mysql-applications",
     description:
       "PHP is a widely-used general-purpose scripting language that is especially suited for Web development...",
     icon: LayoutGrid,
