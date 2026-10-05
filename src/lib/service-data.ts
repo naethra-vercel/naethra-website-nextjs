@@ -66,7 +66,7 @@ export const services = [
   {
     title: "FileMaker development",
     description: "Certified FileMaker development, integrations, and custom business tools.",
-    href: "/services/custom-web-publishing",
+    href: "/services/claris-filemaker-application",
     icon: Workflow,
   },
   {

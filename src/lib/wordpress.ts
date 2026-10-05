@@ -158,9 +158,10 @@ const WEB_APP_FALLBACK: WebAppContent = {
 };
 
 type WpRendered = { rendered?: string };
-type WpTerm = { taxonomy?: string; name?: string };
+type WpTerm = { id?: number; taxonomy?: string; name?: string; slug?: string };
 type WpMedia = { source_url?: string; alt_text?: string };
 type WpAuthor = { name?: string };
+type WpTeamTerm = { id?: number; slug?: string; name?: string };
 
 type WpPost = {
   id?: number;
@@ -179,12 +180,21 @@ type WpPost = {
     email?: string;
     link?: string;
   };
+  /** Present after enable-team-person-rest.php exposes thegem_teams on the person. */
+  teams?: WpTeamTerm[];
+  thegem_teams?: number[];
   _embedded?: {
     author?: WpAuthor[];
     "wp:featuredmedia"?: WpMedia[];
     "wp:term"?: WpTerm[][];
   };
 };
+
+/** Matches the live About Elementor widget: content_team_cat = team-2x-2, team-3x. */
+const ABOUT_TEAM_CATEGORY_SLUGS = ["team-2x-2", "team-3x"] as const;
+
+/** Stable About roster (post IDs) when taxonomy REST is not available yet. */
+const ABOUT_TEAM_INCLUDE_IDS = [348, 349, 217] as const;
 
 /** Public CDN URLs for portfolio items whose featured media is not publicly embeddable. */
 const PORTFOLIO_IMAGE_FALLBACKS: Record<string, string> = {
@@ -343,6 +353,36 @@ function findChunk(chunks: string[], matcher: (text: string) => boolean) {
   return chunks.find(matcher) ?? "";
 }
 
+/** Prefer full-size uploads; skip logos, icons, and Elementor thumb caches when possible. */
+function extractWpImages(html: string) {
+  const matches = Array.from(
+    html.matchAll(/(?:data-src|src)=["'](https?:\/\/[^"']+\.(?:jpe?g|png|webp|gif)(?:\?[^"']*)?)["']/gi),
+  ).map((match) => match[1] ?? "");
+
+  const seen = new Set<string>();
+  const images: string[] = [];
+
+  for (const url of matches) {
+    if (!url || seen.has(url)) continue;
+    if (/logo|icon|favicon|avatar|emoji|gravatar|sprite/i.test(url)) continue;
+    if (/thegem-post-thumb|woocommerce|cart/i.test(url)) continue;
+    seen.add(url);
+    images.push(url);
+  }
+
+  return images;
+}
+
+function pickWpImage(images: string[], matcher: RegExp, fallback = "") {
+  return images.find((url) => matcher.test(url)) || fallback;
+}
+
+function preferFullSizeImage(url: string) {
+  if (!url) return url;
+  // Strip WP resized suffixes like -1024x576 while keeping Elementor thumb paths intact.
+  return url.replace(/-\d+x\d+(\.(?:jpe?g|png|webp|gif))/i, "$1");
+}
+
 export function mapAboutContent(html: string): AboutContent {
   const chunks = extractHtmlChunks(html);
   const specialtyLead =
@@ -403,6 +443,9 @@ export function mapTeamPerson(post: WpPost) {
   const role = post.person?.position?.trim() || "";
   const description = stripHtml(post.content?.rendered ?? post.excerpt?.rendered ?? "");
   const image = post._embedded?.["wp:featuredmedia"]?.[0]?.source_url ?? "";
+  const teamSlugs = (post.teams ?? [])
+    .map((term) => term.slug?.trim())
+    .filter((slug): slug is string => Boolean(slug));
 
   return {
     id: post.id ?? 0,
@@ -411,16 +454,144 @@ export function mapTeamPerson(post: WpPost) {
     description,
     image,
     order: post.menu_order ?? 0,
+    teamSlugs,
   };
 }
 
-export async function getTeamPersons(perPage = 20) {
-  const items = await wpFetch<WpPost[]>(
-    `/thegem_team_person?per_page=${perPage}&_embed&orderby=menu_order&order=asc&status=publish`,
+function sortTeamPersons<T extends { id: number; order: number; name: string }>(
+  items: T[],
+  preferredIds?: readonly number[],
+) {
+  if (preferredIds?.length) {
+    const rank = new Map(preferredIds.map((id, index) => [id, index]));
+    return [...items].sort((a, b) => {
+      const aRank = rank.get(a.id);
+      const bRank = rank.get(b.id);
+      if (aRank != null && bRank != null) return aRank - bRank;
+      if (aRank != null) return -1;
+      if (bRank != null) return 1;
+      return a.order - b.order || a.name.localeCompare(b.name);
+    });
+  }
+  return [...items].sort((a, b) => a.order - b.order || a.name.localeCompare(b.name));
+}
+
+function normalizeTeamPersonName(name: string) {
+  return name.toLowerCase().replace(/\s+/g, " ").trim();
+}
+
+/** About widget uses team-2x-2 + team-3x but one person per name (348/349/217, not duplicate Murali 219). */
+function dedupeTeamPersonsForAbout(
+  persons: ReturnType<typeof mapTeamPerson>[],
+): ReturnType<typeof mapTeamPerson>[] {
+  const byId = new Map<number, ReturnType<typeof mapTeamPerson>>();
+  for (const person of persons) {
+    if (person.id > 0 && !byId.has(person.id)) byId.set(person.id, person);
+  }
+
+  const canonical = ABOUT_TEAM_INCLUDE_IDS.flatMap((id) => {
+    const person = byId.get(id);
+    return person ? [person] : [];
+  });
+  if (canonical.length === ABOUT_TEAM_INCLUDE_IDS.length) {
+    return canonical;
+  }
+
+  const idRank = new Map<number, number>(
+    ABOUT_TEAM_INCLUDE_IDS.map((id, index) => [id, index]),
   );
-  return items
-    .map(mapTeamPerson)
-    .sort((a, b) => a.order - b.order || a.name.localeCompare(b.name));
+  const byName = new Map<string, ReturnType<typeof mapTeamPerson>>();
+  for (const person of sortTeamPersons([...byId.values()], ABOUT_TEAM_INCLUDE_IDS)) {
+    const key = normalizeTeamPersonName(person.name);
+    const existing = byName.get(key);
+    if (!existing) {
+      byName.set(key, person);
+      continue;
+    }
+    const rank = (id: number) => idRank.get(id) ?? 1000 + person.order;
+    if (rank(person.id) < rank(existing.id)) {
+      byName.set(key, person);
+    }
+  }
+
+  return sortTeamPersons([...byName.values()], ABOUT_TEAM_INCLUDE_IDS);
+}
+
+function personMatchesTeamSlugs(post: WpPost, teamSlugs: readonly string[]) {
+  const wanted = new Set(teamSlugs);
+  if (post.teams?.some((term) => term.slug && wanted.has(term.slug))) return true;
+
+  const embedded = post._embedded?.["wp:term"]?.flat() ?? [];
+  return embedded.some(
+    (term) =>
+      term.taxonomy === "thegem_teams" && Boolean(term.slug) && wanted.has(term.slug!),
+  );
+}
+
+async function fetchTeamTermIds(teamSlugs: readonly string[]) {
+  const terms = await wpFetch<WpTeamTerm[]>(
+    `/thegem_teams?per_page=100&hide_empty=false`,
+  );
+  return terms
+    .filter((term) => term.slug && teamSlugs.includes(term.slug) && term.id != null)
+    .map((term) => term.id!);
+}
+
+async function fetchTeamPersonsByTermIds(termIds: number[], perPage: number) {
+  if (termIds.length === 0) return [];
+  const query = termIds.map((id) => `thegem_teams[]=${id}`).join("&");
+  return wpFetch<WpPost[]>(
+    `/thegem_team_person?${query}&per_page=${perPage}&_embed&orderby=menu_order&order=asc&status=publish`,
+  );
+}
+
+export async function getTeamPersons(
+  perPageOrOptions:
+    | number
+    | { perPage?: number; teamSlugs?: readonly string[]; forAbout?: boolean } = 20,
+) {
+  const options =
+    typeof perPageOrOptions === "number"
+      ? { perPage: perPageOrOptions }
+      : perPageOrOptions;
+  const perPage = options.perPage ?? 20;
+  const teamSlugs = options.teamSlugs ?? ABOUT_TEAM_CATEGORY_SLUGS;
+  const forAbout = options.forAbout ?? false;
+
+  const finalize = (posts: WpPost[]) => {
+    const mapped = sortTeamPersons(posts.map(mapTeamPerson), ABOUT_TEAM_INCLUDE_IDS);
+    return forAbout ? dedupeTeamPersonsForAbout(mapped) : mapped;
+  };
+
+  // 1) Prefer taxonomy filter once thegem_teams is REST-enabled.
+  try {
+    const termIds = await fetchTeamTermIds(teamSlugs);
+    const byTaxonomy = await fetchTeamPersonsByTermIds(termIds, perPage);
+    if (byTaxonomy.length > 0) {
+      return finalize(byTaxonomy);
+    }
+  } catch {
+    // Taxonomy may not be REST-enabled yet.
+  }
+
+  // 2) Fetch people and filter by exposed teams[] / embedded terms.
+  try {
+    const items = await wpFetch<WpPost[]>(
+      `/thegem_team_person?per_page=${perPage}&_embed&orderby=menu_order&order=asc&status=publish`,
+    );
+    const filtered = items.filter((post) => personMatchesTeamSlugs(post, teamSlugs));
+    if (filtered.length > 0) {
+      return finalize(filtered);
+    }
+  } catch {
+    // Fall through to include-id roster.
+  }
+
+  // 3) Stable About roster from the live widget (post IDs 348 / 349 / 217).
+  const included = await wpFetch<WpPost[]>(
+    `/thegem_team_person?include=${ABOUT_TEAM_INCLUDE_IDS.join(",")}&_embed&orderby=include&per_page=${ABOUT_TEAM_INCLUDE_IDS.length}`,
+  );
+  return finalize(included);
 }
 
 export async function getAboutContent() {
@@ -429,7 +600,10 @@ export async function getAboutContent() {
     const about = page?.contentHtml ? mapAboutContent(page.contentHtml) : { ...ABOUT_FALLBACK };
 
     try {
-      const teamPersons = await getTeamPersons();
+      const teamPersons = await getTeamPersons({
+        teamSlugs: ABOUT_TEAM_CATEGORY_SLUGS,
+        forAbout: true,
+      });
       if (teamPersons.length > 0) {
         about.team = teamPersons.map(({ name, role, description, image }) => ({
           name,
@@ -440,7 +614,7 @@ export async function getAboutContent() {
               member.name.toLowerCase().includes(name.split(" ")[0]!.toLowerCase()),
             )?.description ||
             "",
-          image,
+          ...(image ? { image } : {}),
         }));
       }
     } catch {
@@ -626,8 +800,15 @@ export function mapCmsContent(html: string): CmsContent {
     extractHeadingText(html, "h4", /versatility/i),
   ].filter(Boolean);
 
-  const developmentImage = CMS_FALLBACK.sections[0]?.image;
-  const benefitsImage = CMS_FALLBACK.sections[2]?.image;
+  const images = extractWpImages(html);
+  const developmentImage =
+    pickWpImage(images, /cms-details/i) ||
+    images[1] ||
+    CMS_FALLBACK.sections[0]?.image;
+  const benefitsImage =
+    pickWpImage(images, /7-4-1/i) ||
+    images[2] ||
+    CMS_FALLBACK.sections[2]?.image;
   const benefitsBullets =
     bulletTitles.length > 0 ? bulletTitles : CMS_FALLBACK.sections[2]?.bullets;
 
@@ -637,7 +818,8 @@ export function mapCmsContent(html: string): CmsContent {
       extractHeadingText(html, "h1", /outsource cms development/i) || CMS_FALLBACK.title,
     eyebrow: CMS_FALLBACK.eyebrow,
     intro,
-    heroImage: CMS_FALLBACK.heroImage,
+    heroImage:
+      pickWpImage(images, /web-app-changed/i) || images[0] || CMS_FALLBACK.heroImage,
     sections: [
       {
         title:
@@ -751,7 +933,11 @@ export function mapFileMakerContent(html: string): FileMakerContent {
     /filemaker|webdirect|cloud|integration|consulting|support|migration/i.test(item),
   );
 
-  const experienceImage = FILEMAKER_FALLBACK.sections[1]?.image;
+  const images = extractWpImages(html);
+  const experienceImage =
+    pickWpImage(images, /naethra-filemaker/i) ||
+    images[1] ||
+    FILEMAKER_FALLBACK.sections[1]?.image;
   const serviceBullets =
     bullets.length > 0 ? bullets : FILEMAKER_FALLBACK.sections[0]?.bullets;
 
@@ -765,7 +951,10 @@ export function mapFileMakerContent(html: string): FileMakerContent {
       extractHeadingText(html, "h5", /design.*develop.*hosting/i) ||
       findChunk(chunks, (text) => /design\s*\|\s*develop/i.test(text)) ||
       FILEMAKER_FALLBACK.intro,
-    heroImage: FILEMAKER_FALLBACK.heroImage,
+    heroImage:
+      pickWpImage(images, /filemaker-ser-new/i) ||
+      images[0] ||
+      FILEMAKER_FALLBACK.heroImage,
     sections: [
       {
         title:
@@ -859,14 +1048,21 @@ export function mapDotNetContent(html: string): DotNetContent {
     (text) => /migrate to \.?net|flawless migration from legacy/i.test(text),
   );
 
-  const benefitsImage = DOT_NET_FALLBACK.sections[0]?.image;
+  const images = extractWpImages(html).map(preferFullSizeImage);
+  const wpHero =
+    pickWpImage(images, /net-2/i) ||
+    pickWpImage(images, /\.net|dotnet|asp/i) ||
+    images[0] ||
+    "";
+  const benefitsImage =
+    pickWpImage(images, /net-2/i) || images[0] || DOT_NET_FALLBACK.sections[0]?.image;
 
   return {
     slug: "dot-net-application",
     title: DOT_NET_FALLBACK.title,
     eyebrow: DOT_NET_FALLBACK.eyebrow,
     intro,
-    heroImage: DOT_NET_FALLBACK.heroImage,
+    heroImage: wpHero || DOT_NET_FALLBACK.heroImage,
     sections: [
       {
         title:
@@ -982,12 +1178,16 @@ export function mapAwsContent(html: string): AwsContent {
   const cloudList =
     cloudBullets.length > 0 ? cloudBullets : AWS_FALLBACK.sections[1]?.bullets;
 
+  const images = extractWpImages(html);
+  const wpHero = pickWpImage(images, /cim|aws|cloud/i) || images[0] || "";
+  const sectionImage = wpHero || undefined;
+
   return {
     slug: "aws-cloud-support",
     title: AWS_FALLBACK.title,
     eyebrow: AWS_FALLBACK.eyebrow,
     intro: AWS_FALLBACK.intro,
-    heroImage: AWS_FALLBACK.heroImage,
+    heroImage: wpHero || AWS_FALLBACK.heroImage,
     sections: [
       {
         title:
@@ -995,6 +1195,7 @@ export function mapAwsContent(html: string): AwsContent {
           AWS_FALLBACK.sections[0]!.title,
         body: managedBody,
         ...(managedList ? { bullets: managedList } : {}),
+        ...(sectionImage ? { image: sectionImage } : {}),
       },
       {
         title:
@@ -1036,7 +1237,7 @@ const JAVA_FALLBACK: JavaContent = {
   eyebrow: "Java / J2EE development",
   intro:
     "Java/J2EE: a mature, platform-independent stack for building web, mobile and enterprise applications that hold up under real production load. We’ve been designing, building and supporting Java based systems for customers in India, the US and Canada for more than a decade.",
-  heroImage: dotNetHeroImage,
+  heroImage: "https://naethra.com/wp-content/uploads/2026/09/java-dev.jpg",
   sections: [
     {
       title: "The frameworks we build enterprise Java on",
@@ -1090,6 +1291,8 @@ export function mapJavaContent(html: string): JavaContent {
     .filter(Boolean);
 
   const uniqueBullets = [...new Set(serviceBullets)];
+  const images = extractWpImages(html);
+  const wpHero = pickWpImage(images, /java/i) || images[0] || "";
 
   return {
     slug: "java-j2ee-applications",
@@ -1098,7 +1301,7 @@ export function mapJavaContent(html: string): JavaContent {
       JAVA_FALLBACK.title,
     eyebrow: JAVA_FALLBACK.eyebrow,
     intro,
-    heroImage: JAVA_FALLBACK.heroImage,
+    heroImage: wpHero || JAVA_FALLBACK.heroImage,
     sections: [
       {
         title:
@@ -1212,6 +1415,9 @@ export function mapPhpMysqlContent(html: string): PhpMysqlContent {
     ),
   );
 
+  const images = extractWpImages(html);
+  const wpHero = pickWpImage(images, /php|mysql|web/i) || images[0] || "";
+
   return {
     slug: "php-mysql-applications",
     title:
@@ -1221,7 +1427,7 @@ export function mapPhpMysqlContent(html: string): PhpMysqlContent {
     intro:
       findChunk(chunks, (text) => /custom php and mysql development services/i.test(text)) ||
       PHP_MYSQL_FALLBACK.intro,
-    heroImage: PHP_MYSQL_FALLBACK.heroImage,
+    heroImage: wpHero || PHP_MYSQL_FALLBACK.heroImage,
     sections: [
       {
         title:
@@ -1360,7 +1566,11 @@ export function mapCustomWebPublishingContent(html: string): CustomWebPublishing
     findChunk(chunks, (text) => /enable access through php/i.test(text)) ||
     CWP_FALLBACK.sections[0]!.body;
 
-  const phpImage = CWP_FALLBACK.sections[1]?.image;
+  const images = extractWpImages(html);
+  const phpImage =
+    pickWpImage(images, /filemaker-api-php/i) ||
+    images[1] ||
+    CWP_FALLBACK.sections[1]?.image;
   const techList = techBullets.length > 0 ? techBullets : CWP_FALLBACK.sections[0]?.bullets;
   const phpList =
     phpCapabilityBullets.length > 0
@@ -1372,7 +1582,8 @@ export function mapCustomWebPublishingContent(html: string): CustomWebPublishing
     title: CWP_FALLBACK.title,
     eyebrow: CWP_FALLBACK.eyebrow,
     intro,
-    heroImage: CWP_FALLBACK.heroImage,
+    heroImage:
+      pickWpImage(images, /filemaker-server/i) || images[0] || CWP_FALLBACK.heroImage,
     sections: [
       {
         title: CWP_FALLBACK.sections[0]!.title,
@@ -1672,6 +1883,324 @@ export async function getHomeTestimonials() {
     return mapHomeTestimonials(page.contentHtml);
   } catch {
     return HOME_TESTIMONIALS_FALLBACK;
+  }
+}
+
+export type HomeOfferService = {
+  title: string;
+  description: string;
+  href: string;
+};
+
+export type HomeClient = {
+  name: string;
+  logo: string;
+};
+
+export type HomeContent = {
+  heroTitle: string;
+  heroSubtitle: string;
+  heroCta: string;
+  aboutTitle: string;
+  aboutParagraphs: string[];
+  aboutHighlights: string[];
+  whyTitle: string;
+  whyParagraphs: string[];
+  servicesEyebrow: string;
+  servicesTitle: string;
+  servicesIntro: string;
+  offerServices: HomeOfferService[];
+  majorServices: string[];
+  clientsHeading: string;
+  clients: HomeClient[];
+  testimonials: HomeTestimonial[];
+};
+
+const HOME_OFFER_SERVICE_FALLBACK: HomeOfferService[] = [
+  {
+    title: "iOS, Android And Hybrid Mobility Applications",
+    description:
+      "Our first mobile app project was delivered 2 years ago and since then mobile applications have been the fastest growing part…",
+    href: "/mobile-app",
+  },
+  {
+    title: "Website Development",
+    description:
+      "Our skilled and experienced development team offers a rich set of possible technology and user interface solutions, whatever your needs .Some areas where we’ve done work...",
+    href: "/web-app",
+  },
+  {
+    title: "Content Management System",
+    description:
+      "We work on a number of open source Content Management Systems (CMS), which can be easily downloaded by anyone…",
+    href: "/cms",
+  },
+  {
+    title: "Java/J2ee Applications",
+    description:
+      "Our Java Competency Center solutions help your company fundamentally improve the way it builds software solutions using JEE…",
+    href: "/services/java-j2ee-applications",
+  },
+  {
+    title: "Php/Mysql Applications",
+    description:
+      "PHP is a widely-used general-purpose scripting language that is especially suited for Web development…",
+    href: "/services/php-mysql-applications",
+  },
+  {
+    title: ".Net Applications",
+    description:
+      "Naethra provides full-cycle development services in Microsoft .NET to Independent Software Vendors (ISVs), product…",
+    href: "/services/dot-net-application",
+  },
+  {
+    title: "FileMaker Development",
+    description:
+      "We have over 100 person years experience in FileMaker skills. Our developers are certified FM developers and.",
+    href: "/services/claris-filemaker-application",
+  },
+  {
+    title: "Custom Web Publishing With PHP(CWP)",
+    description:
+      "With our Filemaker-to-Web solution, you can offer controlled public access to your data, while it remains connected…",
+    href: "/services/custom-web-publishing",
+  },
+  {
+    title: "Cloud Solutions",
+    description:
+      "Cloud computing is the delivery of computing services—including servers, storage, databases, networking, software…",
+    href: "/services/aws-cloud-support",
+  },
+];
+
+const HOME_CLIENTS_FALLBACK: HomeClient[] = [
+  { name: "Chemtools", logo: "https://naethra.com/wp-content/uploads/2023/04/Chemtools.webp" },
+  { name: "Namanama", logo: "https://naethra.com/wp-content/uploads/2023/02/namanama-Logo.jpeg" },
+  {
+    name: "Sabine Surveyors",
+    logo: "https://naethra.com/wp-content/uploads/2023/04/Sabine-Surveyors.webp",
+  },
+  { name: "Shingda", logo: "https://naethra.com/wp-content/uploads/2023/04/shingda.webp" },
+  {
+    name: "Fyrepower",
+    logo: "https://naethra.com/wp-content/uploads/2023/02/New-fyrepower-logo-copy.png",
+  },
+  {
+    name: "CURA Emergency Services",
+    logo: "https://naethra.com/wp-content/uploads/2023/04/CURA-Emergency-Services.webp",
+  },
+  {
+    name: "Expat Aircon Services",
+    logo: "https://naethra.com/wp-content/uploads/2023/02/EXPAT-AIRCON-SERVICES.png",
+  },
+  {
+    name: "Sauna Specialist",
+    logo: "https://naethra.com/wp-content/uploads/2023/04/Sauna_Specialist_Logo.png",
+  },
+  { name: "Syndeo", logo: "https://naethra.com/wp-content/uploads/2023/02/Syndeo.jpg" },
+  { name: "Sabine", logo: "https://naethra.com/wp-content/uploads/2023/04/Sabine.png" },
+  { name: "OEG", logo: "https://naethra.com/wp-content/uploads/2023/02/OEG-logo.svg" },
+  { name: "Mahathri", logo: "https://naethra.com/wp-content/uploads/2023/04/Mahathri-Logo.webp" },
+  {
+    name: "MacPros",
+    logo: "https://naethra.com/wp-content/uploads/2023/04/MacPros_Logo_med_white.webp",
+  },
+  { name: "IRITS", logo: "https://naethra.com/wp-content/uploads/2023/04/IRITS-logo.webp" },
+  { name: "AARMS", logo: "https://naethra.com/wp-content/uploads/2023/02/AARMS.png" },
+];
+
+const HOME_CONTENT_FALLBACK: HomeContent = {
+  heroTitle: "Comprehensive Full Stack Development Outsourcing",
+  heroSubtitle: "Mastering Web, Mobile Native, and Cross-Platform Applications",
+  heroCta: "Schedule a Meet",
+  aboutTitle: "Unlock the Possibilities with a leading Software Development Company",
+  aboutParagraphs: [
+    "Naethra Technologies is full of software development experts in full-stack application development in web, mobile native, and cross-platform mobile development.",
+    "Naethra Technologies based in India specializes in mobile application development, web services, content management systems, Ionic Framework, Cordova, Flutter development, UX/UI planning, usability testing, and FileMaker integration.",
+    "At Naethra Technologies, we’re passionate about helping businesses succeed. We believe in creating solutions that are tailored to your needs and goals while providing excellent customer service and support.",
+  ],
+  aboutHighlights: [
+    "Your Deliveries will be right on-time.",
+    "You will love what will you get.",
+    "You make real things.",
+    "What make it happen for you.",
+  ],
+  whyTitle: "Why Naethra Technologies For Full Stack Development Outsourcing?",
+  whyParagraphs: [
+    "We are the perfect choice for full stack development outsourcing. With our team of skilled software engineers, we never compromise ourselves on low quality deliverables.",
+    "Our team of experienced software developers understand the latest trends and technologies in web and mobile development. Our team is skilled in a wide range of programming languages, frameworks and platforms such as Java, PHP, Angular, React, Node.js, etc.",
+  ],
+  servicesEyebrow: "What we offer",
+  servicesTitle: "Our Scalable Customised Solutions",
+  servicesIntro:
+    "We provide tailored solutions to meet the individual requirements of each client. Our highly experienced team has an agile approach to software development, allowing us to swiftly adapt to any changes in the business environment.",
+  offerServices: HOME_OFFER_SERVICE_FALLBACK,
+  majorServices: [
+    "Get Expert Full Stack Development Services – That meets your unique needs.",
+    "Cross-Platform Mobile App Development — Ionic Framework, Cordova or Flutter.",
+    "User Interface and Graphic Design – Responsive and Mobile Design Concepts.",
+    "Powerful Content Management Systems – PHP, WordPress, Joomla and Magento.",
+    "Zoho App Development – Quickly Build and Deploy Cloud Applications with Creator.",
+    "Outsource Web & Enterprise applications, UX/UI Planning and Usability Testing.",
+    "Claris FileMaker – Integration, DB Development, Web and Custom Development.",
+  ],
+  clientsHeading: "Providing Superior Software Solutions for Our Valued Clients",
+  clients: HOME_CLIENTS_FALLBACK,
+  testimonials: HOME_TESTIMONIALS_FALLBACK,
+};
+
+function prettyClientName(raw: string) {
+  return raw
+    .replace(/[-_]+/g, " ")
+    .replace(/\.(webp|png|jpe?g|svg)$/i, "")
+    .replace(/\blogo\b/gi, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+function mapHomeClients(html: string): HomeClient[] {
+  const end = html.search(/what\s+naethra.?s\s+clients\s+say/i);
+  const section = end > 0 ? html.slice(0, end) : html;
+  const slides = Array.from(
+    section.matchAll(
+      /swiper-slide[\s\S]{0,700}?<img[^>]+(?:data-src|src)=["']([^"']+)["'][^>]*>/gi,
+    ),
+  );
+
+  const clients: HomeClient[] = [];
+  const seen = new Set<string>();
+
+  for (const match of slides) {
+    const logo = match[1] ?? "";
+    if (!logo || seen.has(logo) || /profile|avatar|testimonial/i.test(logo)) continue;
+    seen.add(logo);
+    const altMatch = match[0].match(/alt=["']([^"']*)["']/i);
+    const name = prettyClientName(altMatch?.[1] || logo.split("/").pop() || "Client");
+    clients.push({ name, logo });
+  }
+
+  return clients.length > 0 ? clients : HOME_CLIENTS_FALLBACK;
+}
+
+function mapHomeOfferServices(html: string): HomeOfferService[] {
+  const chunks = extractHtmlChunks(html);
+
+  return HOME_OFFER_SERVICE_FALLBACK.map((fallback) => {
+    const titleMatchers: Array<[RegExp, RegExp]> = [
+      [/ios|android|hybrid mobility/i, /first mobile app project/i],
+      [/website development/i, /skilled and experienced development team/i],
+      [/content management/i, /open source content management/i],
+      [/java\/?j2ee/i, /java competency center/i],
+      [/php\/?mysql/i, /widely-used general-purpose scripting/i],
+      [/\.?net applications/i, /full-cycle development services in microsoft/i],
+      [/filemaker development/i, /100 person years/i],
+      [/custom web publishing/i, /filemaker-to-web solution/i],
+      [/cloud solutions/i, /cloud computing is the delivery/i],
+    ];
+
+    const pair = titleMatchers.find(([titleRe]) => titleRe.test(fallback.title));
+    if (!pair) return fallback;
+
+    const [, bodyRe] = pair;
+    const description = findChunk(chunks, (text) => bodyRe.test(text)) || fallback.description;
+    const titleChunk = chunks.find(
+      (text) => pair[0].test(text) && text.length < 90,
+    );
+    const title = titleChunk
+      ? titleChunk
+          .replace(/\s+/g, " ")
+          .replace(/\bios\b/gi, "iOS")
+          .replace(/\bandroid\b/gi, "Android")
+          .trim()
+      : fallback.title;
+
+    return {
+      ...fallback,
+      title: title || fallback.title,
+      description,
+    };
+  });
+}
+
+export function mapHomeContent(html: string): HomeContent {
+  const chunks = extractHtmlChunks(html);
+
+  const aboutParagraphs = [
+    findChunk(chunks, (text) => /full of software development experts/i.test(text)),
+    findChunk(chunks, (text) => /based in india specializes/i.test(text)),
+    findChunk(chunks, (text) => /passionate about helping businesses succeed/i.test(text) && /customer service/i.test(text)),
+  ].filter(Boolean);
+
+  const whyParagraphs = [
+    findChunk(chunks, (text) => /perfect choice for full stack development outsourcing/i.test(text)),
+    findChunk(chunks, (text) => /latest trends and technologies in web and mobile/i.test(text)),
+  ].filter(Boolean);
+
+  const aboutHighlights = [
+    findChunk(chunks, (text) => /deliveries will be right on-time/i.test(text)),
+    findChunk(chunks, (text) => /love what will you get/i.test(text)),
+    findChunk(chunks, (text) => /you make real things/i.test(text)),
+    findChunk(chunks, (text) => /what make it happen for you/i.test(text)),
+  ].filter(Boolean);
+
+  const majorServices = [
+    findChunk(chunks, (text) => /get expert full stack development services/i.test(text)),
+    findChunk(chunks, (text) => /cross-platform mobile app development/i.test(text)),
+    findChunk(chunks, (text) => /user interface and graphic design/i.test(text)),
+    findChunk(chunks, (text) => /powerful content management systems/i.test(text)),
+    findChunk(chunks, (text) => /zoho app development/i.test(text)),
+    findChunk(chunks, (text) => /outsource web & enterprise applications/i.test(text)),
+    findChunk(chunks, (text) => /claris filemaker/i.test(text)),
+  ].filter(Boolean);
+
+  return {
+    heroTitle:
+      findChunk(chunks, (text) => /comprehensive full stack development outsourcing/i.test(text)) ||
+      HOME_CONTENT_FALLBACK.heroTitle,
+    heroSubtitle:
+      findChunk(chunks, (text) => /mastering web, mobile native/i.test(text)) ||
+      HOME_CONTENT_FALLBACK.heroSubtitle,
+    heroCta:
+      findChunk(chunks, (text) => /^schedule a meet$/i.test(text)) ||
+      (html.match(/Schedule a Meet/i)?.[0] ?? HOME_CONTENT_FALLBACK.heroCta),
+    aboutTitle:
+      findChunk(chunks, (text) => /unlock the possibilities/i.test(text)) ||
+      HOME_CONTENT_FALLBACK.aboutTitle,
+    aboutParagraphs:
+      aboutParagraphs.length > 0 ? aboutParagraphs : HOME_CONTENT_FALLBACK.aboutParagraphs,
+    aboutHighlights:
+      aboutHighlights.length > 0 ? aboutHighlights : HOME_CONTENT_FALLBACK.aboutHighlights,
+    whyTitle:
+      findChunk(chunks, (text) => /why naethra technologies for full stack/i.test(text)) ||
+      HOME_CONTENT_FALLBACK.whyTitle,
+    whyParagraphs:
+      whyParagraphs.length > 0 ? whyParagraphs : HOME_CONTENT_FALLBACK.whyParagraphs,
+    servicesEyebrow: HOME_CONTENT_FALLBACK.servicesEyebrow,
+    servicesTitle:
+      findChunk(chunks, (text) => /our scalable customised solutions/i.test(text)) ||
+      HOME_CONTENT_FALLBACK.servicesTitle,
+    servicesIntro:
+      findChunk(chunks, (text) => /tailored solutions to meet the individual requirements/i.test(text)) ||
+      HOME_CONTENT_FALLBACK.servicesIntro,
+    offerServices: mapHomeOfferServices(html),
+    majorServices:
+      majorServices.length > 0 ? majorServices : HOME_CONTENT_FALLBACK.majorServices,
+    clientsHeading:
+      findChunk(chunks, (text) => /providing superior software solutions for our valued clients/i.test(text)) ||
+      HOME_CONTENT_FALLBACK.clientsHeading,
+    clients: mapHomeClients(html),
+    testimonials: mapHomeTestimonials(html),
+  };
+}
+
+export async function getHomeContent() {
+  try {
+    const page = await getPageBySlug("home");
+    if (!page?.contentHtml) return HOME_CONTENT_FALLBACK;
+    return mapHomeContent(page.contentHtml);
+  } catch {
+    return HOME_CONTENT_FALLBACK;
   }
 }
 

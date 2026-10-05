@@ -211,7 +211,7 @@
 .recent-heading { display: flex; flex-direction: column; align-items: center; margin-bottom: 2.5rem; text-align: center; }
 .recent-heading h2 { margin: 2.1rem 0 0; color: var(--ink); font-size: clamp(2.8rem, 5vw, 4.8rem); font-weight: 600; letter-spacing: -0.065em; line-height: 0.98; }
 .work-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(0.8rem, 2vw, 2.2rem); }
-.work-card { position: relative; aspect-ratio: 1 / 0.98; overflow: hidden; border-radius: 0.9rem; background: var(--blue-deep); }
+.work-card { position: relative; display: block; aspect-ratio: 1 / 0.98; overflow: hidden; border-radius: 0.9rem; background: var(--blue-deep); color: inherit; text-decoration: none; }
 .work-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 700ms cubic-bezier(.2,.8,.2,1), filter 350ms ease; }
 .work-card:hover img { transform: scale(1.05); }
 .work-card::after { position: absolute; inset: 0; background: linear-gradient(180deg, rgb(4 15 34 / .08) 20%, rgb(4 15 34 / .86) 100%); content: ""; opacity: 0; transition: opacity 280ms ease; }

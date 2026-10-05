@@ -38,7 +38,7 @@ import IntegrationSection from "@/components/IntegrationSection";
 import { openNaethraAssistant } from "@/components/NaethraAIAssistant";
 import SectionEyebrow from "@/components/SectionEyebrow";
 import AnimatedCtaButton from "@/components/AnimatedCtaButton";
-import { getHomeTestimonials, getPosts } from "@/lib/wordpress";
+import { getHomeContent, getPosts } from "@/lib/wordpress";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -65,11 +65,8 @@ export const Route = createFileRoute("/")({
     links: [{ rel: "canonical", href: "/" }],
   }),
   loader: async () => {
-    const [blogPosts, testimonials] = await Promise.all([
-      getPosts(1, 4),
-      getHomeTestimonials(),
-    ]);
-    return { blogPosts, testimonials };
+    const [blogPosts, home] = await Promise.all([getPosts(1, 4), getHomeContent()]);
+    return { blogPosts, home };
   },
   component: Index,
 });
@@ -201,113 +198,62 @@ const valuedClients = [
   { name: "Driev", logo: "https://driev.bike/assets/newimgs/longlogodriev.png" },
 ];
 
-const recentProjects = [
-  [
-    projectImage,
-    "Team collaborating on a software project",
-    "Business Development",
-    "Digital Marketing",
-  ],
-  [teamImage, "Product team reviewing a digital experience", "Finance strategy", "Finance"],
-  [projectImage, "Team presenting project analytics", "Process optimization", "Operations"],
-  [founderImage, "Technology team working together", "Marketing research", "Growth"],
-] as const;
-
-const consultingServices = [
-  [founderImage, "Business strategy"],
-  [teamImage, "Process optimization"],
-  [projectImage, "Financial advisory"],
-  [projectImage, "Marketing Research"],
-] as const;
-
-const offerServices = [
-  // Top Row
+const offerServiceMeta = [
   {
-    title: "iOS, Android And Hybrid Mobility Applications",
-    href: "/mobile-app",
-    description:
-      "Our first mobile app project was delivered 2 years ago and since then mobile applications have been the fastest growing part..",
+    key: /ios|android|hybrid|mobility/i,
     icon: Smartphone,
     image:
       "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=1000&q=80",
   },
   {
-    title: "Website Development",
-    href: "/web-app",
-    description:
-      "Our skilled and experienced development team offers a rich set of possible technology and user interface solutions, whatever your needs .Some areas where we've done work...",
+    key: /website development/i,
     icon: Flag,
     image:
       "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1000&q=80",
   },
   {
-    title: "Content Management System",
-    href: "/cms",
-    description:
-      "We work on a number of open source Content Management Systems (CMS), which can be easily downloaded by anyone...",
+    key: /content management/i,
     icon: Presentation,
     image:
       "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=1000&q=80",
   },
-
-  // Middle Row
   {
-    title: "Java/J2ee Applications",
-    href: "/services/java-j2ee-applications",
-    description:
-      "Our Java Competency Center solutions help your company fundamentally improve the way it builds software solutions using JEE..",
+    key: /java|j2ee/i,
     icon: TrendingUp,
     image:
       "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1000&q=80",
   },
   {
-    title: "Php/Mysql Applications",
-    href: "/services/php-mysql-applications",
-    description:
-      "PHP is a widely-used general-purpose scripting language that is especially suited for Web development...",
+    key: /php|mysql/i,
     icon: LayoutGrid,
     image:
       "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1000&q=80",
   },
   {
-    title: ".Net Applications",
-    href: "/services/dot-net-application",
-    description:
-      "Naethra provides full-cycle development services in Microsoft .NET to Independent Software Vendors (ISVs), product...",
+    key: /\.?net/i,
     icon: Monitor,
     image:
       "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1000&q=80",
   },
-
-  // Bottom Row
   {
-    title: "FileMaker Development",
-    href: "/services/claris-filemaker-application",
-    description:
-      "We have over 100 person years experience in FileMaker skills. Our developers are certified FM developers and.",
+    key: /filemaker/i,
     icon: FileCode,
     image:
       "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1000&q=80",
   },
   {
-    title: "Custom Web Publishing With PHP(CWP)",
-    href: "/services/custom-web-publishing",
-    description:
-      "With our Filemaker-to-Web solution, you can offer controlled public access to your data, while it remains connected...",
+    key: /custom web publishing|cwp/i,
     icon: Laptop,
     image:
       "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1000&q=80",
   },
   {
-    title: "Cloud Solutions",
-    href: "/services/aws-cloud-support",
-    description:
-      "Cloud computing is the delivery of computing services—including servers, storage, databases, networking, software...",
+    key: /cloud/i,
     icon: CloudIconLucide,
     image:
       "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1000&q=80",
   },
-];
+] as const;
 
 function Logo({ inverse = false }: { inverse?: boolean }) {
   return (
@@ -324,12 +270,22 @@ function Logo({ inverse = false }: { inverse?: boolean }) {
 }
 
 function Index() {
-  const { blogPosts, testimonials: loadedTestimonials } = Route.useLoaderData();
+  const { blogPosts, home } = Route.useLoaderData();
   const testimonialImages = [founderImage, teamImage, projectImage, founderImage, teamImage];
-  const testimonials = loadedTestimonials.map((item, index) => ({
+  const testimonials = home.testimonials.map((item, index) => ({
     ...item,
     image: item.image || testimonialImages[index % testimonialImages.length]!,
   }));
+  const clients = home.clients.length > 0 ? home.clients : valuedClients;
+  const offerServices = home.offerServices.map((service) => {
+    const meta =
+      offerServiceMeta.find((item) => item.key.test(service.title)) ?? offerServiceMeta[0]!;
+    return {
+      ...service,
+      icon: meta.icon,
+      image: meta.image,
+    };
+  });
   const [menuOpen, setMenuOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -561,18 +517,15 @@ function Index() {
           )}
           <div className="sentinel-main">
             <div className="sentinel-copy">
-              <h1>
-                Comprehensive Full Stack
-                <br className="hidden sm:inline" /> Development Outsourcing
-              </h1>
+              <h1>{home.heroTitle}</h1>
               <div className="sentinel-tagrow">
-                <span>Mastering Web, Mobile Native, and Cross-Platform Applications</span>
+                <span>{home.heroSubtitle}</span>
               </div>
             </div>
           </div>
           <div className="sentinel-bottom flex justify-center w-full">
             <AnimatedCtaButton href="#contact" className="sentinel-meet">
-              Get in touch
+              {home.heroCta}
             </AnimatedCtaButton>
           </div>
         </div>
@@ -643,22 +596,22 @@ function Index() {
           </div>
           <div className="about-copy" data-reveal="fade-up" data-reveal-delay="1">
             <SectionEyebrow>About us</SectionEyebrow>
-            <h2>
-              Innovate. Integrate. <em>Elevate tech.</em>
-            </h2>
-            <p>
-              Technology is constantly evolving, shaping the way we live and work. It encompasses
-              innovation, automation, and connectivity, driving progress for businesses everywhere.
-            </p>
+            <h2>{home.aboutTitle}</h2>
+            {home.aboutParagraphs.map((paragraph) => (
+              <p key={paragraph.slice(0, 48)}>{paragraph}</p>
+            ))}
             <div className="about-statements">
-              <span>Tech forward. Future ready. Your tomorrow, enhanced today.</span>
-              <span>Revolutionizing reality through technology. Tech it to the next level.</span>
-              <span>Tech-savvy lives, brighter tomorrows. Connect. Create. Transform.</span>
+              {home.aboutHighlights.map((highlight) => (
+                <span key={highlight}>{highlight}</span>
+              ))}
             </div>
             <div className="about-proof">
               <HugeiconsIcon icon={CheckmarkCircle02Icon} size={16} />
-              <span>Experienced developers, tailored delivery, dependable support.</span>
+              <span>{home.whyTitle}</span>
             </div>
+            {home.whyParagraphs.slice(0, 1).map((paragraph) => (
+              <p key={paragraph.slice(0, 40)}>{paragraph}</p>
+            ))}
           </div>
         </div>
       </section>
@@ -667,13 +620,10 @@ function Index() {
         <div className="site-container">
           <div className="services-heading" data-reveal="fade-up">
             <div>
-              <SectionEyebrow>What we offer</SectionEyebrow>
-              <h2>Our core consulting services</h2>
+              <SectionEyebrow>{home.servicesEyebrow}</SectionEyebrow>
+              <h2>{home.servicesTitle}</h2>
             </div>
-            <p>
-              We provide tailored consulting solutions to help businesses overcome challenges, seize
-              opportunities, and achieve sustainable growth.
-            </p>
+            <p>{home.servicesIntro}</p>
           </div>
           <div className="services-grid">
             {offerServices.map((service, index) => {
@@ -703,38 +653,6 @@ function Index() {
                 </a>
               );
             })}
-          </div>
-        </div>
-      </section>
-
-      <section id="work" className="section work-section">
-        <div className="site-container">
-          <div className="recent-heading" data-reveal="fade-up">
-            <SectionEyebrow>Recent Projects</SectionEyebrow>
-            <h2>
-              Explore the Recent Works
-              <br />
-              We Have Done!
-            </h2>
-          </div>
-          <div className="work-grid">
-            {recentProjects.map(([image, alt, title, category], index) => (
-              <article
-                className="work-card"
-                key={alt}
-                data-reveal="fade-up"
-                data-reveal-delay={String((index % 3) + 1)}
-              >
-                <img src={image} alt={alt} width={1200} height={1104} />
-                <div className="work-hover-content">
-                  <span>{category}</span>
-                  <h3>{title}</h3>
-                </div>
-                <span className="work-hover-arrow" aria-hidden="true">
-                  ↗
-                </span>
-              </article>
-            ))}
           </div>
         </div>
       </section>
@@ -786,10 +704,11 @@ function Index() {
 
       <section className="client-strip" aria-label="Client logos" data-reveal="fade-up">
         <div className="site-container client-strip-inner">
+          <p className="sr-only">{home.clientsHeading}</p>
           <div className="client-logo-window">
             <TooltipProvider delayDuration={100}>
               <div className="client-logo-track">
-                {[...valuedClients, ...valuedClients].map((client, index) => (
+                {[...clients, ...clients].map((client, index) => (
                   <Tooltip key={`${client.name}-${index}`}>
                     <TooltipTrigger asChild>
                       <div className="client-logo cursor-pointer">

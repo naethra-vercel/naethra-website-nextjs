@@ -144,7 +144,7 @@ function AboutPage() {
             {about.team.map((member, index) => (
               <article
                 className={`about-max-team-card about-max-team-card-${index + 1}`}
-                key={member.name}
+                key={`${member.name}-${member.role}-${index}`}
               >
                 <img
                   src={member.image || teamImages[member.name] || muraliImage}
