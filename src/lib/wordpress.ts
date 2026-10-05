@@ -1,14 +1,45 @@
-import awsHeroImage from "@/assets/aws/hero.png";
-import cmsHeroImage from "@/assets/cms/hero.png";
-import customWebPublishHeroImage from "@/assets/custom-web-publish/hero.png";
-import dotNetHeroImage from "@/assets/dot-net/hero.png";
-import filemakerHeroImage from "@/assets/filemaker/hero.png";
-import filemakerServicesImage from "@/assets/filemaker/services.png";
 import { extractBlogArticleHtml } from "@/lib/blog-html";
 
 const WP_BASE =
   import.meta.env["VITE_WORDPRESS_API_URL"]?.replace(/\/$/, "") ||
   "https://naethra.com/wp-json/wp/v2";
+
+/** Lightweight CDN fallbacks — avoid bundling multi-MB local PNGs into every wordpress import. */
+const CMS_HERO_FALLBACK =
+  "https://naethra.com/wp-content/uploads/2022/09/cms-details.jpg";
+const FILEMAKER_HERO_FALLBACK =
+  "https://naethra.com/wp-content/uploads/2022/05/7-4-1.jpg";
+const DOTNET_HERO_FALLBACK =
+  "https://naethra.com/wp-content/uploads/2022/09/cms-details.jpg";
+const AWS_HERO_FALLBACK =
+  "https://naethra.com/wp-content/uploads/2022/05/7-4-1.jpg";
+const CUSTOM_WEB_HERO_FALLBACK =
+  "https://naethra.com/wp-content/uploads/2022/09/cms-details.jpg";
+const FILEMAKER_SERVICES_FALLBACK =
+  "https://naethra.com/wp-content/uploads/2022/05/7-4-1.jpg";
+
+type WpCacheEntry = { expires: number; value: unknown };
+const wpResponseCache = new Map<string, WpCacheEntry>();
+const WP_CACHE_TTL_MS = 60_000;
+
+async function wpFetch<T>(path: string): Promise<T> {
+  const cached = wpResponseCache.get(path);
+  if (cached && cached.expires > Date.now()) {
+    return cached.value as T;
+  }
+
+  // Avoid custom headers like User-Agent — browsers treat them as
+  // non-simple and WordPress CORS preflight rejects them.
+  const res = await fetch(`${WP_BASE}${path}`, {
+    headers: {
+      Accept: "application/json",
+    },
+  });
+  if (!res.ok) throw new Error(`WP ${res.status}: ${path}`);
+  const value = (await res.json()) as T;
+  wpResponseCache.set(path, { value, expires: Date.now() + WP_CACHE_TTL_MS });
+  return value;
+}
 
 export type WpBlogPost = {
   slug: string;
@@ -207,18 +238,6 @@ const PORTFOLIO_IMAGE_FALLBACKS: Record<string, string> = {
     "https://naethra.com/wp-content/uploads/2022/06/healthcare-marketing-website-thegem-portfolio-masonry.jpg",
 };
 
-async function wpFetch<T>(path: string): Promise<T> {
-  // Avoid custom headers like User-Agent — browsers treat them as
-  // non-simple and WordPress CORS preflight rejects them.
-  const res = await fetch(`${WP_BASE}${path}`, {
-    headers: {
-      Accept: "application/json",
-    },
-  });
-  if (!res.ok) throw new Error(`WP ${res.status}: ${path}`);
-  return res.json();
-}
-
 function stripHtml(markup: string) {
   return markup
     .replace(/<[^>]*>/g, " ")
@@ -337,7 +356,9 @@ export function mapWpPage(page: WpPost): WpPage {
 }
 
 export async function getPageBySlug(slug: string) {
-  const pages = await wpFetch<WpPost[]>(`/pages?slug=${encodeURIComponent(slug)}&_embed`);
+  const pages = await wpFetch<WpPost[]>(
+    `/pages?slug=${encodeURIComponent(slug)}&_fields=id,slug,title,excerpt,content`,
+  );
   const page = pages[0];
   return page ? mapWpPage(page) : null;
 }
@@ -749,7 +770,7 @@ const CMS_FALLBACK: CmsContent = {
   eyebrow: "Content management systems",
   intro:
     "Naethra offers cost-effective CMS development services using PHP, WordPress, Joomla, and Magento, with WooCommerce and payment gateway integration when your product needs it.",
-  heroImage: cmsHeroImage,
+  heroImage: CMS_HERO_FALLBACK,
   sections: [
     {
       title: "Website and CMS development in India",
@@ -876,7 +897,7 @@ const FILEMAKER_FALLBACK: FileMakerContent = {
   eyebrow: "FileMaker solutions",
   intro:
     "One-stop FileMaker solutions for design, development, hosting, maintenance, and 24 x 7 support services.",
-  heroImage: filemakerHeroImage,
+  heroImage: FILEMAKER_HERO_FALLBACK,
   sections: [
     {
       title: "One-stop shop for FileMaker solutions",
@@ -895,7 +916,7 @@ const FILEMAKER_FALLBACK: FileMakerContent = {
     {
       title: "Experience across industries and locations",
       body: "We have more than 20 years of market experience and industry know-how. More than 100 clients have chosen us for FileMaker projects across finance, construction, media, technology, retail, manufacturing, legal, education, health, and other sectors around the world.",
-      image: filemakerServicesImage,
+      image: FILEMAKER_SERVICES_FALLBACK,
     },
     {
       title: "Integration, migration, and support",
@@ -1003,7 +1024,7 @@ const DOT_NET_FALLBACK: DotNetContent = {
   eyebrow: "Microsoft .NET development",
   intro:
     "Naethra provides full-cycle development services in Microsoft .NET for independent software vendors, product companies, and teams that need scalable custom applications.",
-  heroImage: dotNetHeroImage,
+  heroImage: DOTNET_HERO_FALLBACK,
   sections: [
     {
       title: "Benefits of ASP.NET in development",
@@ -1123,7 +1144,7 @@ const AWS_FALLBACK: AwsContent = {
   eyebrow: "Cloud infrastructure and support",
   intro:
     "Move from infrastructure pressure to dependable delivery with cloud architecture, deployment, monitoring, and support shaped around your product and team.",
-  heroImage: awsHeroImage,
+  heroImage: AWS_HERO_FALLBACK,
   sections: [
     {
       title: "Managed services",
@@ -1374,7 +1395,7 @@ const PHP_MYSQL_FALLBACK: PhpMysqlContent = {
   eyebrow: "PHP / MySQL development",
   intro:
     "At Naethra Technologies, we provide custom PHP and MySQL development services to build reliable, secure and scalable web applications tailored to specific business requirements — from customer-facing websites and e-commerce platforms to enterprise portals, booking systems, inventory management, sales and billing applications, logistics systems and workflow-based business applications.",
-  heroImage: cmsHeroImage,
+  heroImage: CMS_HERO_FALLBACK,
   sections: [
     {
       title: "Custom PHP application development",
@@ -1497,7 +1518,7 @@ const CWP_FALLBACK: CustomWebPublishingContent = {
   eyebrow: "FileMaker integrations",
   intro:
     "FileMaker Custom Web Publishing integrates a FileMaker database with a custom website, giving teams secure control over how business data is published and used on the web.",
-  heroImage: customWebPublishHeroImage,
+  heroImage: CUSTOM_WEB_HERO_FALLBACK,
   sections: [
     {
       title: "Publish the data your users need",

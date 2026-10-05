@@ -8,13 +8,12 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { lazy, Suspense, useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SpotlightCursor } from "@/components/ui/spotlight-cursor";
 import { SmoothScroll } from "@/components/ui/smooth-scroll";
-import { JarvisAIAssistant } from "@/components/JarvisAIAssistant";
 import { FakeJobsDisclaimerModal } from "@/components/FakeJobsDisclaimerModal";
 import { ScrollToTopButton } from "@/components/ScrollToTopButton";
 import SiteFooter from "@/components/SiteFooter";
@@ -26,6 +25,10 @@ import {
   AlertCircleIcon,
   HelpCircleIcon,
 } from "@hugeicons/core-free-icons";
+
+const JarvisAIAssistant = lazy(() =>
+  import("@/components/JarvisAIAssistant").then((mod) => ({ default: mod.JarvisAIAssistant })),
+);
 
 function NotFoundComponent() {
   return (
@@ -168,6 +171,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      { rel: "preconnect", href: "https://naethra.com" },
+      { rel: "dns-prefetch", href: "https://automation-saas-ns-next.vercel.app" },
+      { rel: "dns-prefetch", href: "https://d8j0ntlcm91z4.cloudfront.net" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" },
       { rel: "icon", href: "/favicon.png", type: "image/png" },
     ],
@@ -203,7 +209,9 @@ function RootComponent() {
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
         {pathname !== "/" && <SiteFooter />}
-        <JarvisAIAssistant />
+        <Suspense fallback={null}>
+          <JarvisAIAssistant />
+        </Suspense>
         {pathname === "/" && <FakeJobsDisclaimerModal />}
         <ScrollToTopButton />
       </SmoothScroll>

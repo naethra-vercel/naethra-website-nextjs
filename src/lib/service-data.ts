@@ -1,4 +1,3 @@
-import type { LucideIcon } from "lucide-react";
 import {
   Cloud,
   Code2,
@@ -9,13 +8,16 @@ import {
   Smartphone,
   Workflow,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
-import awsHeroImage from "@/assets/aws/hero.png";
-import cmsHeroImage from "@/assets/cms/hero.png";
-import customWebPublishHeroImage from "@/assets/custom-web-publish/hero.png";
-import dotNetHeroImage from "@/assets/dot-net/hero.png";
-import filemakerHeroImage from "@/assets/filemaker/hero.png";
-import filemakerServicesImage from "@/assets/filemaker/services.png";
+import { serviceHeroImages } from "@/lib/service-hero-images";
+
+const awsHeroImage = serviceHeroImages.aws;
+const cmsHeroImage = serviceHeroImages.cms;
+const customWebPublishHeroImage = serviceHeroImages.customWebPublish;
+const dotNetHeroImage = serviceHeroImages.dotNet;
+const filemakerHeroImage = serviceHeroImages.filemaker;
+const filemakerServicesImage = serviceHeroImages.filemakerServices;
 
 export type ServiceDetail = {
   slug: string;

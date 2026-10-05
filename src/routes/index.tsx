@@ -17,7 +17,7 @@ import {
   SparklesIcon,
   UserGroupIcon,
 } from "@hugeicons/core-free-icons";
-import { type CSSProperties, type FormEvent, useEffect, useRef, useState } from "react";
+import { type CSSProperties, type FormEvent, lazy, Suspense, useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 
 import aboutElevateImage from "@/assets/design/about-section/about-elevate.jpg";
@@ -39,11 +39,11 @@ import {
   Laptop,
   Cloud as CloudIconLucide,
 } from "lucide-react";
-import IntegrationSection from "@/components/IntegrationSection";
-import { openNaethraAssistant } from "@/components/NaethraAIAssistant";
 import SectionEyebrow from "@/components/SectionEyebrow";
 import AnimatedCtaButton from "@/components/AnimatedCtaButton";
 import { getHomeContent, getPosts } from "@/lib/wordpress";
+
+const IntegrationSection = lazy(() => import("@/components/IntegrationSection"));
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -583,7 +583,7 @@ function Index() {
           muted
           loop
           playsInline
-          preload="auto"
+          preload="metadata"
           poster="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260912_105822_bf7c2d53-9957-4521-bbbf-7c1ab7a70130.png"
           src="https://automation-saas-ns-next.vercel.app/videos/hero-video.mp4"
           aria-hidden="true"
@@ -688,6 +688,8 @@ function Index() {
                 alt="Innovate — building modern digital products"
                 width={1200}
                 height={1104}
+                loading="lazy"
+                decoding="async"
               />
             </div>
             <div className="about-image about-image-small">
@@ -696,6 +698,8 @@ function Index() {
                 alt="Integrate — connecting systems and teams"
                 width={1408}
                 height={1008}
+                loading="lazy"
+                decoding="async"
               />
             </div>
             <div className="about-image about-image-wide">
@@ -704,6 +708,8 @@ function Index() {
                 alt="Elevate — scaling technology for growth"
                 width={1200}
                 height={1504}
+                loading="lazy"
+                decoding="async"
               />
             </div>
             <div className="about-stat">
@@ -808,7 +814,9 @@ function Index() {
         </div>
       </section>
 
-      <IntegrationSection />
+      <Suspense fallback={null}>
+        <IntegrationSection />
+      </Suspense>
 
       <section id="insights" className="section insights-section">
         <div className="site-container">

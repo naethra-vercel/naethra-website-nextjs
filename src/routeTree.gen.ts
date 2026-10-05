@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as R30MinsMeetingRouteImport } from './routes/30-mins-meeting'
 import { Route as CmsRouteImport } from './routes/cms'
 import { Route as ContactUsRouteImport } from './routes/contact-us'
 import { Route as DisclaimerAndNotificationRouteImport } from './routes/disclaimer-and-notification'
@@ -36,6 +37,11 @@ import { Route as ServicesPhpMysqlApplicationsRouteImport } from './routes/servi
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const R30MinsMeetingRoute = R30MinsMeetingRouteImport.update({
+  id: '/30-mins-meeting',
+  path: '/30-mins-meeting',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CmsRoute = CmsRouteImport.update({
@@ -158,6 +164,7 @@ const ServicesPhpMysqlApplicationsRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/30-mins-meeting': typeof R30MinsMeetingRoute
   '/cms': typeof CmsRoute
   '/contact-us': typeof ContactUsRoute
   '/disclaimer-and-notification': typeof DisclaimerAndNotificationRoute
@@ -183,6 +190,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/30-mins-meeting': typeof R30MinsMeetingRoute
   '/cms': typeof CmsRoute
   '/contact-us': typeof ContactUsRoute
   '/disclaimer-and-notification': typeof DisclaimerAndNotificationRoute
@@ -209,6 +217,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/30-mins-meeting': typeof R30MinsMeetingRoute
   '/cms': typeof CmsRoute
   '/contact-us': typeof ContactUsRoute
   '/disclaimer-and-notification': typeof DisclaimerAndNotificationRoute
@@ -236,6 +245,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/30-mins-meeting'
     | '/cms'
     | '/contact-us'
     | '/disclaimer-and-notification'
@@ -261,6 +271,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/30-mins-meeting'
     | '/cms'
     | '/contact-us'
     | '/disclaimer-and-notification'
@@ -286,6 +297,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/30-mins-meeting'
     | '/cms'
     | '/contact-us'
     | '/disclaimer-and-notification'
@@ -312,6 +324,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  R30MinsMeetingRoute: typeof R30MinsMeetingRoute
   CmsRoute: typeof CmsRoute
   ContactUsRoute: typeof ContactUsRoute
   DisclaimerAndNotificationRoute: typeof DisclaimerAndNotificationRoute
@@ -343,6 +356,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/30-mins-meeting': {
+      id: '/30-mins-meeting'
+      path: '/30-mins-meeting'
+      fullPath: '/30-mins-meeting'
+      preLoaderRoute: typeof R30MinsMeetingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cms': {
@@ -504,6 +524,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  R30MinsMeetingRoute: R30MinsMeetingRoute,
   CmsRoute: CmsRoute,
   ContactUsRoute: ContactUsRoute,
   DisclaimerAndNotificationRoute: DisclaimerAndNotificationRoute,
