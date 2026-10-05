@@ -1837,7 +1837,7 @@ const HOME_TESTIMONIALS_FALLBACK: HomeTestimonial[] = [
     name: "Vasudha Bhushan",
     role: "Manager Software Technology and Engineering, AECO Energy, Australia",
     quote:
-      "We are recently had the pleasure of outsourcing our application development to your team (FMNaethra), and we are extremely satisfied with the results. Your team did an outstanding job of understanding our requirements and delivering a solution that meets our needs perfectly. From the beginning, your team demonstrated a thorough understanding of our needs. There have been numerous design changes that we did during the project, and we appreciate the flexibility your team showed in accommodating these changes. Your willingness to adapt and implement modifications as per our feedback was commendable.Overall, working with your organization has been a positive experience. Your professionalism, expertise, and commitment to delivering a high-quality product were evident throughout the project. We look forward to potential future collaborations and highly recommend your services to others. Thank you for your excellent work.",
+      "We recently had the pleasure of outsourcing our application development to your team (FMNaethra), and we are extremely satisfied with the results. Your team did an outstanding job of understanding our requirements and delivering a solution that meets our needs perfectly. From the beginning, your team demonstrated a thorough understanding of our needs. There have been numerous design changes that we did during the project, and we appreciate the flexibility your team showed in accommodating these changes. Your willingness to adapt and implement modifications as per our feedback was commendable. Overall, working with your organization has been a positive experience. Your professionalism, expertise, and commitment to delivering a high-quality product were evident throughout the project. We look forward to potential future collaborations and highly recommend your services to others. Thank you for your excellent work.",
     image: "https://naethra.com/wp-content/uploads/2022/07/profile-2.png",
   },
 ];
@@ -1865,9 +1865,13 @@ export function mapHomeTestimonials(html: string): HomeTestimonial[] {
       const role = extractByClass(block, "gem-testimonial-position");
       const quote = extractByClass(block, "gem-testimonial-text")
         .replace(/^[“"']+|[”"']+$/g, "")
+        .replace(/\s+/g, " ")
         .trim();
       const imageMatch = block.match(/<img[^>]+src=["']([^"']+)["']/i);
-      const image = imageMatch?.[1] ?? "";
+      const rawImage = imageMatch?.[1] ?? "";
+      const image = /profile|avatar|placeholder|default|gravatar|mystery|dummy/i.test(rawImage)
+        ? ""
+        : rawImage;
 
       if (!name || !quote) return null;
       return { name, role, quote, image };

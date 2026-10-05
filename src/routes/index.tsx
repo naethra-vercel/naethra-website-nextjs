@@ -18,6 +18,7 @@ import {
   UserGroupIcon,
 } from "@hugeicons/core-free-icons";
 import { type CSSProperties, type FormEvent, useEffect, useRef, useState } from "react";
+import gsap from "gsap";
 
 import aboutElevateImage from "@/assets/design/about-section/about-elevate.jpg";
 import aboutInnovateImage from "@/assets/design/about-section/about-innovate.jpg";
@@ -26,9 +27,6 @@ import digitalMarketingImage from "@/assets/design/recent-projects/digital-marke
 import financeStrategyImage from "@/assets/design/recent-projects/finance-strategy.jpg";
 import marketingResearchImage from "@/assets/design/recent-projects/marketing-research.jpg";
 import processOptimizationImage from "@/assets/design/recent-projects/process-optimization.jpg";
-import founderImage from "@/assets/putech-founder.jpg";
-import projectImage from "@/assets/putech-project.jpg";
-import teamImage from "@/assets/putech-team.jpg";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   Smartphone,
@@ -297,13 +295,30 @@ function Logo({ inverse = false }: { inverse?: boolean }) {
   );
 }
 
+function isPlaceholderPortrait(src?: string) {
+  if (!src) return true;
+  return /profile|avatar|placeholder|default|gravatar|mystery|dummy|user[-_]?icon/i.test(src);
+}
+
+function initialsFromName(name: string) {
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() ?? "")
+    .join("");
+}
+
 function Index() {
   const { blogPosts, home } = Route.useLoaderData();
-  const testimonialImages = [founderImage, teamImage, projectImage, founderImage, teamImage];
-  const testimonials = home.testimonials.map((item, index) => ({
-    ...item,
-    image: item.image || testimonialImages[index % testimonialImages.length]!,
-  }));
+  const testimonials = home.testimonials.map((item) => {
+    const rawImage = item.image?.trim() ?? "";
+    const hasRealPortrait = rawImage.length > 0 && !isPlaceholderPortrait(rawImage);
+    return {
+      ...item,
+      image: hasRealPortrait ? rawImage : "",
+    };
+  });
   const clients = home.clients.length > 0 ? home.clients : valuedClients;
   const offerServices = home.offerServices.map((service) => {
     const meta =
@@ -319,13 +334,20 @@ function Index() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [contactSubmitted, setContactSubmitted] = useState(false);
   const [testimonialIndex, setTestimonialIndex] = useState(0);
-  const [quoteExpanded, setQuoteExpanded] = useState(false);
+  const [quoteModalOpen, setQuoteModalOpen] = useState(false);
   const [quoteOverflows, setQuoteOverflows] = useState(false);
   const quoteRef = useRef<HTMLQuoteElement>(null);
+  const quoteModalRef = useRef<HTMLDivElement>(null);
+  const quoteModalPanelRef = useRef<HTMLDivElement>(null);
+  const quoteModalAvatarRef = useRef<HTMLDivElement>(null);
+  const quoteModalWordsRef = useRef<HTMLParagraphElement>(null);
   const activeTestimonial = testimonials[testimonialIndex] ?? testimonials[0];
+  const activePortrait = activeTestimonial?.image || "";
+  const activeInitials = initialsFromName(activeTestimonial?.name ?? "N");
+  const modalQuote = (activeTestimonial?.quote ?? "").replace(/\s+/g, " ").trim();
 
   useEffect(() => {
-    setQuoteExpanded(false);
+    setQuoteModalOpen(false);
   }, [testimonialIndex]);
 
   useEffect(() => {
@@ -333,25 +355,62 @@ function Index() {
     if (!node) return;
 
     const measure = () => {
-      if (quoteExpanded) {
-        const probe = document.createElement("blockquote");
-        probe.className = "testimonial-quote is-clamped";
-        probe.textContent = `“${activeTestimonial?.quote ?? ""}”`;
-        probe.style.cssText =
-          "position:absolute;visibility:hidden;pointer-events:none;width:" +
-          `${node.clientWidth}px`;
-        node.parentElement?.appendChild(probe);
-        setQuoteOverflows(probe.scrollHeight > probe.clientHeight + 1);
-        probe.remove();
-        return;
-      }
       setQuoteOverflows(node.scrollHeight > node.clientHeight + 1);
     };
 
     measure();
     window.addEventListener("resize", measure);
     return () => window.removeEventListener("resize", measure);
-  }, [activeTestimonial?.quote, quoteExpanded, testimonialIndex]);
+  }, [activeTestimonial?.quote, testimonialIndex]);
+
+  useEffect(() => {
+    if (!quoteModalOpen) {
+      document.body.style.overflow = "";
+      return;
+    }
+
+    document.body.style.overflow = "hidden";
+    const overlay = quoteModalRef.current;
+    const panel = quoteModalPanelRef.current;
+    const avatar = quoteModalAvatarRef.current;
+    const wordsRoot = quoteModalWordsRef.current;
+    if (!overlay || !panel) return;
+
+    const words = wordsRoot ? Array.from(wordsRoot.querySelectorAll<HTMLElement>(".quote-modal-word")) : [];
+    const ctx = gsap.context(() => {
+      gsap.fromTo(overlay, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" });
+      gsap.fromTo(
+        panel,
+        { opacity: 0, y: 28, scale: 0.96 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "power3.out" },
+      );
+      if (avatar) {
+        gsap.fromTo(
+          avatar,
+          { opacity: 0, scale: 0.82 },
+          { opacity: 1, scale: 1, duration: 0.55, delay: 0.08, ease: "power3.out" },
+        );
+      }
+      if (words.length > 0) {
+        gsap.fromTo(
+          words,
+          { opacity: 0.14 },
+          { opacity: 1, duration: 0.4, stagger: 0.016, delay: 0.16, ease: "power1.out" },
+        );
+      }
+    }, overlay);
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setQuoteModalOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      ctx.revert();
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [quoteModalOpen, activeTestimonial?.quote]);
 
   const handleContactSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -383,12 +442,12 @@ function Index() {
   }, []);
 
   useEffect(() => {
-    if (testimonials.length === 0) return;
+    if (testimonials.length === 0 || quoteModalOpen) return;
     const rotation = window.setInterval(() => {
       setTestimonialIndex((index) => (index + 1) % testimonials.length);
     }, 5000);
     return () => window.clearInterval(rotation);
-  }, [testimonials.length]);
+  }, [testimonials.length, quoteModalOpen]);
 
   return (
     <main id="top" className="site-page">
@@ -717,6 +776,38 @@ function Index() {
         </div>
       </section>
 
+      <section id="work" className="section work-section">
+        <div className="site-container">
+          <div className="recent-heading" data-reveal="fade-up">
+            <SectionEyebrow>Recent Projects</SectionEyebrow>
+            <h2>
+              Explore the Recent Works
+              <br />
+              We Have Done!
+            </h2>
+          </div>
+          <div className="work-grid">
+            {recentProjects.map(([image, alt, title, category], index) => (
+              <article
+                className="work-card"
+                key={alt}
+                data-reveal="fade-up"
+                data-reveal-delay={String((index % 3) + 1)}
+              >
+                <img src={image} alt={alt} width={1200} height={1104} />
+                <div className="work-hover-content">
+                  <span>{category}</span>
+                  <h3>{title}</h3>
+                </div>
+                <span className="work-hover-arrow" aria-hidden="true">
+                  ↗
+                </span>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <IntegrationSection />
 
       <section id="insights" className="section insights-section">
@@ -797,12 +888,18 @@ function Index() {
       <section className="quote-section">
         <div className="site-container testimonial-layout" data-reveal="fade-up">
           <div className="testimonial-visual">
-            <img
-              src={activeTestimonial?.image}
-              alt={`${activeTestimonial?.name ?? "Customer"} testimonial portrait`}
-              width={512}
-              height={512}
-            />
+            {activePortrait ? (
+              <img
+                src={activePortrait}
+                alt={`${activeTestimonial?.name ?? "Customer"} testimonial portrait`}
+                width={512}
+                height={512}
+              />
+            ) : (
+              <div className="testimonial-visual-initials" aria-hidden="true">
+                {activeInitials}
+              </div>
+            )}
             <div className="testimonial-avatars" role="tablist" aria-label="Customer testimonials">
               {testimonials.map(({ name, image }, index) => (
                 <button
@@ -814,7 +911,11 @@ function Index() {
                   aria-selected={index === testimonialIndex}
                   aria-label={`Read testimonial from ${name}`}
                 >
-                  <img src={image} alt="" width={96} height={96} />
+                  {image ? (
+                    <img src={image} alt="" width={96} height={96} />
+                  ) : (
+                    <span aria-hidden="true">{initialsFromName(name)}</span>
+                  )}
                 </button>
               ))}
             </div>
@@ -826,25 +927,23 @@ function Index() {
             </h2>
             <HugeiconsIcon icon={QuoteDownIcon} size={48} className="quote-icon" />
             <div className="testimonial-quote-block">
-              <blockquote
-                ref={quoteRef}
-                className={`testimonial-quote ${quoteExpanded ? "is-expanded" : "is-clamped"}`}
-              >
+              <blockquote ref={quoteRef} className="testimonial-quote is-clamped">
                 “{activeTestimonial?.quote}”
               </blockquote>
-              {quoteOverflows || quoteExpanded ? (
+              {quoteOverflows ? (
                 <button
                   type="button"
                   className="testimonial-more"
-                  onClick={() => setQuoteExpanded((open) => !open)}
-                  aria-expanded={quoteExpanded}
+                  onClick={() => setQuoteModalOpen(true)}
+                  aria-haspopup="dialog"
+                  aria-expanded={quoteModalOpen}
                 >
-                  {quoteExpanded ? "Less" : "More"}
+                  More
                 </button>
               ) : null}
             </div>
             <div className="quote-author">
-              <span className="quote-author-avatar">{activeTestimonial?.name.slice(0, 1)}</span>
+              <span className="quote-author-avatar">{activeInitials}</span>
               <div>
                 <strong>{activeTestimonial?.name}</strong>
                 <small>{activeTestimonial?.role}</small>
@@ -853,6 +952,53 @@ function Index() {
           </div>
         </div>
       </section>
+
+      {quoteModalOpen && activeTestimonial ? (
+        <div
+          ref={quoteModalRef}
+          className="quote-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="quote-modal-title"
+          onClick={(event) => {
+            if (event.target === event.currentTarget) setQuoteModalOpen(false);
+          }}
+        >
+          <div ref={quoteModalPanelRef} className="quote-modal-panel">
+            <button
+              type="button"
+              className="quote-modal-close"
+              onClick={() => setQuoteModalOpen(false)}
+              aria-label="Close testimonial"
+            >
+              <HugeiconsIcon icon={Cancel01Icon} size={16} />
+            </button>
+            <div className="quote-modal-head">
+              <div ref={quoteModalAvatarRef} className="quote-modal-avatar">
+                {activePortrait ? (
+                  <img src={activePortrait} alt="" width={96} height={96} />
+                ) : (
+                  <span aria-hidden="true">{activeInitials}</span>
+                )}
+              </div>
+              <div className="quote-modal-identity">
+                <h2 id="quote-modal-title" className="quote-modal-title">
+                  {activeTestimonial.name}
+                </h2>
+                <p className="quote-modal-role">{activeTestimonial.role}</p>
+              </div>
+            </div>
+            <p ref={quoteModalWordsRef} className="quote-modal-message">
+              {modalQuote.split(/\s+/).map((word, index, words) => (
+                <span className="quote-modal-word" key={`${word}-${index}`}>
+                  {word}
+                  {index < words.length - 1 ? " " : ""}
+                </span>
+              ))}
+            </p>
+          </div>
+        </div>
+      ) : null}
 
       <section id="contact" className="contact-section">
         <div className="site-container contact-layout">
