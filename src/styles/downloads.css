@@ -1,0 +1,255 @@
+.downloads-page .content-page-body {
+  display: grid;
+  gap: 2rem;
+}
+
+.downloads-intro {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  border: 1px solid #dbe4ee;
+  border-radius: 1rem;
+  background: #f7f9fc;
+  padding: 1.25rem 1.5rem;
+}
+
+.downloads-intro > div {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #005b96;
+}
+
+.downloads-intro strong {
+  color: #142033;
+  font-size: 0.95rem;
+}
+
+.downloads-intro p {
+  max-width: 38rem;
+  margin: 0;
+  color: #64748b;
+  font-size: 0.88rem;
+  line-height: 1.7;
+}
+
+.downloads-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.download-card {
+  display: flex;
+  min-height: 17rem;
+  flex-direction: column;
+  border: 1px solid #dbe4ee;
+  border-radius: 1rem;
+  background: #fff;
+  padding: 1.5rem;
+  box-shadow: 0 14px 36px rgb(15 23 42 / 0.05);
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.download-card:hover {
+  border-color: rgb(0 91 150 / 0.35);
+  box-shadow: 0 20px 44px rgb(15 23 42 / 0.1);
+  transform: translateY(-4px);
+}
+
+.download-card-icon {
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  border-radius: 0.8rem;
+  background: #e8f2f8;
+  color: #005b96;
+}
+
+.download-card p {
+  margin: 1.5rem 0 0.5rem;
+  color: #64748b;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.download-card h2 {
+  margin: 0;
+  color: #142033;
+  font-size: 1.2rem;
+  line-height: 1.35;
+}
+
+.download-card-action {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: auto;
+  border: 0;
+  background: transparent;
+  padding-top: 1.5rem;
+  color: #005b96;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.download-card-action:hover {
+  color: #003f69;
+}
+
+.download-modal-backdrop {
+  position: fixed;
+  z-index: 10000;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgb(4 15 31 / 0.68);
+  padding: 1rem;
+  backdrop-filter: blur(5px);
+}
+
+.download-modal {
+  position: relative;
+  width: min(100%, 28rem);
+  border: 1px solid rgb(255 255 255 / 0.35);
+  border-radius: 1.25rem;
+  background: #fff;
+  padding: 2rem;
+  box-shadow: 0 28px 80px rgb(0 0 0 / 0.3);
+}
+
+.download-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: grid;
+  width: 2.25rem;
+  height: 2.25rem;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: #f1f5f9;
+  color: #475569;
+  cursor: pointer;
+}
+
+.download-modal-icon {
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  place-items: center;
+  border-radius: 0.9rem;
+  background: #e8f2f8;
+  color: #005b96;
+}
+
+.download-modal > p {
+  margin: 1.5rem 0 0.35rem;
+  color: #005b96;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.download-modal h2 {
+  margin: 0;
+  color: #142033;
+  font-size: 1.45rem;
+}
+
+.download-modal > span {
+  display: block;
+  margin-top: 0.65rem;
+  color: #64748b;
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+.download-modal form {
+  display: grid;
+  gap: 0.65rem;
+  margin-top: 1.5rem;
+}
+
+.download-modal label {
+  color: #334155;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.download-modal input {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.7rem;
+  background: #fff;
+  padding: 0.8rem 0.9rem;
+  color: #142033;
+  font: inherit;
+  outline: 0;
+}
+
+.download-modal input:focus {
+  border-color: #005b96;
+  box-shadow: 0 0 0 3px rgb(0 91 150 / 0.12);
+}
+
+.download-modal form > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+  border: 0;
+  border-radius: 0.7rem;
+  background: #005b96;
+  padding: 0.85rem 1rem;
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.download-modal form > button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.download-modal-error {
+  margin: 0.2rem 0 0;
+  color: #b91c1c;
+  font-size: 0.78rem;
+}
+
+@media (max-width: 900px) {
+  .downloads-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .downloads-intro {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .downloads-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .download-card {
+    min-height: 14rem;
+  }
+}

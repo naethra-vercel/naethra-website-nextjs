@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { type FormEvent, useState } from "react";
 
 import NaethraContentPage from "@/components/NaethraContentPage";
+import { submitContactForm } from "@/lib/contact-form";
 
 export const Route = createFileRoute("/contact-us")({ component: ContactPage });
 
@@ -12,10 +13,35 @@ const MAP_LINK =
   "https://maps.google.com/?q=37,+Viswanathapuram+Main+Rd,+Kodambakkam,+Chennai+600024";
 
 function ContactPage() {
-  const [submitted, setSubmitted] = useState(false);
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const [formStatus, setFormStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [formMessage, setFormMessage] = useState("");
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setSubmitted(true);
+    const form = event.currentTarget;
+    const data = new FormData(form);
+
+    setFormStatus("submitting");
+    setFormMessage("");
+
+    try {
+      await submitContactForm({
+        name: String(data.get("name") ?? ""),
+        email: String(data.get("email") ?? ""),
+        website: String(data.get("company") ?? ""),
+        message: String(data.get("message") ?? ""),
+        details: [
+          ["Phone", String(data.get("phone") ?? "")],
+          ["Project type", String(data.get("projectType") ?? "")],
+          ["Budget / timeline", String(data.get("budget") ?? "")],
+        ],
+      });
+      form.reset();
+      setFormStatus("success");
+    } catch (error) {
+      setFormMessage(error instanceof Error ? error.message : "Unable to send your message.");
+      setFormStatus("error");
+    }
   };
   return (
     <NaethraContentPage
@@ -103,13 +129,18 @@ function ContactPage() {
               </label>
             </div>
 
-            <button className="button button-blue" type="submit">
-              {submitted ? "Thanks for reaching out" : "Start the conversation →"}
+            <button className="button button-blue" type="submit" disabled={formStatus === "submitting"}>
+              {formStatus === "submitting" ? "Sending…" : "Start the conversation →"}
             </button>
 
-            {submitted && (
+            {formStatus === "success" && (
               <p className="contact-success" role="status">
                 ✓ Thanks for reaching out. We&apos;ll get back to you shortly.
+              </p>
+            )}
+            {formStatus === "error" && (
+              <p className="contact-error" role="alert">
+                {formMessage}
               </p>
             )}
           </form>

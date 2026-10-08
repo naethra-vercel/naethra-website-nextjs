@@ -320,6 +320,13 @@
   font-weight: 700;
 }
 
+.contact-error {
+  margin: 0.2rem 0 0;
+  color: #b42318;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
 .contact-premium-map {
   position: relative;
   overflow: hidden;

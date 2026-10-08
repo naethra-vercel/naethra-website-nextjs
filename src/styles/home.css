@@ -334,6 +334,7 @@
 .button-blue { margin-top: 2.4rem; border: 0; background: var(--blue); color: var(--white); cursor: pointer; }
 .button-blue:hover { background: var(--blue-deep); }
 .contact-success { margin: 1rem 0 0; color: var(--blue); font-size: 0.78rem; }
+.contact-error { margin: 1rem 0 0; color: #b42318; font-size: 0.78rem; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
 .site-footer { background: #071d3d; color: var(--white); padding-block: 3rem 1.5rem; }
 .footer-map-wrap { padding-bottom: 3rem; }

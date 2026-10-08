@@ -2,22 +2,13 @@ import { Menu, X, ArrowUpRight, ChevronDown } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 
 import AnimatedCtaButton from "@/components/AnimatedCtaButton";
-
-const mobileItems = [["Flutter", "/flutter-app-development-company"]] as const;
-const serviceItems = [
-  ["Content Management System", "/cms"],
-  ["Custom Web Publishing", "/services/custom-web-publishing"],
-  ["Java/J2EE Applications", "/services/java-j2ee-applications"],
-  ["PHP/MySQL Applications", "/services/php-mysql-applications"],
-  ["Dot Net Application", "/services/dot-net-application"],
-  ["AWS & Cloud Support", "/services/aws-cloud-support"],
-] as const;
-const aboutItems = [["Blog", "/blogs"]] as const;
+import { splitPrimaryMenu, usePrimaryMenu } from "@/lib/navigation";
 
 export function NaethraContentHeader() {
+  const menu = usePrimaryMenu();
+  const { navigationItems, meetingItem } = splitPrimaryMenu(menu);
   const [open, setOpen] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [servicesOpen, setServicesOpen] = useState(false);
+  const [openMobileMenuId, setOpenMobileMenuId] = useState<number | null>(null);
 
   return (
     <header className="content-page-header">
@@ -32,49 +23,44 @@ export function NaethraContentHeader() {
           />
         </a>
         <nav className="content-page-nav" aria-label="Primary navigation">
-          <div className="content-page-nav-dropdown">
-            <a href="/mobile-app" aria-haspopup="true">
-              Mobile <ChevronDown size={13} aria-hidden="true" />
-            </a>
-            <div className="content-page-nav-menu">
-              {mobileItems.map(([label, href]) => (
-                <a key={label} href={href}>
-                  {label}
+          {navigationItems.map((item) =>
+            item.children.length > 0 ? (
+              <div className="content-page-nav-dropdown" key={item.id}>
+                <a
+                  href={item.href}
+                  target={item.target || undefined}
+                  rel={item.target === "_blank" ? "noreferrer" : undefined}
+                  aria-haspopup="true"
+                >
+                  {item.label} <ChevronDown size={13} aria-hidden="true" />
                 </a>
-              ))}
-            </div>
-          </div>
-          <a href="/web-app">Web App</a>
-          <a href="/portfolio">Portfolio</a>
-          <div className="content-page-nav-dropdown">
-            <a href="/services" aria-haspopup="true">
-              Services <ChevronDown size={13} aria-hidden="true" />
-            </a>
-            <div className="content-page-nav-menu">
-              {serviceItems.map(([label, href]) => (
-                <a key={label} href={href}>
-                  {label}
-                </a>
-              ))}
-            </div>
-          </div>
-          <a href="/services/claris-filemaker-application">FileMaker</a>
-          <div className="content-page-nav-dropdown">
-            <a href="/about" aria-haspopup="true">
-              About Us <ChevronDown size={13} aria-hidden="true" />
-            </a>
-            <div className="content-page-nav-menu">
-              {aboutItems.map(([label, href]) => (
-                <a key={label} href={href}>
-                  {label}
-                </a>
-              ))}
-            </div>
-          </div>
-          <a href="/contact-us">Contact Us</a>
+                <div className="content-page-nav-menu">
+                  {item.children.map((child) => (
+                    <a
+                      key={child.id}
+                      href={child.href}
+                      target={child.target || undefined}
+                      rel={child.target === "_blank" ? "noreferrer" : undefined}
+                    >
+                      {child.label}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <a
+                key={item.id}
+                href={item.href}
+                target={item.target || undefined}
+                rel={item.target === "_blank" ? "noreferrer" : undefined}
+              >
+                {item.label}
+              </a>
+            ),
+          )}
         </nav>
-        <AnimatedCtaButton href="/30-mins-meeting" className="content-page-cta">
-          30 mins meeting
+        <AnimatedCtaButton href={meetingItem.href} className="content-page-cta">
+          {meetingItem.label}
         </AnimatedCtaButton>
         <button
           className="content-page-menu-button"
@@ -88,87 +74,39 @@ export function NaethraContentHeader() {
       </div>
       {open && (
         <nav className="content-page-mobile-nav" aria-label="Mobile navigation">
-          <div className="content-page-mobile-group">
-            <button
-              type="button"
-              onClick={() => setMobileOpen((value) => !value)}
-              aria-expanded={mobileOpen}
-            >
-              Mobile <span>{mobileOpen ? "-" : "+"}</span>
-            </button>
-            {mobileOpen && (
-              <div className="content-page-mobile-submenu">
-                {mobileItems.map(([label, href]) => (
-                  <a key={label} href={href} onClick={() => setOpen(false)}>
-                    {label}
-                    <ArrowUpRight size={15} />
-                  </a>
-                ))}
-              </div>
-            )}
-          </div>
-          {["Web App", "Portfolio", "Services", "FileMaker", "About Us", "Contact Us"].map(
-            (label) => {
-              const href =
-                label === "Web App"
-                  ? "/web-app"
-                  : label === "Portfolio"
-                    ? "/portfolio"
-                    : label === "Services"
-                      ? "/services"
-                      : label === "FileMaker"
-                        ? "/services/claris-filemaker-application"
-                        : label === "About Us"
-                          ? "/about"
-                          : "/contact-us";
-              if (label === "About Us") {
-                return (
-                  <div className="content-page-mobile-group" key={label}>
-                    <a href={href} onClick={() => setOpen(false)}>
-                      {label}
-                      <ArrowUpRight size={16} />
+          {navigationItems.map((item) =>
+            item.children.length > 0 ? (
+              <div className="content-page-mobile-group" key={item.id}>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setOpenMobileMenuId((openId) => (openId === item.id ? null : item.id))
+                  }
+                  aria-expanded={openMobileMenuId === item.id}
+                >
+                  {item.label} <span>{openMobileMenuId === item.id ? "-" : "+"}</span>
+                </button>
+                {openMobileMenuId === item.id && (
+                  <div className="content-page-mobile-submenu">
+                    <a href={item.href} onClick={() => setOpen(false)}>
+                      View {item.label}
+                      <ArrowUpRight size={15} />
                     </a>
-                    <div className="content-page-mobile-submenu">
-                      {aboutItems.map(([itemLabel, itemHref]) => (
-                        <a key={itemLabel} href={itemHref} onClick={() => setOpen(false)}>
-                          {itemLabel}
-                          <ArrowUpRight size={15} />
-                        </a>
-                      ))}
-                    </div>
+                    {item.children.map((child) => (
+                      <a key={child.id} href={child.href} onClick={() => setOpen(false)}>
+                        {child.label}
+                        <ArrowUpRight size={15} />
+                      </a>
+                    ))}
                   </div>
-                );
-              }
-              if (label === "Services") {
-                return (
-                  <div className="content-page-mobile-group" key={label}>
-                    <button
-                      type="button"
-                      onClick={() => setServicesOpen((value) => !value)}
-                      aria-expanded={servicesOpen}
-                    >
-                      {label} <span>{servicesOpen ? "-" : "+"}</span>
-                    </button>
-                    {servicesOpen && (
-                      <div className="content-page-mobile-submenu">
-                        {serviceItems.map(([itemLabel, itemHref]) => (
-                          <a key={itemLabel} href={itemHref} onClick={() => setOpen(false)}>
-                            {itemLabel}
-                            <ArrowUpRight size={15} />
-                          </a>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                );
-              }
-              return (
-                <a href={href} key={label} onClick={() => setOpen(false)}>
-                  {label}
-                  <ArrowUpRight size={16} />
-                </a>
-              );
-            },
+                )}
+              </div>
+            ) : (
+              <a href={item.href} key={item.id} onClick={() => setOpen(false)}>
+                {item.label}
+                <ArrowUpRight size={16} />
+              </a>
+            ),
           )}
         </nav>
       )}
