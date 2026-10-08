@@ -295,6 +295,19 @@ function initialsFromName(name: string) {
 function Index() {
   const { blogPosts, home, menu } = Route.useLoaderData();
   const { navigationItems, meetingItem } = splitPrimaryMenu(menu);
+  const heroSlides =
+    home.heroSlides.length > 0
+      ? home.heroSlides
+      : [
+          {
+            title: home.heroTitle,
+            subtitle: home.heroSubtitle,
+            cta: home.heroCta,
+            ctaHref: home.heroCtaHref,
+            mediaType: "video" as const,
+            mediaUrl: home.heroVideo,
+          },
+        ];
   const testimonials = home.testimonials.map((item) => {
     const rawImage = item.image?.trim() ?? "";
     const hasRealPortrait = rawImage.length > 0 && !isPlaceholderPortrait(rawImage);
@@ -321,6 +334,7 @@ function Index() {
   );
   const [contactMessage, setContactMessage] = useState("");
   const [testimonialIndex, setTestimonialIndex] = useState(0);
+  const [heroIndex, setHeroIndex] = useState(0);
   const [quoteModalOpen, setQuoteModalOpen] = useState(false);
   const [quoteOverflows, setQuoteOverflows] = useState(false);
   const quoteRef = useRef<HTMLQuoteElement>(null);
@@ -329,6 +343,7 @@ function Index() {
   const quoteModalAvatarRef = useRef<HTMLDivElement>(null);
   const quoteModalWordsRef = useRef<HTMLParagraphElement>(null);
   const activeTestimonial = testimonials[testimonialIndex] ?? testimonials[0];
+  const activeHero = heroSlides[heroIndex % heroSlides.length] ?? heroSlides[0]!;
   const activePortrait = activeTestimonial?.image || "";
   const activeInitials = initialsFromName(activeTestimonial?.name ?? "N");
   const modalQuote = (activeTestimonial?.quote ?? "").replace(/\s+/g, " ").trim();
@@ -457,6 +472,18 @@ function Index() {
     return () => window.clearInterval(rotation);
   }, [testimonials.length, quoteModalOpen]);
 
+  useEffect(() => {
+    setHeroIndex(0);
+  }, [heroSlides.length, home.heroTitle]);
+
+  useEffect(() => {
+    if (heroSlides.length < 2) return;
+    const rotation = window.setInterval(() => {
+      setHeroIndex((index) => (index + 1) % heroSlides.length);
+    }, 6000);
+    return () => window.clearInterval(rotation);
+  }, [heroSlides.length]);
+
   return (
     <main id="top" className="site-page">
       <header className={`site-header ${isScrolled ? "is-scrolled" : ""}`}>
@@ -559,17 +586,27 @@ function Index() {
       </header>
 
       <section className="hero-section">
-        <video
-          className="sentinel-bg"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          poster="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260912_105822_bf7c2d53-9957-4521-bbbf-7c1ab7a70130.png"
-          src="https://automation-saas-ns-next.vercel.app/videos/hero-video.mp4"
-          aria-hidden="true"
-        />
+        {activeHero.mediaType === "image" ? (
+          <img
+            key={activeHero.mediaUrl}
+            className="sentinel-bg"
+            src={activeHero.mediaUrl}
+            alt=""
+            aria-hidden="true"
+          />
+        ) : (
+          <video
+            key={activeHero.mediaUrl}
+            className="sentinel-bg"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            src={activeHero.mediaUrl}
+            aria-hidden="true"
+          />
+        )}
         <div className="sentinel-tint" />
         <div className="sentinel-hero-inner">
           <div className="sentinel-topbar">
@@ -588,7 +625,7 @@ function Index() {
                 ▦ <span>Product</span>
               </a>
             </nav>
-            <a className="sentinel-cta" href="#contact">
+            <a className="sentinel-cta" href={activeHero.ctaHref}>
               <span>30 mins meeting</span>
               <b>›</b>
             </a>
@@ -611,24 +648,38 @@ function Index() {
               <a href="#services" onClick={() => setMenuOpen(false)}>
                 Product
               </a>
-              <a href="#contact" onClick={() => setMenuOpen(false)}>
+              <a href={activeHero.ctaHref} onClick={() => setMenuOpen(false)}>
                 30 mins meeting
               </a>
             </nav>
           )}
           <div className="sentinel-main">
-            <div className="sentinel-copy">
-              <h1>{home.heroTitle}</h1>
+            <div className="sentinel-copy" key={`hero-copy-${heroIndex}`}>
+              <h1>{activeHero.title}</h1>
               <div className="sentinel-tagrow">
-                <span>{home.heroSubtitle}</span>
+                <span>{activeHero.subtitle}</span>
               </div>
             </div>
           </div>
           <div className="sentinel-bottom flex justify-center w-full">
-            <AnimatedCtaButton href="#contact" className="sentinel-meet">
-              {home.heroCta}
+            <AnimatedCtaButton href={activeHero.ctaHref} className="sentinel-meet">
+              {activeHero.cta}
             </AnimatedCtaButton>
           </div>
+          {heroSlides.length > 1 && (
+            <div className="hero-slide-dots" aria-label="Hero slides">
+              {heroSlides.map((slide, index) => (
+                <button
+                  key={`${slide.mediaUrl}-${index}`}
+                  type="button"
+                  className={index === heroIndex ? "is-active" : undefined}
+                  aria-label={`Show slide ${index + 1}`}
+                  aria-current={index === heroIndex ? "true" : undefined}
+                  onClick={() => setHeroIndex(index)}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
