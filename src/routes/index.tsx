@@ -73,7 +73,7 @@ export const Route = createFileRoute("/")({
   }),
   loader: async () => {
     const [blogPosts, home, menu] = await Promise.all([
-      getPosts(1, 4),
+      getPosts(1, 4).catch(() => []),
       getHomeContent(),
       getPrimaryMenu(),
     ]);
@@ -585,11 +585,11 @@ function Index() {
         )}
       </header>
 
-      <section className="hero-section">
+      <section className={`hero-section${activeHero.mediaType === "video" ? " is-video" : " is-image"}`}>
         {activeHero.mediaType === "image" ? (
           <img
             key={activeHero.mediaUrl}
-            className="sentinel-bg"
+            className="hero-media"
             src={activeHero.mediaUrl}
             alt=""
             aria-hidden="true"
@@ -597,7 +597,7 @@ function Index() {
         ) : (
           <video
             key={activeHero.mediaUrl}
-            className="sentinel-bg"
+            className="hero-media"
             autoPlay
             muted
             loop
@@ -607,64 +607,14 @@ function Index() {
             aria-hidden="true"
           />
         )}
-        <div className="sentinel-tint" />
-        <div className="sentinel-hero-inner">
-          <div className="sentinel-topbar">
-            <a className="sentinel-brand" href="#top" aria-label="ConSentinel home">
-              <span className="sentinel-mark" aria-hidden="true">
-                ◎
-              </span>
-              <strong>ConSentinel</strong>
-            </a>
-            <nav className="sentinel-nav" aria-label="ConSentinel navigation">
-              <a href="#top">
-                ⌂ <span>Explore</span>
-              </a>
-              <i aria-hidden="true" />
-              <a href="#services">
-                ▦ <span>Product</span>
-              </a>
-            </nav>
-            <a className="sentinel-cta" href={activeHero.ctaHref}>
-              <span>30 mins meeting</span>
-              <b>›</b>
-            </a>
-            <button
-              className="sentinel-menu-button"
-              type="button"
-              aria-label={menuOpen ? "Close menu" : "Open menu"}
-              aria-expanded={menuOpen}
-              onClick={() => setMenuOpen((open) => !open)}
-            >
-              <span />
-              <span />
-            </button>
-          </div>
-          {menuOpen && (
-            <nav className="sentinel-mobile-menu" aria-label="ConSentinel mobile navigation">
-              <a href="#top" onClick={() => setMenuOpen(false)}>
-                Explore
-              </a>
-              <a href="#services" onClick={() => setMenuOpen(false)}>
-                Product
-              </a>
-              <a href={activeHero.ctaHref} onClick={() => setMenuOpen(false)}>
-                30 mins meeting
-              </a>
-            </nav>
-          )}
-          <div className="sentinel-main">
-            <div className="sentinel-copy" key={`hero-copy-${heroIndex}`}>
-              <h1>{activeHero.title}</h1>
-              <div className="sentinel-tagrow">
-                <span>{activeHero.subtitle}</span>
-              </div>
-            </div>
-          </div>
-          <div className="sentinel-bottom flex justify-center w-full">
-            <AnimatedCtaButton href={activeHero.ctaHref} className="sentinel-meet">
+        <div className="hero-overlay" />
+        <div className="site-container hero-inner">
+          <div className="hero-copy" key={`hero-copy-${heroIndex}`}>
+            <h1>{activeHero.title}</h1>
+            <p>{activeHero.subtitle}</p>
+            <a className="hero-cta" href={activeHero.ctaHref}>
               {activeHero.cta}
-            </AnimatedCtaButton>
+            </a>
           </div>
           {heroSlides.length > 1 && (
             <div className="hero-slide-dots" aria-label="Hero slides">

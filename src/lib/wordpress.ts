@@ -75,6 +75,7 @@ export type WpPage = {
   title: string;
   excerpt: string;
   contentHtml: string;
+  modified: string;
 };
 
 export type AboutContent = {
@@ -202,6 +203,7 @@ type WpPost = {
   id?: number;
   slug?: string;
   date?: string;
+  modified?: string;
   link?: string;
   menu_order?: number;
   featured_media?: number;
@@ -355,12 +357,13 @@ export function mapWpPage(page: WpPost): WpPage {
     title: stripHtml(page.title?.rendered ?? "Untitled"),
     excerpt: stripHtml(page.excerpt?.rendered ?? ""),
     contentHtml: page.content?.rendered ?? "",
+    modified: page.modified ?? "",
   };
 }
 
 export async function getPageBySlug(slug: string) {
   const pages = await wpFetch<WpPost[]>(
-    `/pages?slug=${encodeURIComponent(slug)}&_fields=id,slug,title,excerpt,content`,
+    `/pages?slug=${encodeURIComponent(slug)}&_fields=id,slug,title,excerpt,content,modified`,
   );
   const page = pages[0];
   return page ? mapWpPage(page) : null;
@@ -2142,12 +2145,36 @@ function mapHomeClients(html: string): HomeClient[] {
   return clients.length > 0 ? clients : HOME_CLIENTS_FALLBACK;
 }
 
-function mapHomeHeroVideo(html: string) {
-  const encoded = html.match(/background_video_link&quot;:&quot;([^&]+?)&quot;/i)?.[1];
-  const raw = encoded || html.match(/"background_video_link"\s*:\s*"([^"]+)"/i)?.[1];
-  if (!raw) return HOME_HERO_VIDEO_FALLBACK;
+function extractFirstTopSection(html: string) {
+  return (
+    html.match(
+      /<section[^>]*class=["'][^"']*elementor-top-section[^"']*["'][^>]*>[\s\S]*?(?=<section[^>]*class=["'][^"']*elementor-top-section|$)/i,
+    )?.[0] ?? ""
+  );
+}
+
+function firstSectionBackgroundType(sectionHtml: string): "video" | "image" | "" {
+  if (
+    /background_background(?:&quot;|")\s*:\s*(?:&quot;|")video(?:&quot;|")/i.test(sectionHtml) ||
+    /"background_background"\s*:\s*"video"/i.test(sectionHtml)
+  ) {
+    return "video";
+  }
+  if (
+    /background_background(?:&quot;|")\s*:\s*(?:&quot;|")classic(?:&quot;|")/i.test(sectionHtml) ||
+    /"background_background"\s*:\s*"classic"/i.test(sectionHtml)
+  ) {
+    return "image";
+  }
+  return "";
+}
+
+function mapHomeHeroVideo(sectionHtml: string) {
+  const encoded = sectionHtml.match(/background_video_link&quot;:&quot;([^&]+?)&quot;/i)?.[1];
+  const raw = encoded || sectionHtml.match(/"background_video_link"\s*:\s*"([^"]+)"/i)?.[1];
+  if (!raw) return "";
   const url = raw.replace(/\\\//g, "/").trim();
-  return /\.(mp4|webm|ogg)(?:\?|$)/i.test(url) ? url : HOME_HERO_VIDEO_FALLBACK;
+  return /\.(mp4|webm|ogg)(?:\?|$)/i.test(url) ? url : "";
 }
 
 function normalizeInternalHref(href: string, fallback: string) {
@@ -2311,36 +2338,58 @@ function escapeRegExp(value: string) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-async function fetchElementorSectionBackgroundImage(pageId: number, sectionId: string) {
+/**
+ * Home hero media comes from the first Elementor top section on Home.
+ * To change it later in WP: Edit with Elementor → first section → Style → Background → Image (or Video).
+ * After publish, the app will pick up the new background from CSS.
+ */
+async function fetchElementorSectionBackgroundImage(
+  pageId: number,
+  sectionId: string,
+  modified = "",
+) {
   if (!pageId) return "";
-  const cssUrl = `${WP_ORIGIN}/wp-content/uploads/elementor/css/post-${pageId}.css`;
+  const cacheBust = encodeURIComponent(modified || String(pageId));
+  const cssUrl = `${WP_ORIGIN}/wp-content/uploads/elementor/css/post-${pageId}.css?ver=${cacheBust}`;
   try {
     const res = await fetch(cssUrl, { headers: { Accept: "text/css,*/*" } });
     if (!res.ok) return "";
     const css = await res.text();
-    if (sectionId) {
-      const scoped = css.match(
-        new RegExp(
-          `elementor-element-${escapeRegExp(sectionId)}[^{]*\\{[^}]*background-image\\s*:\\s*url\\((["']?)([^)"']+)\\1\\)`,
-          "i",
-        ),
-      );
-      const url = (scoped?.[2] ?? "").trim();
-      if (url && mediaTypeFromUrl(url) === "image") return preferFullSizeImage(url);
-    }
-    return "";
+    if (!sectionId) return "";
+
+    const scoped = css.match(
+      new RegExp(
+        `elementor-element-${escapeRegExp(sectionId)}[^{]*\\{[^}]*background-image\\s*:\\s*url\\((["']?)([^)"']+)\\1\\)`,
+        "i",
+      ),
+    );
+    const url = (scoped?.[2] ?? "").trim();
+    return url && mediaTypeFromUrl(url) === "image" ? preferFullSizeImage(url) : "";
   } catch {
     return "";
   }
 }
 
-function resolveHeroFallbackMedia(heroImage: string, heroVideo: string) {
+function resolveHeroFallbackMedia(
+  heroImage: string,
+  heroVideo: string,
+  backgroundType: "video" | "image" | "" = "",
+) {
+  if (backgroundType === "video") {
+    return {
+      fallbackMediaUrl: heroVideo || HOME_HERO_VIDEO_FALLBACK,
+      fallbackMediaType: "video" as const,
+    };
+  }
   if (heroImage) {
     return { fallbackMediaUrl: heroImage, fallbackMediaType: "image" as const };
   }
+  if (heroVideo) {
+    return { fallbackMediaUrl: heroVideo, fallbackMediaType: "video" as const };
+  }
   return {
-    fallbackMediaUrl: heroVideo || HOME_HERO_VIDEO_FALLBACK,
-    fallbackMediaType: "video" as const,
+    fallbackMediaUrl: HOME_HERO_IMAGE_FALLBACK,
+    fallbackMediaType: "image" as const,
   };
 }
 
@@ -2351,10 +2400,7 @@ function mapHomeHeroFromFirstSection(
     heroImage?: string;
   },
 ): HomeHeroSlide | null {
-  const section =
-    html.match(
-      /<section[^>]*class=["'][^"']*elementor-top-section[^"']*["'][^>]*>[\s\S]*?<\/section>/i,
-    )?.[0] ?? "";
+  const section = extractFirstTopSection(html);
   if (!section) return null;
 
   const preview = stripHtml(section).slice(0, 280).toLowerCase();
@@ -2365,7 +2411,11 @@ function mapHomeHeroFromFirstSection(
     return null;
   }
 
-  const media = resolveHeroFallbackMedia(defaults.heroImage ?? "", defaults.heroVideo);
+  const media = resolveHeroFallbackMedia(
+    defaults.heroImage ?? "",
+    defaults.heroVideo,
+    firstSectionBackgroundType(section),
+  );
   return mapSlideFromMarkup(section, {
     ...defaults,
     ...media,
@@ -2390,17 +2440,23 @@ function mapHomeHeroSlides(
     slides.push(slide);
   };
 
-  const media = resolveHeroFallbackMedia(defaults.heroImage ?? "", defaults.heroVideo);
+  const firstSection = extractFirstTopSection(html);
+  const media = resolveHeroFallbackMedia(
+    defaults.heroImage ?? "",
+    defaults.heroVideo,
+    firstSectionBackgroundType(firstSection),
+  );
   const slideDefaults = {
     ...defaults,
     ...media,
   };
+  const searchRoot = firstSection || html;
 
   const slidesWidget =
-    html.match(
+    searchRoot.match(
       /<(?:div)[^>]*elementor-widget-slides[\s\S]*?(?=<div[^>]*data-element_type="widget"|$)/i,
     )?.[0] ||
-    html.match(
+    searchRoot.match(
       /<(?:div)[^>]*class=["'][^"']*elementor-slides[\s\S]*?<\/div>\s*<\/div>\s*<\/div>/i,
     )?.[0] ||
     "";
@@ -2418,7 +2474,7 @@ function mapHomeHeroSlides(
 
   if (slides.length === 0) {
     const marked =
-      html.match(
+      searchRoot.match(
         /<(?:section|div)[^>]*naethra-hero-slider[\s\S]*?(?=<(?:section|div)[^>]*data-element_type="(?:section|widget)"|$)/i,
       )?.[0] || "";
     if (marked) {
@@ -2439,30 +2495,6 @@ function mapHomeHeroSlides(
 
   if (slides.length === 0) {
     pushSlide(mapHomeHeroFromFirstSection(html, defaults));
-  }
-
-  const topSections = Array.from(
-    html.matchAll(
-      /<section[^>]*class=["'][^"']*elementor-top-section[^"']*["'][^>]*>[\s\S]*?(?=<section[^>]*class=["'][^"']*elementor-top-section|$)/gi,
-    ),
-  );
-  for (const match of topSections) {
-    const section = match[0];
-    const preview = stripHtml(section).slice(0, 280).toLowerCase();
-    const hasVideo =
-      /background_video_link/i.test(section) ||
-      /"background_background"\s*:\s*"video"/i.test(section) ||
-      /background_background&quot;:&quot;video&quot;/i.test(section);
-    const looksLikeHero =
-      /comprehensive full stack|schedule a meet|mastering web|looking for the best software/i.test(
-        preview,
-      );
-    const looksLikeInnerPage =
-      /unlock the possibilities|valued clients|our scalable|why naethra|major software/i.test(
-        preview,
-      );
-    if (!hasVideo || looksLikeInnerPage || (!looksLikeHero && slides.length > 0)) continue;
-    pushSlide(mapSlideFromMarkup(section, slideDefaults));
   }
 
   if (slides.length === 0) {
@@ -2519,9 +2551,17 @@ function mapHomeOfferServices(html: string): HomeOfferService[] {
   });
 }
 
-export function mapHomeContent(html: string, options: { heroImage?: string } = {}): HomeContent {
+export function mapHomeContent(
+  html: string,
+  options: { heroImage?: string; heroVideo?: string } = {},
+): HomeContent {
   const chunks = extractHtmlChunks(html);
+  const firstSection = extractFirstTopSection(html);
   const heroImage = options.heroImage || "";
+  const heroVideo =
+    options.heroVideo ||
+    mapHomeHeroVideo(firstSection) ||
+    (firstSectionBackgroundType(firstSection) === "video" ? HOME_HERO_VIDEO_FALLBACK : "");
 
   const aboutParagraphs = [
     findChunk(chunks, (text) => /full of software development experts/i.test(text)),
@@ -2551,7 +2591,6 @@ export function mapHomeContent(html: string, options: { heroImage?: string } = {
     findChunk(chunks, (text) => /claris filemaker/i.test(text)),
   ].filter(Boolean);
 
-  const heroVideo = mapHomeHeroVideo(html);
   const firstSectionSlide = mapHomeHeroFromFirstSection(html, {
     title: HOME_CONTENT_FALLBACK.heroTitle,
     subtitle: HOME_CONTENT_FALLBACK.heroSubtitle,
@@ -2630,10 +2669,19 @@ export async function getHomeContent() {
     const page = await getPageBySlug("home");
     if (!page?.contentHtml) return HOME_CONTENT_FALLBACK;
 
+    const firstSection = extractFirstTopSection(page.contentHtml);
     const sectionId = getFirstTopSectionElementId(page.contentHtml);
-    const heroImage = await fetchElementorSectionBackgroundImage(page.id, sectionId);
+    const heroImage = await fetchElementorSectionBackgroundImage(
+      page.id,
+      sectionId,
+      page.modified,
+    );
+    const heroVideo = mapHomeHeroVideo(firstSection);
+    const options: { heroImage?: string; heroVideo?: string } = {};
+    if (heroImage) options.heroImage = heroImage;
+    if (heroVideo) options.heroVideo = heroVideo;
 
-    return mapHomeContent(page.contentHtml, heroImage ? { heroImage } : {});
+    return mapHomeContent(page.contentHtml, options);
   } catch {
     return HOME_CONTENT_FALLBACK;
   }
