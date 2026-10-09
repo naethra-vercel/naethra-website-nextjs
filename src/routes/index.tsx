@@ -41,6 +41,8 @@ import {
 } from "lucide-react";
 import SectionEyebrow from "@/components/SectionEyebrow";
 import AnimatedCtaButton from "@/components/AnimatedCtaButton";
+import { submitContactForm } from "@/lib/contact-form";
+import { getPrimaryMenu, splitPrimaryMenu } from "@/lib/navigation";
 import { getHomeContent, getPosts } from "@/lib/wordpress";
 
 const IntegrationSection = lazy(() => import("@/components/IntegrationSection"));
@@ -70,34 +72,15 @@ export const Route = createFileRoute("/")({
     links: [{ rel: "canonical", href: "/" }],
   }),
   loader: async () => {
-    const [blogPosts, home] = await Promise.all([getPosts(1, 4), getHomeContent()]);
-    return { blogPosts, home };
+    const [blogPosts, home, menu] = await Promise.all([
+      getPosts(1, 4).catch(() => []),
+      getHomeContent(),
+      getPrimaryMenu(),
+    ]);
+    return { blogPosts, home, menu };
   },
   component: Index,
 });
-
-const navItems = [
-  ["Mobile", "/mobile-app"],
-  ["Web App", "/web-app"],
-  ["Portfolio", "/portfolio"],
-  ["Services", "#services"],
-  ["FileMaker", "/services/claris-filemaker-application"],
-  ["About Us", "/about"],
-  ["Contact Us", "/contact-us"],
-];
-
-const mobileMenuItems = [["Flutter", "/flutter-app-development-company"]] as const;
-
-const serviceMenuItems = [
-  ["Content Management System", "/cms"],
-  ["Custom Web Publishing", "/services/custom-web-publishing"],
-  ["Java/J2EE Applications", "/services/java-j2ee-applications"],
-  ["PHP/MySQL Applications", "/services/php-mysql-applications"],
-  ["Dot Net Application", "/services/dot-net-application"],
-  ["AWS & Cloud Support", "/services/aws-cloud-support"],
-] as const;
-
-const aboutMenuItems = [["Blog", "/blogs"]] as const;
 
 const services = [
   [
@@ -310,7 +293,21 @@ function initialsFromName(name: string) {
 }
 
 function Index() {
-  const { blogPosts, home } = Route.useLoaderData();
+  const { blogPosts, home, menu } = Route.useLoaderData();
+  const { navigationItems, meetingItem } = splitPrimaryMenu(menu);
+  const heroSlides =
+    home.heroSlides.length > 0
+      ? home.heroSlides
+      : [
+          {
+            title: home.heroTitle,
+            subtitle: home.heroSubtitle,
+            cta: home.heroCta,
+            ctaHref: home.heroCtaHref,
+            mediaType: "video" as const,
+            mediaUrl: home.heroVideo,
+          },
+        ];
   const testimonials = home.testimonials.map((item) => {
     const rawImage = item.image?.trim() ?? "";
     const hasRealPortrait = rawImage.length > 0 && !isPlaceholderPortrait(rawImage);
@@ -330,10 +327,14 @@ function Index() {
     };
   });
   const [menuOpen, setMenuOpen] = useState(false);
-  const [servicesOpen, setServicesOpen] = useState(false);
+  const [openMobileMenuId, setOpenMobileMenuId] = useState<number | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [contactSubmitted, setContactSubmitted] = useState(false);
+  const [contactStatus, setContactStatus] = useState<"idle" | "submitting" | "success" | "error">(
+    "idle",
+  );
+  const [contactMessage, setContactMessage] = useState("");
   const [testimonialIndex, setTestimonialIndex] = useState(0);
+  const [heroIndex, setHeroIndex] = useState(0);
   const [quoteModalOpen, setQuoteModalOpen] = useState(false);
   const [quoteOverflows, setQuoteOverflows] = useState(false);
   const quoteRef = useRef<HTMLQuoteElement>(null);
@@ -342,6 +343,7 @@ function Index() {
   const quoteModalAvatarRef = useRef<HTMLDivElement>(null);
   const quoteModalWordsRef = useRef<HTMLParagraphElement>(null);
   const activeTestimonial = testimonials[testimonialIndex] ?? testimonials[0];
+  const activeHero = heroSlides[heroIndex % heroSlides.length] ?? heroSlides[0]!;
   const activePortrait = activeTestimonial?.image || "";
   const activeInitials = initialsFromName(activeTestimonial?.name ?? "N");
   const modalQuote = (activeTestimonial?.quote ?? "").replace(/\s+/g, " ").trim();
@@ -412,9 +414,30 @@ function Index() {
     };
   }, [quoteModalOpen, activeTestimonial?.quote]);
 
-  const handleContactSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleContactSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setContactSubmitted(true);
+    const form = event.currentTarget;
+    const data = new FormData(form);
+
+    setContactStatus("submitting");
+    setContactMessage("");
+
+    try {
+      await submitContactForm({
+        name: String(data.get("name") ?? ""),
+        email: String(data.get("email") ?? ""),
+        message: String(data.get("message") ?? ""),
+        details: [
+          ["Phone", String(data.get("phone") ?? "")],
+          ["Reason", String(data.get("reason") ?? "")],
+        ],
+      });
+      form.reset();
+      setContactStatus("success");
+    } catch (error) {
+      setContactMessage(error instanceof Error ? error.message : "Unable to send your message.");
+      setContactStatus("error");
+    }
   };
 
   useEffect(() => {
@@ -449,68 +472,64 @@ function Index() {
     return () => window.clearInterval(rotation);
   }, [testimonials.length, quoteModalOpen]);
 
+  useEffect(() => {
+    setHeroIndex(0);
+  }, [heroSlides.length, home.heroTitle]);
+
+  useEffect(() => {
+    if (heroSlides.length < 2) return;
+    const rotation = window.setInterval(() => {
+      setHeroIndex((index) => (index + 1) % heroSlides.length);
+    }, 6000);
+    return () => window.clearInterval(rotation);
+  }, [heroSlides.length]);
+
   return (
     <main id="top" className="site-page">
       <header className={`site-header ${isScrolled ? "is-scrolled" : ""}`}>
         <div className="site-container header-inner">
           <Logo />
           <nav className="desktop-nav theme-nav" aria-label="Primary navigation">
-            {navItems.map(([label, href]) =>
-              label === "Mobile" ? (
-                <div className="nav-dropdown" key={label}>
-                  <a href={href} aria-haspopup="true">
-                    {label}
+            {navigationItems.map((item) =>
+              item.children.length > 0 ? (
+                <div className="nav-dropdown" key={item.id}>
+                  <a
+                    className={item.label === "Services" ? "nav-services-link" : undefined}
+                    href={item.href}
+                    target={item.target || undefined}
+                    rel={item.target === "_blank" ? "noreferrer" : undefined}
+                    aria-haspopup="true"
+                  >
+                    {item.label}
                     <span className="nav-chevron" aria-hidden="true" />
                   </a>
                   <div className="nav-dropdown-menu">
-                    {mobileMenuItems.map(([itemLabel, itemHref]) => (
-                      <a key={itemLabel} href={itemHref}>
-                        {itemLabel}
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              ) : label === "Services" ? (
-                <div className="nav-dropdown" key={label}>
-                  <a className="nav-services-link" href={href} aria-haspopup="true">
-                    {label}
-                    <span className="nav-chevron" aria-hidden="true" />
-                  </a>
-                  <div className="nav-dropdown-menu is-wide">
-                    {serviceMenuItems.map(([itemLabel, itemHref]) => (
-                      <a key={itemLabel} href={itemHref}>
-                        {itemLabel}
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              ) : label === "About Us" ? (
-                <div className="nav-dropdown" key={label}>
-                  <a className="nav-about-link" href={href} aria-haspopup="true">
-                    {label}
-                    <span className="nav-chevron" aria-hidden="true" />
-                  </a>
-                  <div className="nav-dropdown-menu">
-                    {aboutMenuItems.map(([itemLabel, itemHref]) => (
-                      <a key={itemLabel} href={itemHref}>
-                        {itemLabel}
+                    {item.children.map((child) => (
+                      <a
+                        key={child.id}
+                        href={child.href}
+                        target={child.target || undefined}
+                        rel={child.target === "_blank" ? "noreferrer" : undefined}
+                      >
+                        {child.label}
                       </a>
                     ))}
                   </div>
                 </div>
               ) : (
                 <a
-                  className={label === "About Us" ? "nav-about-link" : undefined}
-                  key={label}
-                  href={href}
+                  key={item.id}
+                  href={item.href}
+                  target={item.target || undefined}
+                  rel={item.target === "_blank" ? "noreferrer" : undefined}
                 >
-                  {label}
+                  {item.label}
                 </a>
               ),
             )}
           </nav>
-          <AnimatedCtaButton href="#contact" className="header-cta">
-            30 mins meeting
+          <AnimatedCtaButton href={meetingItem.href} className="header-cta">
+            {meetingItem.label}
           </AnimatedCtaButton>
           <button
             type="button"
@@ -528,46 +547,36 @@ function Index() {
         </div>
         {menuOpen && (
           <nav className="mobile-nav" aria-label="Mobile navigation">
-            {navItems.map(([label, href]) =>
-              label === "Mobile" ? (
-                <div className="mobile-nav-group" key={label}>
-                  <a href={href} onClick={() => setMenuOpen(false)}>
-                    {label}
-                    <HugeiconsIcon icon={ArrowUpRight01Icon} size={18} />
-                  </a>
-                  <div className="mobile-nav-submenu">
-                    {mobileMenuItems.map(([itemLabel, itemHref]) => (
-                      <a key={itemLabel} href={itemHref} onClick={() => setMenuOpen(false)}>
-                        {itemLabel}
-                        <HugeiconsIcon icon={ArrowUpRight01Icon} size={16} />
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              ) : label === "Services" ? (
-                <div className="mobile-nav-group" key={label}>
+            {navigationItems.map((item) =>
+              item.children.length > 0 ? (
+                <div className="mobile-nav-group" key={item.id}>
                   <button
                     className="mobile-nav-services-toggle"
                     type="button"
-                    aria-expanded={servicesOpen}
-                    onClick={() => setServicesOpen((open) => !open)}
+                    aria-expanded={openMobileMenuId === item.id}
+                    onClick={() =>
+                      setOpenMobileMenuId((openId) => (openId === item.id ? null : item.id))
+                    }
                   >
-                    {label}
-                    <span aria-hidden="true">{servicesOpen ? "−" : "+"}</span>
+                    {item.label}
+                    <span aria-hidden="true">{openMobileMenuId === item.id ? "−" : "+"}</span>
                   </button>
-                  {servicesOpen && (
+                  {openMobileMenuId === item.id && (
                     <div className="mobile-nav-submenu">
-                      {serviceMenuItems.map(([itemLabel, itemHref]) => (
-                        <a key={itemLabel} href={itemHref} onClick={() => setMenuOpen(false)}>
-                          {itemLabel}
+                      <a href={item.href} onClick={() => setMenuOpen(false)}>
+                        View {item.label}
+                      </a>
+                      {item.children.map((child) => (
+                        <a key={child.id} href={child.href} onClick={() => setMenuOpen(false)}>
+                          {child.label}
                         </a>
                       ))}
                     </div>
                   )}
                 </div>
               ) : (
-                <a key={label} href={href} onClick={() => setMenuOpen(false)}>
-                  {label}
+                <a key={item.id} href={item.href} onClick={() => setMenuOpen(false)}>
+                  {item.label}
                   <HugeiconsIcon icon={ArrowUpRight01Icon} size={18} />
                 </a>
               ),
@@ -576,77 +585,51 @@ function Index() {
         )}
       </header>
 
-      <section className="hero-section">
-        <video
-          className="sentinel-bg"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          poster="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260912_105822_bf7c2d53-9957-4521-bbbf-7c1ab7a70130.png"
-          src="https://automation-saas-ns-next.vercel.app/videos/hero-video.mp4"
-          aria-hidden="true"
-        />
-        <div className="sentinel-tint" />
-        <div className="sentinel-hero-inner">
-          <div className="sentinel-topbar">
-            <a className="sentinel-brand" href="#top" aria-label="ConSentinel home">
-              <span className="sentinel-mark" aria-hidden="true">
-                ◎
-              </span>
-              <strong>ConSentinel</strong>
+      <section className={`hero-section${activeHero.mediaType === "video" ? " is-video" : " is-image"}`}>
+        {activeHero.mediaType === "image" ? (
+          <img
+            key={activeHero.mediaUrl}
+            className="hero-media"
+            src={activeHero.mediaUrl}
+            alt=""
+            aria-hidden="true"
+          />
+        ) : (
+          <video
+            key={activeHero.mediaUrl}
+            className="hero-media"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            src={activeHero.mediaUrl}
+            aria-hidden="true"
+          />
+        )}
+        <div className="hero-overlay" />
+        <div className="site-container hero-inner">
+          <div className="hero-copy" key={`hero-copy-${heroIndex}`}>
+            <h1>{activeHero.title}</h1>
+            <p>{activeHero.subtitle}</p>
+            <a className="hero-cta" href={activeHero.ctaHref}>
+              {activeHero.cta}
             </a>
-            <nav className="sentinel-nav" aria-label="ConSentinel navigation">
-              <a href="#top">
-                ⌂ <span>Explore</span>
-              </a>
-              <i aria-hidden="true" />
-              <a href="#services">
-                ▦ <span>Product</span>
-              </a>
-            </nav>
-            <a className="sentinel-cta" href="#contact">
-              <span>30 mins meeting</span>
-              <b>›</b>
-            </a>
-            <button
-              className="sentinel-menu-button"
-              type="button"
-              aria-label={menuOpen ? "Close menu" : "Open menu"}
-              aria-expanded={menuOpen}
-              onClick={() => setMenuOpen((open) => !open)}
-            >
-              <span />
-              <span />
-            </button>
           </div>
-          {menuOpen && (
-            <nav className="sentinel-mobile-menu" aria-label="ConSentinel mobile navigation">
-              <a href="#top" onClick={() => setMenuOpen(false)}>
-                Explore
-              </a>
-              <a href="#services" onClick={() => setMenuOpen(false)}>
-                Product
-              </a>
-              <a href="#contact" onClick={() => setMenuOpen(false)}>
-                30 mins meeting
-              </a>
-            </nav>
-          )}
-          <div className="sentinel-main">
-            <div className="sentinel-copy">
-              <h1>{home.heroTitle}</h1>
-              <div className="sentinel-tagrow">
-                <span>{home.heroSubtitle}</span>
-              </div>
+          {heroSlides.length > 1 && (
+            <div className="hero-slide-dots" aria-label="Hero slides">
+              {heroSlides.map((slide, index) => (
+                <button
+                  key={`${slide.mediaUrl}-${index}`}
+                  type="button"
+                  className={index === heroIndex ? "is-active" : undefined}
+                  aria-label={`Show slide ${index + 1}`}
+                  aria-current={index === heroIndex ? "true" : undefined}
+                  onClick={() => setHeroIndex(index)}
+                />
+              ))}
             </div>
-          </div>
-          <div className="sentinel-bottom flex justify-center w-full">
-            <AnimatedCtaButton href="#contact" className="sentinel-meet">
-              {home.heroCta}
-            </AnimatedCtaButton>
-          </div>
+          )}
         </div>
       </section>
 
@@ -1074,12 +1057,21 @@ function Index() {
               <span className="sr-only">Your message</span>
               <textarea name="message" placeholder="Message here.." rows={4} required />
             </label>
-            <button type="submit" className="button button-blue">
-              {contactSubmitted ? "Message ready to send" : "Send a message"}
+            <button
+              type="submit"
+              className="button button-blue"
+              disabled={contactStatus === "submitting"}
+            >
+              {contactStatus === "submitting" ? "Sending…" : "Send a message"}
             </button>
-            {contactSubmitted && (
+            {contactStatus === "success" && (
               <p className="contact-success" role="status">
                 Thanks. We&apos;ll get back to you at the earliest.
+              </p>
+            )}
+            {contactStatus === "error" && (
+              <p className="contact-error" role="alert">
+                {contactMessage}
               </p>
             )}
           </form>

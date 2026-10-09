@@ -14,6 +14,7 @@ import { Route as R30MinsMeetingRouteImport } from './routes/30-mins-meeting'
 import { Route as CmsRouteImport } from './routes/cms'
 import { Route as ContactUsRouteImport } from './routes/contact-us'
 import { Route as DisclaimerAndNotificationRouteImport } from './routes/disclaimer-and-notification'
+import { Route as DownloadRouteImport } from './routes/download'
 import { Route as FlutterAppDevelopmentCompanyRouteImport } from './routes/flutter-app-development-company'
 import { Route as MobileAppRouteImport } from './routes/mobile-app'
 import { Route as PortfolioRouteImport } from './routes/portfolio'
@@ -60,6 +61,11 @@ const DisclaimerAndNotificationRoute =
     path: '/disclaimer-and-notification',
     getParentRoute: () => rootRouteImport,
   } as any)
+const DownloadRoute = DownloadRouteImport.update({
+  id: '/download',
+  path: '/download',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FlutterAppDevelopmentCompanyRoute =
   FlutterAppDevelopmentCompanyRouteImport.update({
     id: '/flutter-app-development-company',
@@ -168,6 +174,7 @@ export interface FileRoutesByFullPath {
   '/cms': typeof CmsRoute
   '/contact-us': typeof ContactUsRoute
   '/disclaimer-and-notification': typeof DisclaimerAndNotificationRoute
+  '/download': typeof DownloadRoute
   '/flutter-app-development-company': typeof FlutterAppDevelopmentCompanyRoute
   '/mobile-app': typeof MobileAppRoute
   '/portfolio': typeof PortfolioRoute
@@ -194,6 +201,7 @@ export interface FileRoutesByTo {
   '/cms': typeof CmsRoute
   '/contact-us': typeof ContactUsRoute
   '/disclaimer-and-notification': typeof DisclaimerAndNotificationRoute
+  '/download': typeof DownloadRoute
   '/flutter-app-development-company': typeof FlutterAppDevelopmentCompanyRoute
   '/mobile-app': typeof MobileAppRoute
   '/portfolio': typeof PortfolioRoute
@@ -221,6 +229,7 @@ export interface FileRoutesById {
   '/cms': typeof CmsRoute
   '/contact-us': typeof ContactUsRoute
   '/disclaimer-and-notification': typeof DisclaimerAndNotificationRoute
+  '/download': typeof DownloadRoute
   '/flutter-app-development-company': typeof FlutterAppDevelopmentCompanyRoute
   '/mobile-app': typeof MobileAppRoute
   '/portfolio': typeof PortfolioRoute
@@ -249,6 +258,7 @@ export interface FileRouteTypes {
     | '/cms'
     | '/contact-us'
     | '/disclaimer-and-notification'
+    | '/download'
     | '/flutter-app-development-company'
     | '/mobile-app'
     | '/portfolio'
@@ -275,6 +285,7 @@ export interface FileRouteTypes {
     | '/cms'
     | '/contact-us'
     | '/disclaimer-and-notification'
+    | '/download'
     | '/flutter-app-development-company'
     | '/mobile-app'
     | '/portfolio'
@@ -301,6 +312,7 @@ export interface FileRouteTypes {
     | '/cms'
     | '/contact-us'
     | '/disclaimer-and-notification'
+    | '/download'
     | '/flutter-app-development-company'
     | '/mobile-app'
     | '/portfolio'
@@ -328,6 +340,7 @@ export interface RootRouteChildren {
   CmsRoute: typeof CmsRoute
   ContactUsRoute: typeof ContactUsRoute
   DisclaimerAndNotificationRoute: typeof DisclaimerAndNotificationRoute
+  DownloadRoute: typeof DownloadRoute
   FlutterAppDevelopmentCompanyRoute: typeof FlutterAppDevelopmentCompanyRoute
   MobileAppRoute: typeof MobileAppRoute
   PortfolioRoute: typeof PortfolioRoute
@@ -384,6 +397,13 @@ declare module '@tanstack/react-router' {
       path: '/disclaimer-and-notification'
       fullPath: '/disclaimer-and-notification'
       preLoaderRoute: typeof DisclaimerAndNotificationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/download': {
+      id: '/download'
+      path: '/download'
+      fullPath: '/download'
+      preLoaderRoute: typeof DownloadRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/flutter-app-development-company': {
@@ -528,6 +548,7 @@ const rootRouteChildren: RootRouteChildren = {
   CmsRoute: CmsRoute,
   ContactUsRoute: ContactUsRoute,
   DisclaimerAndNotificationRoute: DisclaimerAndNotificationRoute,
+  DownloadRoute: DownloadRoute,
   FlutterAppDevelopmentCompanyRoute: FlutterAppDevelopmentCompanyRoute,
   MobileAppRoute: MobileAppRoute,
   PortfolioRoute: PortfolioRoute,
