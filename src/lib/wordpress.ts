@@ -2165,7 +2165,7 @@ function parseElementorSettings(markup: string): Record<string, unknown> {
 
 function firstSectionBackgroundType(sectionHtml: string): "video" | "image" | "" {
   const settings = parseElementorSettings(sectionHtml);
-  const type = String(settings.background_background ?? "");
+  const type = String(settings["background_background"] ?? "");
   if (type === "video") return "video";
   if (type === "classic") return "image";
   if (
@@ -2185,7 +2185,7 @@ function firstSectionBackgroundType(sectionHtml: string): "video" | "image" | ""
 
 function mapHomeHeroVideo(sectionHtml: string) {
   const settings = parseElementorSettings(sectionHtml);
-  const fromSettings = String(settings.background_video_link ?? "").trim();
+  const fromSettings = String(settings["background_video_link"] ?? "").trim();
   const encoded = sectionHtml.match(/background_video_link&quot;:&quot;([^&]+?)&quot;/i)?.[1];
   const raw =
     fromSettings ||
@@ -2198,8 +2198,8 @@ function mapHomeHeroVideo(sectionHtml: string) {
 
 function mapHomeHeroVideoTiming(sectionHtml: string) {
   const settings = parseElementorSettings(sectionHtml);
-  const start = Number(settings.background_video_start);
-  const end = Number(settings.background_video_end);
+  const start = Number(settings["background_video_start"]);
+  const end = Number(settings["background_video_end"]);
   const timing: { mediaStart?: number; mediaEnd?: number } = {};
   if (Number.isFinite(start) && start > 0) timing.mediaStart = start;
   if (Number.isFinite(end) && end > 0) timing.mediaEnd = end;
