@@ -7,11 +7,6 @@ const projectRoot = path.dirname(fileURLToPath(import.meta.url));
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   outputFileTracingRoot: projectRoot,
-  // Legacy Prettier/ESLint noise in migrated files should not block production builds.
-  // Run `npm run lint` separately; TypeScript is still checked during `next build`.
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "naethra.com" },
