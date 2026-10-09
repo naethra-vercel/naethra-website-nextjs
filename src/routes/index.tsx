@@ -585,109 +585,111 @@ function Index() {
         )}
       </header>
 
-      <section
-        className={`hero-section${
-          activeHero.mediaUrl
-            ? activeHero.mediaType === "video"
-              ? " is-video"
-              : " is-image"
-            : ""
-        }`}
-      >
-        {activeHero.mediaUrl && activeHero.mediaType === "image" ? (
-          <img
-            key={activeHero.mediaUrl}
-            className="hero-media"
-            src={activeHero.mediaUrl}
-            alt=""
-            aria-hidden="true"
-          />
-        ) : null}
-        {activeHero.mediaUrl && activeHero.mediaType === "video" ? (
-          <video
-            key={activeHero.mediaUrl}
-            className="hero-media"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="auto"
-            src={activeHero.mediaUrl}
-            aria-hidden="true"
-            onLoadedMetadata={(event) => {
-              const video = event.currentTarget;
-              const start = activeHero.mediaStart;
-              if (typeof start === "number" && start > 0 && start < video.duration) {
-                video.currentTime = start;
-              }
-            }}
-            onTimeUpdate={(event) => {
-              const video = event.currentTarget;
-              const start =
-                typeof activeHero.mediaStart === "number" && activeHero.mediaStart < video.duration
-                  ? activeHero.mediaStart
-                  : 0;
-              const end = activeHero.mediaEnd;
-              if (typeof end === "number" && end > start && end < video.duration && video.currentTime >= end) {
-                video.currentTime = start;
-              }
-            }}
-          />
-        ) : null}
-        <div className="hero-overlay" />
-        <div className="site-container hero-inner">
-          <div className="hero-copy" key={`hero-copy-${heroIndex}`}>
-            <h1>{activeHero.title}</h1>
-            <p>{activeHero.subtitle}</p>
-            <a className="hero-cta" href={activeHero.ctaHref}>
-              {activeHero.cta}
-            </a>
-          </div>
-          {heroSlides.length > 1 && (
-            <div className="hero-slide-dots" aria-label="Hero slides">
-              {heroSlides.map((slide, index) => (
-                <button
-                  key={`${slide.mediaUrl}-${index}`}
-                  type="button"
-                  className={index === heroIndex ? "is-active" : undefined}
-                  aria-label={`Show slide ${index + 1}`}
-                  aria-current={index === heroIndex ? "true" : undefined}
-                  onClick={() => setHeroIndex(index)}
-                />
-              ))}
+      <div className="home-hero-stage">
+        <section
+          className={`hero-section${
+            activeHero.mediaUrl
+              ? activeHero.mediaType === "video"
+                ? " is-video"
+                : " is-image"
+              : ""
+          }`}
+        >
+          {activeHero.mediaUrl && activeHero.mediaType === "image" ? (
+            <img
+              key={activeHero.mediaUrl}
+              className="hero-media"
+              src={activeHero.mediaUrl}
+              alt=""
+              aria-hidden="true"
+            />
+          ) : null}
+          {activeHero.mediaUrl && activeHero.mediaType === "video" ? (
+            <video
+              key={activeHero.mediaUrl}
+              className="hero-media"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+              src={activeHero.mediaUrl}
+              aria-hidden="true"
+              onLoadedMetadata={(event) => {
+                const video = event.currentTarget;
+                const start = activeHero.mediaStart;
+                if (typeof start === "number" && start > 0 && start < video.duration) {
+                  video.currentTime = start;
+                }
+              }}
+              onTimeUpdate={(event) => {
+                const video = event.currentTarget;
+                const start =
+                  typeof activeHero.mediaStart === "number" && activeHero.mediaStart < video.duration
+                    ? activeHero.mediaStart
+                    : 0;
+                const end = activeHero.mediaEnd;
+                if (typeof end === "number" && end > start && end < video.duration && video.currentTime >= end) {
+                  video.currentTime = start;
+                }
+              }}
+            />
+          ) : null}
+          <div className="hero-overlay" />
+          <div className="site-container hero-inner">
+            <div className="hero-copy" key={`hero-copy-${heroIndex}`}>
+              <h1>{activeHero.title}</h1>
+              <p>{activeHero.subtitle}</p>
+              <a className="hero-cta" href={activeHero.ctaHref}>
+                {activeHero.cta}
+              </a>
             </div>
-          )}
-        </div>
-      </section>
+            {heroSlides.length > 1 && (
+              <div className="hero-slide-dots" aria-label="Hero slides">
+                {heroSlides.map((slide, index) => (
+                  <button
+                    key={`${slide.mediaUrl}-${index}`}
+                    type="button"
+                    className={index === heroIndex ? "is-active" : undefined}
+                    aria-label={`Show slide ${index + 1}`}
+                    aria-current={index === heroIndex ? "true" : undefined}
+                    onClick={() => setHeroIndex(index)}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
 
-      <section className="trust-strip">
-        <div className="site-container trust-grid">
-          <div>
-            <strong>
-              20<span>+</span>
-            </strong>
-            <span>years of experience</span>
+        <section className="trust-strip">
+          <div className="site-container trust-grid">
+            <div>
+              <strong>
+                20<span>+</span>
+              </strong>
+              <span>years of experience</span>
+            </div>
+            <div>
+              <strong>
+                15<span>+</span>
+              </strong>
+              <span>technology capabilities</span>
+            </div>
+            <div>
+              <strong>
+                100<span>+</span>
+              </strong>
+              <span>projects delivered</span>
+            </div>
+            <div>
+              <strong>
+                24<span>/7</span>
+              </strong>
+              <span>long-term support</span>
+            </div>
           </div>
-          <div>
-            <strong>
-              15<span>+</span>
-            </strong>
-            <span>technology capabilities</span>
-          </div>
-          <div>
-            <strong>
-              100<span>+</span>
-            </strong>
-            <span>projects delivered</span>
-          </div>
-          <div>
-            <strong>
-              24<span>/7</span>
-            </strong>
-            <span>long-term support</span>
-          </div>
-        </div>
-      </section>
+        </section>
+      </div>
 
       <section id="about" className="section about-section">
         <div className="site-container about-layout">
