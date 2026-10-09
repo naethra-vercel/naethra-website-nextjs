@@ -36,3 +36,4 @@ tsconfig.tsbuildinfo
 *.njsproj
 *.sln
 *.sw?
+# test
