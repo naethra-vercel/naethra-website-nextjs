@@ -476,7 +476,7 @@ function Index() {
                     {label}
                     <span className="nav-chevron" aria-hidden="true" />
                   </a>
-                  <div className="nav-dropdown-menu">
+                  <div className="nav-dropdown-menu is-wide">
                     {serviceMenuItems.map(([itemLabel, itemHref]) => (
                       <a key={itemLabel} href={itemHref}>
                         {itemLabel}

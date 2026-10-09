@@ -50,7 +50,7 @@ export function NaethraContentHeader() {
             <a href="/services" aria-haspopup="true">
               Services <ChevronDown size={13} aria-hidden="true" />
             </a>
-            <div className="content-page-nav-menu">
+            <div className="content-page-nav-menu is-wide">
               {serviceItems.map(([label, href]) => (
                 <a key={label} href={href}>
                   {label}
