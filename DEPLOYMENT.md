@@ -91,8 +91,25 @@ Use `ProxyPass` / `ProxyPassReverse` to `http://127.0.0.1:3000` with `RequestHea
 
 WordPress-backed pages use `revalidate = 60` (ISR). After content changes in WordPress, updated HTML appears within about one minute on the next request (no full redeploy required).
 
+## Vercel
+
+This is a **Next.js** app (`vercel.json` sets `framework: "nextjs"`). Vercel serves from `.next` automatically — there is **no** `dist` folder.
+
+In **Project Settings → General → Build & Development Settings**:
+
+| Setting | Value |
+|---------|--------|
+| Framework Preset | **Next.js** (not Vite / Other) |
+| Build Command | `npm run build` (or leave default) |
+| Output Directory | **Leave empty** — do not set `dist` |
+| Install Command | `npm ci` (or leave default) |
+| Node.js Version | **20.x** or newer |
+
+If you still see `No Output Directory named "dist"`, clear the Output Directory override in the dashboard and redeploy.
+
 ## What not to do
 
+- Do **not** set Output Directory to `dist` (that was for the old Vite build).
 - Do **not** set `output: 'export'` unless every dynamic/server feature has been removed and verified.
 - Do **not** deploy this build as a Cloudflare Worker / Pages Functions target; Nitro/Cloudflare Start tooling was removed in the Next.js migration.
 - Do **not** expose WordPress application passwords to the browser.
