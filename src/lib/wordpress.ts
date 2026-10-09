@@ -2058,7 +2058,7 @@ const HOME_CLIENTS_FALLBACK: HomeClient[] = [
 const HOME_HERO_SLIDE_FALLBACK: HomeHeroSlide = {
   title: "Comprehensive Full Stack Development Outsourcing",
   subtitle: "Mastering Web, Mobile Native, and Cross-Platform Applications",
-  cta: "Schedule a Meet",
+  cta: "Get in touch",
   ctaHref: "/30-mins-meeting",
   mediaType: "image",
   mediaUrl: "",

@@ -640,9 +640,9 @@ function Index() {
             <div className="hero-copy" key={`hero-copy-${heroIndex}`}>
               <h1>{activeHero.title}</h1>
               <p>{activeHero.subtitle}</p>
-              <a className="hero-cta" href={activeHero.ctaHref}>
+              <AnimatedCtaButton href={activeHero.ctaHref} className="sentinel-meet hero-meet">
                 {activeHero.cta}
-              </a>
+              </AnimatedCtaButton>
             </div>
             {heroSlides.length > 1 && (
               <div className="hero-slide-dots" aria-label="Hero slides">
