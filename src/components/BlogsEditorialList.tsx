@@ -1,4 +1,6 @@
-import { Link } from "@tanstack/react-router";
+"use client";
+
+import Link from "next/link";
 import {
   useCallback,
   useEffect,
@@ -135,8 +137,7 @@ export default function BlogsEditorialList({
           return (
             <li key={post.slug}>
               <Link
-                to="/blogs/$slug"
-                params={{ slug: post.slug }}
+                href={`/blogs/${post.slug}`}
                 className="blogs-editorial-item"
                 onMouseEnter={(event) => showPreview(post, event, rotation)}
                 onMouseMove={movePreview}

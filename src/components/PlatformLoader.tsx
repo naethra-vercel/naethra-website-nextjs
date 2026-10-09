@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 
 import androidIcon from "@/assets/icons/Android.svg";
@@ -9,17 +11,18 @@ import flutterIcon from "@/assets/icons/Flutter.svg";
 import javaIcon from "@/assets/icons/Java.svg";
 import nestIcon from "@/assets/icons/Nest.js.svg";
 import nextIcon from "@/assets/icons/Next.js.svg";
+import { assetSrc } from "@/lib/asset-src";
 
 const technologies = [
-  ["Android", "#78c257", androidIcon],
-  ["Angular", "#dd0031", angularIcon],
-  ["Apple", "#142033", appleIcon],
-  ["AWS", "#ff9900", awsIcon],
-  ["Azure", "#0089d6", azureIcon],
-  ["Flutter", "#02569b", flutterIcon],
-  ["Java", "#e76f00", javaIcon],
-  ["Nest.js", "#e0234e", nestIcon],
-  ["Next.js", "#111827", nextIcon],
+  ["Android", "#78c257", assetSrc(androidIcon)],
+  ["Angular", "#dd0031", assetSrc(angularIcon)],
+  ["Apple", "#142033", assetSrc(appleIcon)],
+  ["AWS", "#ff9900", assetSrc(awsIcon)],
+  ["Azure", "#0089d6", assetSrc(azureIcon)],
+  ["Flutter", "#02569b", assetSrc(flutterIcon)],
+  ["Java", "#e76f00", assetSrc(javaIcon)],
+  ["Nest.js", "#e0234e", assetSrc(nestIcon)],
+  ["Next.js", "#111827", assetSrc(nextIcon)],
 ] as const;
 
 const duration = 5000;

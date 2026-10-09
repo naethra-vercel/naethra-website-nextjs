@@ -1,7 +1,5 @@
-import { createServerFn } from "@tanstack/react-start";
-
 const WORDPRESS_API_BASE =
-  import.meta.env["VITE_WORDPRESS_API_URL"]?.replace(/\/$/, "") ||
+  process.env["NEXT_PUBLIC_WORDPRESS_API_URL"]?.replace(/\/$/, "") ||
   "https://naethra.com/wp-json/wp/v2";
 
 const WORDPRESS_ORIGIN =
@@ -64,7 +62,9 @@ const fallbackById = new Map(DOWNLOADS_FALLBACK.map((item, index) => [item.id, {
 
 export async function getDownloads() {
   try {
-    const response = await fetch(`${WORDPRESS_ORIGIN}/wp-json/wpdm/search`);
+    const response = await fetch(`${WORDPRESS_ORIGIN}/wp-json/wpdm/search`, {
+      next: { revalidate: 60 },
+    });
     if (!response.ok) throw new Error(`Downloads request failed: ${response.status}`);
 
     const data = (await response.json()) as DownloadManagerResponse;
@@ -113,40 +113,37 @@ function plainMessage(message?: string) {
   );
 }
 
-const validateDownloadPassword = createServerFn({ method: "POST" })
-  .validator((data: { packageId: number; password: string }) => {
-    if (!Number.isInteger(data.packageId) || data.packageId < 1) {
-      throw new Error("Invalid download.");
-    }
-    const password = data.password.trim();
-    if (!password || password.length > 200) {
-      throw new Error("Enter a valid password.");
-    }
-    return { packageId: data.packageId, password };
-  })
-  .handler(async ({ data }) => {
-    const body = new URLSearchParams({
-      __wpdm_ID: String(data.packageId),
-      dataType: "json",
-      execute: "wpdm_getlink",
-      action: "wpdm_ajax_call",
-      password: data.password,
-    });
-    const response = await fetch(`${WORDPRESS_ORIGIN}/wp-json/wpdm/validate-password`, {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body,
-    });
-    const result = (await response.json().catch(() => null)) as DownloadUnlockResponse | null;
+async function validateDownloadPassword(packageId: number, password: string) {
+  if (!Number.isInteger(packageId) || packageId < 1) {
+    throw new Error("Invalid download.");
+  }
+  const trimmed = password.trim();
+  if (!trimmed || trimmed.length > 200) {
+    throw new Error("Enter a valid password.");
+  }
 
-    if (!response.ok || !result) {
-      throw new Error("WordPress could not validate this download.");
-    }
-    return result;
+  const body = new URLSearchParams({
+    __wpdm_ID: String(packageId),
+    dataType: "json",
+    execute: "wpdm_getlink",
+    action: "wpdm_ajax_call",
+    password: trimmed,
   });
+  const response = await fetch(`${WORDPRESS_ORIGIN}/wp-json/wpdm/validate-password`, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body,
+  });
+  const result = (await response.json().catch(() => null)) as DownloadUnlockResponse | null;
+
+  if (!response.ok || !result) {
+    throw new Error("WordPress could not validate this download.");
+  }
+  return result;
+}
 
 export async function unlockDownload(packageId: number, password: string) {
-  const result = await validateDownloadPassword({ data: { packageId, password } });
+  const result = await validateDownloadPassword(packageId, password);
 
   if (!result.success) {
     throw new Error(plainMessage(result?.message));

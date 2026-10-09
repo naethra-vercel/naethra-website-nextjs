@@ -1,3 +1,5 @@
+"use client";
+
 import { MathUtils, Vector3 } from "three";
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import { useEffect, useRef, useState, type PointerEvent, type WheelEvent } from "react";

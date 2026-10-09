@@ -38,131 +38,132 @@ import postgresIcon from "@/assets/icons/PostgresSQL.svg";
 import pythonIcon from "@/assets/icons/Python.svg";
 import reactIcon from "@/assets/icons/React.svg";
 import wordpressIcon from "@/assets/icons/WordPress.svg";
+import { assetSrc } from "@/lib/asset-src";
 
 const INTEGRATIONS = [
   {
     name: "Angular",
-    icon: angularIcon,
+    icon: assetSrc(angularIcon),
   },
   {
     name: "PHP",
-    icon: phpIcon,
+    icon: assetSrc(phpIcon),
   },
   {
     name: "React",
-    icon: reactIcon,
+    icon: assetSrc(reactIcon),
   },
   {
     name: ".NET",
-    icon: netIcon,
+    icon: assetSrc(netIcon),
   },
   {
     name: "Node.JS",
-    icon: nodeIcon,
+    icon: assetSrc(nodeIcon),
   },
   {
     name: "Java",
-    icon: javaIcon,
+    icon: assetSrc(javaIcon),
   },
   {
     name: "JavaScript",
-    icon: javascriptIcon,
+    icon: assetSrc(javascriptIcon),
   },
   {
     name: "Android",
-    icon: androidIcon,
+    icon: assetSrc(androidIcon),
   },
   {
     name: "Ionic",
-    icon: ionicIcon,
+    icon: assetSrc(ionicIcon),
   },
   {
     name: "iOS",
-    icon: appleIcon,
+    icon: assetSrc(appleIcon),
   },
   {
     name: "React Native",
-    icon: reactIcon,
+    icon: assetSrc(reactIcon),
   },
   {
     name: "Flutter",
-    icon: flutterIcon,
+    icon: assetSrc(flutterIcon),
   },
   {
     name: "Cloud AWS",
-    icon: awsIcon,
+    icon: assetSrc(awsIcon),
   },
   {
     name: "Azure",
-    icon: azureIcon,
+    icon: assetSrc(azureIcon),
   },
   {
     name: "Google Cloud",
-    icon: googleCloudIcon,
+    icon: assetSrc(googleCloudIcon),
   },
   {
     name: "C#",
-    icon: csharpIcon,
+    icon: assetSrc(csharpIcon),
   },
   {
     name: "C",
-    icon: cIcon,
+    icon: assetSrc(cIcon),
   },
   {
     name: "Dart",
-    icon: dartIcon,
+    icon: assetSrc(dartIcon),
   },
   {
     name: "Docker",
-    icon: dockerIcon,
+    icon: assetSrc(dockerIcon),
   },
   {
     name: "GitHub",
-    icon: githubIcon,
+    icon: assetSrc(githubIcon),
   },
   {
     name: "GraphQL",
-    icon: graphqlIcon,
+    icon: assetSrc(graphqlIcon),
   },
   {
     name: "Jenkins",
-    icon: jenkinsIcon,
+    icon: assetSrc(jenkinsIcon),
   },
   {
     name: "jQuery",
-    icon: jqueryIcon,
+    icon: assetSrc(jqueryIcon),
   },
   {
     name: "Kubernetes",
-    icon: kubernetesIcon,
+    icon: assetSrc(kubernetesIcon),
   },
   {
     name: "MySQL",
-    icon: mysqlIcon,
+    icon: assetSrc(mysqlIcon),
   },
   {
     name: "Nest.js",
-    icon: nestIcon,
+    icon: assetSrc(nestIcon),
   },
   {
     name: "Next.js",
-    icon: nextIcon,
+    icon: assetSrc(nextIcon),
   },
   {
     name: "Oracle",
-    icon: oracleIcon,
+    icon: assetSrc(oracleIcon),
   },
   {
     name: "PostgreSQL",
-    icon: postgresIcon,
+    icon: assetSrc(postgresIcon),
   },
   {
     name: "Python",
-    icon: pythonIcon,
+    icon: assetSrc(pythonIcon),
   },
   {
     name: "WordPress",
-    icon: wordpressIcon,
+    icon: assetSrc(wordpressIcon),
   }];
 
 export default function IntegrationSection() {

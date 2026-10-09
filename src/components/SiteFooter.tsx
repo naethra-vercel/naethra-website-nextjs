@@ -1,3 +1,5 @@
+"use client";
+
 import { type FormEvent, useState, type HTMLAttributes } from "react";
 import { ExternalLink, Mail, MapPin, Phone } from "lucide-react";
 

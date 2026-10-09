@@ -1,7 +1,5 @@
-import { useEffect, useState } from "react";
-
 const WORDPRESS_API_BASE =
-  import.meta.env["VITE_WORDPRESS_API_URL"]?.replace(/\/$/, "") ||
+  process.env["NEXT_PUBLIC_WORDPRESS_API_URL"]?.replace(/\/$/, "") ||
   "https://naethra.com/wp-json/wp/v2";
 
 const WORDPRESS_ORIGIN =
@@ -137,7 +135,9 @@ function mapMenuItem(item: WordPressMenuItem): NavigationItem | null {
 
 export async function getPrimaryMenu() {
   try {
-    const response = await fetch(`${WORDPRESS_ORIGIN}/wp-json/naethra/v1/menu/primary`);
+    const response = await fetch(`${WORDPRESS_ORIGIN}/wp-json/naethra/v1/menu/primary`, {
+      next: { revalidate: 60 },
+    });
     if (!response.ok) throw new Error(`Menu request failed: ${response.status}`);
 
     const data = (await response.json()) as WordPressMenuResponse;
@@ -149,22 +149,6 @@ export async function getPrimaryMenu() {
   } catch {
     return PRIMARY_MENU_FALLBACK;
   }
-}
-
-export function usePrimaryMenu(initialItems = PRIMARY_MENU_FALLBACK) {
-  const [items, setItems] = useState(initialItems);
-
-  useEffect(() => {
-    let active = true;
-    void getPrimaryMenu().then((menuItems) => {
-      if (active) setItems(menuItems);
-    });
-    return () => {
-      active = false;
-    };
-  }, []);
-
-  return items;
 }
 
 export function splitPrimaryMenu(items: NavigationItem[]) {

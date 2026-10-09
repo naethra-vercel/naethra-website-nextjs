@@ -1,8 +1,11 @@
+"use client";
+
 import { Menu, X, ArrowUpRight, ChevronDown } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 
 import AnimatedCtaButton from "@/components/AnimatedCtaButton";
-import { splitPrimaryMenu, usePrimaryMenu } from "@/lib/navigation";
+import { usePrimaryMenu } from "@/hooks/use-primary-menu";
+import { splitPrimaryMenu } from "@/lib/navigation";
 
 export function NaethraContentHeader() {
   const menu = usePrimaryMenu();

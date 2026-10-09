@@ -17,6 +17,9 @@ dist-ssr
 .vinxi
 .tanstack/**
 .nitro
+.next
+out
+tsconfig.tsbuildinfo
 *.local
 
 # Wrangler / Cloudflare

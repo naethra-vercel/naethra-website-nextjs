@@ -1,7 +1,7 @@
 import { extractBlogArticleHtml } from "@/lib/blog-html";
 
 const WP_BASE =
-  import.meta.env["VITE_WORDPRESS_API_URL"]?.replace(/\/$/, "") ||
+  process.env["NEXT_PUBLIC_WORDPRESS_API_URL"]?.replace(/\/$/, "") ||
   "https://naethra.com/wp-json/wp/v2";
 
 const WP_ORIGIN =
@@ -21,27 +21,17 @@ const CUSTOM_WEB_HERO_FALLBACK =
 const FILEMAKER_SERVICES_FALLBACK =
   "https://naethra.com/wp-content/uploads/2022/05/7-4-1.jpg";
 
-type WpCacheEntry = { expires: number; value: unknown };
-const wpResponseCache = new Map<string, WpCacheEntry>();
-const WP_CACHE_TTL_MS = 60_000;
-
 async function wpFetch<T>(path: string): Promise<T> {
-  const cached = wpResponseCache.get(path);
-  if (cached && cached.expires > Date.now()) {
-    return cached.value as T;
-  }
-
   // Avoid custom headers like User-Agent — browsers treat them as
   // non-simple and WordPress CORS preflight rejects them.
   const res = await fetch(`${WP_BASE}${path}`, {
     headers: {
       Accept: "application/json",
     },
+    next: { revalidate: 60 },
   });
   if (!res.ok) throw new Error(`WP ${res.status}: ${path}`);
-  const value = (await res.json()) as T;
-  wpResponseCache.set(path, { value, expires: Date.now() + WP_CACHE_TTL_MS });
-  return value;
+  return (await res.json()) as T;
 }
 
 export type WpBlogPost = {
@@ -362,11 +352,15 @@ export function mapWpPage(page: WpPost): WpPage {
 }
 
 export async function getPageBySlug(slug: string) {
-  const pages = await wpFetch<WpPost[]>(
-    `/pages?slug=${encodeURIComponent(slug)}&_fields=id,slug,title,excerpt,content,modified`,
-  );
-  const page = pages[0];
-  return page ? mapWpPage(page) : null;
+  try {
+    const pages = await wpFetch<WpPost[]>(
+      `/pages?slug=${encodeURIComponent(slug)}&_fields=id,slug,title,excerpt,content,modified`,
+    );
+    const page = pages[0];
+    return page ? mapWpPage(page) : null;
+  } catch {
+    return null;
+  }
 }
 
 function extractHtmlChunks(html: string) {
@@ -2928,21 +2922,33 @@ export async function getMobileAppContent() {
 export async function getPosts(page = 1, perPage = 20) {
   // List views omit full post HTML so the route payload stays small enough for
   // client navigations (full content is only loaded on the detail route).
-  const posts = await wpFetch<WpPost[]>(
-    `/posts?page=${page}&per_page=${perPage}&_embed&status=publish&_fields=id,date,slug,title,excerpt,_links,_embedded`,
-  );
-  return posts.map((post) => mapWpPost(post, { includeContent: false }));
+  try {
+    const posts = await wpFetch<WpPost[]>(
+      `/posts?page=${page}&per_page=${perPage}&_embed&status=publish&_fields=id,date,slug,title,excerpt,_links,_embedded`,
+    );
+    return posts.map((post) => mapWpPost(post, { includeContent: false }));
+  } catch {
+    return [];
+  }
 }
 
 export async function getPostBySlug(slug: string) {
-  const posts = await wpFetch<WpPost[]>(
-    `/posts?slug=${encodeURIComponent(slug)}&_embed&status=publish`,
-  );
-  const post = posts[0];
-  return post ? mapWpPost(post, { includeContent: true }) : null;
+  try {
+    const posts = await wpFetch<WpPost[]>(
+      `/posts?slug=${encodeURIComponent(slug)}&_embed&status=publish`,
+    );
+    const post = posts[0];
+    return post ? mapWpPost(post, { includeContent: true }) : null;
+  } catch {
+    return null;
+  }
 }
 
 export async function getPortfolio(perPage = 50) {
-  const items = await wpFetch<WpPost[]>(`/portfolio?per_page=${perPage}&_embed`);
-  return items.map(mapWpPortfolio);
+  try {
+    const items = await wpFetch<WpPost[]>(`/portfolio?per_page=${perPage}&_embed`);
+    return items.map(mapWpPortfolio);
+  } catch {
+    return [];
+  }
 }

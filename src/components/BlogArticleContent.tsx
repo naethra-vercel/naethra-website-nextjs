@@ -82,7 +82,7 @@ export function parseArticleBlocks(html: string): ArticleBlock[] {
   return blocks;
 }
 
-const headingClass: Record<ArticleBlock extends { type: "heading"; level: infer L } ? L : never, string> = {
+const headingClass: Record<2 | 3 | 4 | 5 | 6, string> = {
   2: "mt-10 mb-4 font-display text-[clamp(1.45rem,2.6vw,1.95rem)] font-bold leading-tight tracking-[-0.04em] text-ink first:mt-0",
   3: "mt-8 mb-3 font-display text-[clamp(1.25rem,2.2vw,1.55rem)] font-bold leading-tight tracking-[-0.03em] text-ink",
   4: "mt-7 mb-2.5 font-display text-lg font-bold leading-snug tracking-[-0.02em] text-ink",
