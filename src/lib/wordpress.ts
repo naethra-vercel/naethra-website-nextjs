@@ -1936,6 +1936,8 @@ export type HomeHeroSlide = {
   ctaHref: string;
   mediaType: "video" | "image";
   mediaUrl: string;
+  mediaStart?: number;
+  mediaEnd?: number;
 };
 
 export type HomeContent = {
@@ -2053,19 +2055,13 @@ const HOME_CLIENTS_FALLBACK: HomeClient[] = [
   { name: "AARMS", logo: "https://naethra.com/wp-content/uploads/2023/02/AARMS.png" },
 ];
 
-const HOME_HERO_VIDEO_FALLBACK =
-  "https://naethra.com/wp-content/uploads/2022/07/Video-Background.mp4";
-
-const HOME_HERO_IMAGE_FALLBACK =
-  "https://naethra.com/wp-content/uploads/2022/12/NaethraJobad_1.jpg";
-
 const HOME_HERO_SLIDE_FALLBACK: HomeHeroSlide = {
   title: "Comprehensive Full Stack Development Outsourcing",
   subtitle: "Mastering Web, Mobile Native, and Cross-Platform Applications",
   cta: "Schedule a Meet",
   ctaHref: "/30-mins-meeting",
   mediaType: "image",
-  mediaUrl: HOME_HERO_IMAGE_FALLBACK,
+  mediaUrl: "",
 };
 
 const HOME_CONTENT_FALLBACK: HomeContent = {
@@ -2073,7 +2069,7 @@ const HOME_CONTENT_FALLBACK: HomeContent = {
   heroSubtitle: HOME_HERO_SLIDE_FALLBACK.subtitle,
   heroCta: HOME_HERO_SLIDE_FALLBACK.cta,
   heroCtaHref: HOME_HERO_SLIDE_FALLBACK.ctaHref,
-  heroVideo: HOME_HERO_VIDEO_FALLBACK,
+  heroVideo: "",
   heroSlides: [{ ...HOME_HERO_SLIDE_FALLBACK }],
   aboutTitle: "Unlock the Possibilities with a leading Software Development Company",
   aboutParagraphs: [
@@ -2153,7 +2149,31 @@ function extractFirstTopSection(html: string) {
   );
 }
 
+function decodeElementorValue(value: string) {
+  return value
+    .replace(/&quot;/g, '"')
+    .replace(/&#039;/g, "'")
+    .replace(/&amp;/g, "&")
+    .replace(/\\\//g, "/")
+    .trim();
+}
+
+function parseElementorSettings(markup: string): Record<string, unknown> {
+  const encoded = markup.match(/data-settings=["']([^"']*)["']/i)?.[1];
+  if (!encoded) return {};
+  try {
+    const parsed = JSON.parse(decodeElementorValue(encoded)) as Record<string, unknown>;
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
 function firstSectionBackgroundType(sectionHtml: string): "video" | "image" | "" {
+  const settings = parseElementorSettings(sectionHtml);
+  const type = String(settings.background_background ?? "");
+  if (type === "video") return "video";
+  if (type === "classic") return "image";
   if (
     /background_background(?:&quot;|")\s*:\s*(?:&quot;|")video(?:&quot;|")/i.test(sectionHtml) ||
     /"background_background"\s*:\s*"video"/i.test(sectionHtml)
@@ -2170,11 +2190,26 @@ function firstSectionBackgroundType(sectionHtml: string): "video" | "image" | ""
 }
 
 function mapHomeHeroVideo(sectionHtml: string) {
+  const settings = parseElementorSettings(sectionHtml);
+  const fromSettings = String(settings.background_video_link ?? "").trim();
   const encoded = sectionHtml.match(/background_video_link&quot;:&quot;([^&]+?)&quot;/i)?.[1];
-  const raw = encoded || sectionHtml.match(/"background_video_link"\s*:\s*"([^"]+)"/i)?.[1];
-  if (!raw) return "";
-  const url = raw.replace(/\\\//g, "/").trim();
+  const raw =
+    fromSettings ||
+    encoded ||
+    sectionHtml.match(/"background_video_link"\s*:\s*"([^"]+)"/i)?.[1] ||
+    "";
+  const url = decodeElementorValue(raw);
   return /\.(mp4|webm|ogg)(?:\?|$)/i.test(url) ? url : "";
+}
+
+function mapHomeHeroVideoTiming(sectionHtml: string) {
+  const settings = parseElementorSettings(sectionHtml);
+  const start = Number(settings.background_video_start);
+  const end = Number(settings.background_video_end);
+  const timing: { mediaStart?: number; mediaEnd?: number } = {};
+  if (Number.isFinite(start) && start > 0) timing.mediaStart = start;
+  if (Number.isFinite(end) && end > 0) timing.mediaEnd = end;
+  return timing;
 }
 
 function normalizeInternalHref(href: string, fallback: string) {
@@ -2227,11 +2262,19 @@ function extractElementorBackgroundImage(markup: string) {
 }
 
 function extractElementorBackgroundVideo(markup: string) {
-  const encoded = markup.match(/background_video_link&quot;:&quot;([^&]+?)&quot;/i)?.[1];
+  return mapHomeHeroVideo(markup);
+}
+
+function extractElementorVideoFallbackImage(markup: string) {
+  const encoded = markup.match(
+    /background_video_fallback_image(?:&quot;|")\s*:\s*\{[^}]*?url(?:&quot;|")\s*:\s*(?:&quot;|")([^&"']+)/i,
+  )?.[1];
   const raw =
-    encoded || markup.match(/"background_video_link"\s*:\s*"([^"]+)"/i)?.[1] || "";
+    encoded ||
+    markup.match(/"background_video_fallback_image"\s*:\s*\{[^}]*?"url"\s*:\s*"([^"]+)"/i)?.[1] ||
+    "";
   const url = raw.replace(/\\\//g, "/").trim();
-  return url && mediaTypeFromUrl(url) === "video" ? url : "";
+  return url && mediaTypeFromUrl(url) === "image" ? preferFullSizeImage(url) : "";
 }
 
 function mapSlideFromMarkup(
@@ -2293,6 +2336,7 @@ function mapSlideFromMarkup(
 
   const imageUrl =
     extractElementorBackgroundImage(slideHtml) ||
+    extractElementorVideoFallbackImage(slideHtml) ||
     extractBackgroundImageUrl(slideHtml) ||
     preferFullSizeImage(
       slideHtml.match(
@@ -2301,7 +2345,15 @@ function mapSlideFromMarkup(
     );
 
   if (videoUrl && mediaTypeFromUrl(videoUrl) === "video") {
-    return { title, subtitle, cta, ctaHref, mediaType: "video", mediaUrl: videoUrl };
+    return {
+      title,
+      subtitle,
+      cta,
+      ctaHref,
+      mediaType: "video",
+      mediaUrl: videoUrl,
+      ...mapHomeHeroVideoTiming(slideHtml),
+    };
   }
 
   if (imageUrl && mediaTypeFromUrl(imageUrl) === "image") {
@@ -2314,8 +2366,8 @@ function mapSlideFromMarkup(
       subtitle: subtitle || defaults.subtitle,
       cta,
       ctaHref,
-      mediaType: defaults.fallbackMediaType ?? "video",
-      mediaUrl: defaults.fallbackMediaUrl || HOME_HERO_VIDEO_FALLBACK,
+      mediaType: defaults.fallbackMediaType ?? "image",
+      mediaUrl: defaults.fallbackMediaUrl || "",
     };
   }
 
@@ -2375,9 +2427,9 @@ function resolveHeroFallbackMedia(
   heroVideo: string,
   backgroundType: "video" | "image" | "" = "",
 ) {
-  if (backgroundType === "video") {
+  if (backgroundType === "video" && heroVideo) {
     return {
-      fallbackMediaUrl: heroVideo || HOME_HERO_VIDEO_FALLBACK,
+      fallbackMediaUrl: heroVideo,
       fallbackMediaType: "video" as const,
     };
   }
@@ -2388,7 +2440,7 @@ function resolveHeroFallbackMedia(
     return { fallbackMediaUrl: heroVideo, fallbackMediaType: "video" as const };
   }
   return {
-    fallbackMediaUrl: HOME_HERO_IMAGE_FALLBACK,
+    fallbackMediaUrl: "",
     fallbackMediaType: "image" as const,
   };
 }
@@ -2557,11 +2609,12 @@ export function mapHomeContent(
 ): HomeContent {
   const chunks = extractHtmlChunks(html);
   const firstSection = extractFirstTopSection(html);
-  const heroImage = options.heroImage || "";
-  const heroVideo =
-    options.heroVideo ||
-    mapHomeHeroVideo(firstSection) ||
-    (firstSectionBackgroundType(firstSection) === "video" ? HOME_HERO_VIDEO_FALLBACK : "");
+  const heroImage =
+    options.heroImage ||
+    extractElementorBackgroundImage(firstSection) ||
+    extractElementorVideoFallbackImage(firstSection) ||
+    "";
+  const heroVideo = options.heroVideo || mapHomeHeroVideo(firstSection) || "";
 
   const aboutParagraphs = [
     findChunk(chunks, (text) => /full of software development experts/i.test(text)),
@@ -2671,11 +2724,15 @@ export async function getHomeContent() {
 
     const firstSection = extractFirstTopSection(page.contentHtml);
     const sectionId = getFirstTopSectionElementId(page.contentHtml);
-    const heroImage = await fetchElementorSectionBackgroundImage(
+    const cssImage = await fetchElementorSectionBackgroundImage(
       page.id,
       sectionId,
       page.modified,
     );
+    const heroImage =
+      cssImage ||
+      extractElementorBackgroundImage(firstSection) ||
+      extractElementorVideoFallbackImage(firstSection);
     const heroVideo = mapHomeHeroVideo(firstSection);
     const options: { heroImage?: string; heroVideo?: string } = {};
     if (heroImage) options.heroImage = heroImage;

@@ -304,7 +304,7 @@ function Index() {
             subtitle: home.heroSubtitle,
             cta: home.heroCta,
             ctaHref: home.heroCtaHref,
-            mediaType: "video" as const,
+            mediaType: home.heroVideo ? ("video" as const) : ("image" as const),
             mediaUrl: home.heroVideo,
           },
         ];
@@ -585,8 +585,16 @@ function Index() {
         )}
       </header>
 
-      <section className={`hero-section${activeHero.mediaType === "video" ? " is-video" : " is-image"}`}>
-        {activeHero.mediaType === "image" ? (
+      <section
+        className={`hero-section${
+          activeHero.mediaUrl
+            ? activeHero.mediaType === "video"
+              ? " is-video"
+              : " is-image"
+            : ""
+        }`}
+      >
+        {activeHero.mediaUrl && activeHero.mediaType === "image" ? (
           <img
             key={activeHero.mediaUrl}
             className="hero-media"
@@ -594,7 +602,8 @@ function Index() {
             alt=""
             aria-hidden="true"
           />
-        ) : (
+        ) : null}
+        {activeHero.mediaUrl && activeHero.mediaType === "video" ? (
           <video
             key={activeHero.mediaUrl}
             className="hero-media"
@@ -605,8 +614,26 @@ function Index() {
             preload="auto"
             src={activeHero.mediaUrl}
             aria-hidden="true"
+            onLoadedMetadata={(event) => {
+              const video = event.currentTarget;
+              const start = activeHero.mediaStart;
+              if (typeof start === "number" && start > 0 && start < video.duration) {
+                video.currentTime = start;
+              }
+            }}
+            onTimeUpdate={(event) => {
+              const video = event.currentTarget;
+              const start =
+                typeof activeHero.mediaStart === "number" && activeHero.mediaStart < video.duration
+                  ? activeHero.mediaStart
+                  : 0;
+              const end = activeHero.mediaEnd;
+              if (typeof end === "number" && end > start && end < video.duration && video.currentTime >= end) {
+                video.currentTime = start;
+              }
+            }}
           />
-        )}
+        ) : null}
         <div className="hero-overlay" />
         <div className="site-container hero-inner">
           <div className="hero-copy" key={`hero-copy-${heroIndex}`}>
