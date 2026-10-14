@@ -18,7 +18,15 @@ import {
   SparklesIcon,
   UserGroupIcon,
 } from "@hugeicons/core-free-icons";
-import { type CSSProperties, type FormEvent, lazy, Suspense, useEffect, useRef, useState } from "react";
+import {
+  type CSSProperties,
+  type FormEvent,
+  lazy,
+  Suspense,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import gsap from "gsap";
 
 import aboutElevateImage from "@/assets/design/about-section/about-elevate.jpg";
@@ -43,10 +51,26 @@ import { ModernDropdown } from "@/components/ModernDropdown";
 import { MagicCard } from "@/components/ui/magic-card";
 
 const CONTACT_REASON_OPTIONS = [
-  { value: "Web application", label: "Web application", description: "Sites, portals, and custom web apps" },
-  { value: "Mobile application", label: "Mobile application", description: "iOS, Android, or cross-platform" },
-  { value: "FileMaker development", label: "FileMaker development", description: "Claris FileMaker apps and integrations" },
-  { value: "Support and maintenance", label: "Support and maintenance", description: "Ongoing care for what you already run" },
+  {
+    value: "Web application",
+    label: "Web application",
+    description: "Sites, portals, and custom web apps",
+  },
+  {
+    value: "Mobile application",
+    label: "Mobile application",
+    description: "iOS, Android, or cross-platform",
+  },
+  {
+    value: "FileMaker development",
+    label: "FileMaker development",
+    description: "Claris FileMaker apps and integrations",
+  },
+  {
+    value: "Support and maintenance",
+    label: "Support and maintenance",
+    description: "Ongoing care for what you already run",
+  },
 ];
 import { submitContactForm } from "@/lib/contact-form";
 import { getPrimaryMenu, splitPrimaryMenu } from "@/lib/navigation";
@@ -355,7 +379,9 @@ export default function HomePage({
     const wordsRoot = quoteModalWordsRef.current;
     if (!overlay || !panel) return;
 
-    const words = wordsRoot ? Array.from(wordsRoot.querySelectorAll<HTMLElement>(".quote-modal-word")) : [];
+    const words = wordsRoot
+      ? Array.from(wordsRoot.querySelectorAll<HTMLElement>(".quote-modal-word"))
+      : [];
     const ctx = gsap.context(() => {
       gsap.fromTo(overlay, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" });
       gsap.fromTo(
@@ -589,11 +615,17 @@ export default function HomePage({
               onTimeUpdate={(event) => {
                 const video = event.currentTarget;
                 const start =
-                  typeof activeHero.mediaStart === "number" && activeHero.mediaStart < video.duration
+                  typeof activeHero.mediaStart === "number" &&
+                  activeHero.mediaStart < video.duration
                     ? activeHero.mediaStart
                     : 0;
                 const end = activeHero.mediaEnd;
-                if (typeof end === "number" && end > start && end < video.duration && video.currentTime >= end) {
+                if (
+                  typeof end === "number" &&
+                  end > start &&
+                  end < video.duration &&
+                  video.currentTime >= end
+                ) {
                   video.currentTime = start;
                 }
               }}
