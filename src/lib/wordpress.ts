@@ -3003,7 +3003,9 @@ export async function getPostBySlug(slug: string) {
 
 export async function getPortfolio(perPage = 50) {
   try {
-    const items = await wpFetch<WpPost[]>(`/portfolio?per_page=${perPage}&_embed`);
+    const items = await wpFetch<WpPost[]>(
+      `/portfolio?per_page=${perPage}&_embed&orderby=date&order=desc&status=publish`,
+    );
     return items.map(mapWpPortfolio);
   } catch {
     return [];

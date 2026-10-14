@@ -1,6 +1,14 @@
 /* Extracted from styles.css lines 742-1304 */
 .content-page { min-height: 100vh; background: #f8fafc; color: #0f172a; }
-.content-page-header { position: relative; z-index: 40; overflow: visible; border-bottom: 1px solid #cbd5e1; background: rgb(248 250 252 / .94); backdrop-filter: blur(16px); }
+.content-page-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  overflow: visible;
+  border-bottom: 1px solid #cbd5e1;
+  background: rgb(248 250 252 / .94);
+  backdrop-filter: blur(16px);
+}
 .content-page-header-inner { display: flex; min-height: 5.5rem; align-items: center; gap: 1.5rem; overflow: visible; }
 .content-page-header .brand-logo { width: 13rem; }
 .content-page-nav { display: flex; align-items: center; gap: 1.35rem; margin-left: auto; overflow: visible; color: #475569; font-size: .72rem; font-weight: 700; text-transform: uppercase; }

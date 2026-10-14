@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import HomePage from "@/components/pages/HomePage";
 import { getPrimaryMenu } from "@/lib/navigation";
-import { getHomeContent, getPosts } from "@/lib/wordpress";
+import { getHomeContent, getPortfolio, getPosts } from "@/lib/wordpress";
 
 export const revalidate = 60;
 
@@ -24,11 +24,19 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  const [blogPosts, home, menu] = await Promise.all([
+  const [blogPosts, home, menu, portfolioProjects] = await Promise.all([
     getPosts(1, 4).catch(() => []),
     getHomeContent(),
     getPrimaryMenu(),
+    getPortfolio(5).catch(() => []),
   ]);
 
-  return <HomePage blogPosts={blogPosts} home={home} menu={menu} />;
+  return (
+    <HomePage
+      blogPosts={blogPosts}
+      home={home}
+      menu={menu}
+      recentProjects={portfolioProjects.slice(0, 5)}
+    />
+  );
 }

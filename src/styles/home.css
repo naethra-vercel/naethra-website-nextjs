@@ -319,7 +319,9 @@
 .recent-heading { display: flex; flex-direction: column; align-items: center; margin-bottom: 2.5rem; text-align: center; }
 .recent-heading h2 { margin: 2.1rem 0 0; color: var(--ink); font-size: clamp(2.8rem, 5vw, 4.8rem); font-weight: 600; letter-spacing: -0.065em; line-height: 0.98; }
 .work-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(0.8rem, 2vw, 2.2rem); }
+.work-grid[data-count="5"] { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 .work-card { position: relative; display: block; aspect-ratio: 1 / 0.98; overflow: hidden; border-radius: 0.9rem; background: var(--blue-deep); color: inherit; text-decoration: none; }
+.work-card-fallback { display: block; width: 100%; height: 100%; background: linear-gradient(145deg, #0a3a63, var(--blue-deep)); }
 .work-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 700ms cubic-bezier(.2,.8,.2,1), filter 350ms ease; }
 .work-card:hover img { transform: scale(1.05); }
 .work-card::after { position: absolute; inset: 0; background: linear-gradient(180deg, rgb(4 15 34 / .08) 20%, rgb(4 15 34 / .86) 100%); content: ""; opacity: 0; transition: opacity 280ms ease; }
@@ -539,7 +541,8 @@
   .testimonial-avatars { top: 10%; right: -0.5rem; bottom: 10%; }
   .hero-bottom { margin-top: 3rem; }
   .services-grid { grid-template-columns: repeat(2, 1fr); }
-  .work-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .work-grid,
+  .work-grid[data-count="5"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .integration-section > .site-container { min-height: 45rem; }
   .integration-orbit { top: 17rem; }
   .orbit-ring-outer { width: 62vw; height: 62vw; }
@@ -1108,7 +1111,9 @@
   .client-logo { min-width: 9rem; font-size: 0.95rem; }
   .split-heading { grid-template-columns: 1fr; gap: 1.5rem; }
   .section-heading { margin-bottom: 2.5rem; }
-  .services-grid, .work-grid { grid-template-columns: 1fr; }
+  .services-grid,
+  .work-grid,
+  .work-grid[data-count="5"] { grid-template-columns: 1fr; }
   .insights-grid { grid-template-columns: 1fr; }
   .insight-card { grid-template-columns: 8rem 1fr auto; min-height: 9rem; gap: 1rem; padding-right: 1rem; }
   .insight-card img { width: 8rem; height: 8rem; }

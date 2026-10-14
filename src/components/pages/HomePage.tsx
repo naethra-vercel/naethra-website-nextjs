@@ -24,10 +24,6 @@ import gsap from "gsap";
 import aboutElevateImage from "@/assets/design/about-section/about-elevate.jpg";
 import aboutInnovateImage from "@/assets/design/about-section/about-innovate.jpg";
 import aboutIntegrateImage from "@/assets/design/about-section/about-integrate.jpg";
-import digitalMarketingImage from "@/assets/design/recent-projects/digital-marketing.jpg";
-import financeStrategyImage from "@/assets/design/recent-projects/finance-strategy.jpg";
-import marketingResearchImage from "@/assets/design/recent-projects/marketing-research.jpg";
-import processOptimizationImage from "@/assets/design/recent-projects/process-optimization.jpg";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   Smartphone,
@@ -54,7 +50,8 @@ const CONTACT_REASON_OPTIONS = [
 ];
 import { submitContactForm } from "@/lib/contact-form";
 import { getPrimaryMenu, splitPrimaryMenu } from "@/lib/navigation";
-import { getHomeContent, getPosts } from "@/lib/wordpress";
+import { portfolioProjects as portfolioFallback } from "@/lib/portfolio-data";
+import { getHomeContent, getPosts, type WpPortfolioProject } from "@/lib/wordpress";
 import { assetSrc } from "@/lib/asset-src";
 
 const IntegrationSection = lazy(() => import("@/components/IntegrationSection"));
@@ -220,27 +217,6 @@ const offerServiceMeta = [
   },
 ] as const;
 
-const recentProjects = [
-  [
-    assetSrc(digitalMarketingImage),
-    "Digital marketing campaign visuals",
-    "Business Development",
-    "Digital Marketing",
-  ],
-  [assetSrc(financeStrategyImage), "Finance strategy planning session", "Finance strategy", "Finance"],
-  [
-    assetSrc(processOptimizationImage),
-    "Process optimization workflow review",
-    "Process optimization",
-    "Operations",
-  ],
-  [
-    assetSrc(marketingResearchImage),
-    "Marketing research and growth insights",
-    "Marketing research",
-    "Growth",
-  ],
-] as const;
 function Logo({ inverse = false }: { inverse?: boolean }) {
   return (
     <a href="#top" className="brand-mark" aria-label="Naethra Technologies home">
@@ -273,10 +249,29 @@ export type HomePageProps = {
   blogPosts: Awaited<ReturnType<typeof getPosts>>;
   home: Awaited<ReturnType<typeof getHomeContent>>;
   menu: Awaited<ReturnType<typeof getPrimaryMenu>>;
+  recentProjects?: WpPortfolioProject[];
 };
 
-export default function HomePage({ blogPosts, home, menu }: HomePageProps) {
+export default function HomePage({
+  blogPosts,
+  home,
+  menu,
+  recentProjects: recentProjectsProp = [],
+}: HomePageProps) {
   const { navigationItems, meetingItem } = splitPrimaryMenu(menu);
+  const recentProjects =
+    recentProjectsProp.length > 0
+      ? recentProjectsProp
+      : portfolioFallback.slice(0, 5).map((project, index) => ({
+          id: index + 1,
+          slug: project.href,
+          title: project.title,
+          category: project.category,
+          categories: [project.category],
+          image: project.image,
+          href: project.href,
+          summary: project.summary,
+        }));
   const heroSlides =
     home.heroSlides.length > 0
       ? home.heroSlides
@@ -800,23 +795,40 @@ export default function HomePage({ blogPosts, home, menu }: HomePageProps) {
               We Have Done!
             </h2>
           </div>
-          <div className="work-grid">
-            {recentProjects.map(([image, alt, title, category], index) => (
-              <article
+          <div
+            className="work-grid"
+            data-count={recentProjects.length}
+            aria-label="Recent portfolio projects"
+          >
+            {recentProjects.map((project, index) => (
+              <a
                 className="work-card"
-                key={alt}
+                key={project.id || project.slug || project.href}
+                href={project.href || "/portfolio"}
+                target={project.href?.startsWith("http") ? "_blank" : undefined}
+                rel={project.href?.startsWith("http") ? "noreferrer" : undefined}
                 data-reveal="fade-up"
                 data-reveal-delay={String((index % 3) + 1)}
               >
-                <img src={image} alt={alt} width={1200} height={1104} />
+                {project.image ? (
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    width={1200}
+                    height={1104}
+                    loading="lazy"
+                  />
+                ) : (
+                  <span className="work-card-fallback" aria-hidden="true" />
+                )}
                 <div className="work-hover-content">
-                  <span>{category}</span>
-                  <h3>{title}</h3>
+                  <span>{project.category}</span>
+                  <h3>{project.title}</h3>
                 </div>
                 <span className="work-hover-arrow" aria-hidden="true">
                   ↗
                 </span>
-              </article>
+              </a>
             ))}
           </div>
         </div>

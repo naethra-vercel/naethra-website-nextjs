@@ -82,15 +82,17 @@ export async function getDownloads() {
         };
       })
       .filter((item): item is DownloadResource => item !== null)
-      .sort(
-        (a, b) =>
-          (fallbackById.get(a.id)?.index ?? Number.MAX_SAFE_INTEGER) -
-          (fallbackById.get(b.id)?.index ?? Number.MAX_SAFE_INTEGER),
-      );
+      .sort((a, b) => a.title.localeCompare(b.title, undefined, { sensitivity: "base" }));
 
-    return downloads.length > 0 ? downloads : DOWNLOADS_FALLBACK;
+    return downloads.length > 0
+      ? downloads
+      : [...DOWNLOADS_FALLBACK].sort((a, b) =>
+          a.title.localeCompare(b.title, undefined, { sensitivity: "base" }),
+        );
   } catch {
-    return DOWNLOADS_FALLBACK;
+    return [...DOWNLOADS_FALLBACK].sort((a, b) =>
+      a.title.localeCompare(b.title, undefined, { sensitivity: "base" }),
+    );
   }
 }
 

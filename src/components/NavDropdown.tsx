@@ -20,7 +20,9 @@ function menuItems(menu: HTMLElement): HTMLElement[] {
   return Array.from(menu.querySelectorAll<HTMLElement>("[data-nav-item]"));
 }
 
-function clearMotionStyles(items: Iterable<HTMLElement> | ArrayLike<HTMLElement> | null | undefined) {
+function clearMotionStyles(
+  items: Iterable<HTMLElement> | ArrayLike<HTMLElement> | null | undefined,
+) {
   if (!items) return;
   Array.from(items as ArrayLike<HTMLElement>).forEach((item) => {
     if (!item?.style) return;
