@@ -294,7 +294,7 @@ export default function DownloadsPage({ downloads }: { downloads: DownloadResour
                 className="downloads-empty"
                 initial={reduceMotion ? false : { opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={reduceMotion ? undefined : { opacity: 0 }}
+                {...(reduceMotion ? {} : { exit: { opacity: 0 } })}
                 transition={{ duration: 0.45, ease: easeOut }}
               >
                 No resources match “{query.trim()}”.
@@ -369,7 +369,7 @@ export default function DownloadsPage({ downloads }: { downloads: DownloadResour
                   onTouchMove={(event) => event.preventDefault()}
                   initial={reduceMotion ? false : { opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  exit={reduceMotion ? undefined : { opacity: 0 }}
+                  {...(reduceMotion ? {} : { exit: { opacity: 0 } })}
                   transition={{ duration: 0.22, ease: easeOut }}
                 >
                   <motion.section
@@ -381,7 +381,7 @@ export default function DownloadsPage({ downloads }: { downloads: DownloadResour
                     onMouseDown={(event) => event.stopPropagation()}
                     initial={reduceMotion ? false : { opacity: 0, scale: 0.985 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    exit={reduceMotion ? undefined : { opacity: 0, scale: 0.985 }}
+                    {...(reduceMotion ? {} : { exit: { opacity: 0, scale: 0.985 } })}
                     transition={{ duration: 0.28, ease: easeOut }}
                   >
                     <button
