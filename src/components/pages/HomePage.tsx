@@ -42,6 +42,16 @@ import {
 } from "lucide-react";
 import SectionEyebrow from "@/components/SectionEyebrow";
 import AnimatedCtaButton from "@/components/AnimatedCtaButton";
+import { AnimeSubmenu, NavDropdown } from "@/components/NavDropdown";
+import { ModernDropdown } from "@/components/ModernDropdown";
+import { MagicCard } from "@/components/ui/magic-card";
+
+const CONTACT_REASON_OPTIONS = [
+  { value: "Web application", label: "Web application", description: "Sites, portals, and custom web apps" },
+  { value: "Mobile application", label: "Mobile application", description: "iOS, Android, or cross-platform" },
+  { value: "FileMaker development", label: "FileMaker development", description: "Claris FileMaker apps and integrations" },
+  { value: "Support and maintenance", label: "Support and maintenance", description: "Ongoing care for what you already run" },
+];
 import { submitContactForm } from "@/lib/contact-form";
 import { getPrimaryMenu, splitPrimaryMenu } from "@/lib/navigation";
 import { getHomeContent, getPosts } from "@/lib/wordpress";
@@ -464,30 +474,12 @@ export default function HomePage({ blogPosts, home, menu }: HomePageProps) {
           <nav className="desktop-nav theme-nav" aria-label="Primary navigation">
             {navigationItems.map((item) =>
               item.children.length > 0 ? (
-                <div className="nav-dropdown" key={item.id}>
-                  <a
-                    className={item.label === "Services" ? "nav-services-link" : undefined}
-                    href={item.href}
-                    target={item.target || undefined}
-                    rel={item.target === "_blank" ? "noreferrer" : undefined}
-                    aria-haspopup="true"
-                  >
-                    {item.label}
-                    <span className="nav-chevron" aria-hidden="true" />
-                  </a>
-                  <div className="nav-dropdown-menu">
-                    {item.children.map((child) => (
-                      <a
-                        key={child.id}
-                        href={child.href}
-                        target={child.target || undefined}
-                        rel={child.target === "_blank" ? "noreferrer" : undefined}
-                      >
-                        {child.label}
-                      </a>
-                    ))}
-                  </div>
-                </div>
+                <NavDropdown
+                  key={item.id}
+                  item={item}
+                  variant="home"
+                  {...(item.label === "Services" ? { triggerClassName: "nav-services-link" } : {})}
+                />
               ) : (
                 <a
                   key={item.id}
@@ -534,16 +526,21 @@ export default function HomePage({ blogPosts, home, menu }: HomePageProps) {
                     <span aria-hidden="true">{openMobileMenuId === item.id ? "−" : "+"}</span>
                   </button>
                   {openMobileMenuId === item.id && (
-                    <div className="mobile-nav-submenu">
-                      <a href={item.href} onClick={() => setMenuOpen(false)}>
+                    <AnimeSubmenu className="mobile-nav-submenu">
+                      <a data-nav-item href={item.href} onClick={() => setMenuOpen(false)}>
                         View {item.label}
                       </a>
                       {item.children.map((child) => (
-                        <a key={child.id} href={child.href} onClick={() => setMenuOpen(false)}>
+                        <a
+                          data-nav-item
+                          key={child.id}
+                          href={child.href}
+                          onClick={() => setMenuOpen(false)}
+                        >
                           {child.label}
                         </a>
                       ))}
-                    </div>
+                    </AnimeSubmenu>
                   )}
                 </div>
               ) : (
@@ -667,34 +664,61 @@ export default function HomePage({ blogPosts, home, menu }: HomePageProps) {
         <div className="site-container about-layout">
           <div className="about-visual" data-reveal="image">
             <div className="about-image about-image-tall">
-              <img
-                src={assetSrc(aboutInnovateImage)}
-                alt="Innovate — building modern digital products"
-                width={1200}
-                height={1104}
-                loading="lazy"
-                decoding="async"
-              />
+              <MagicCard
+                className="about-magic-card"
+                gradientSize={260}
+                gradientColor="rgb(255 255 255 / 0.22)"
+                gradientOpacity={0.55}
+                gradientFrom="#005b96"
+                gradientTo="#9ec9e4"
+              >
+                <img
+                  src={assetSrc(aboutInnovateImage)}
+                  alt="Innovate — building modern digital products"
+                  width={1200}
+                  height={1104}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </MagicCard>
             </div>
             <div className="about-image about-image-small">
-              <img
-                src={assetSrc(aboutIntegrateImage)}
-                alt="Integrate — connecting systems and teams"
-                width={1408}
-                height={1008}
-                loading="lazy"
-                decoding="async"
-              />
+              <MagicCard
+                className="about-magic-card"
+                gradientSize={200}
+                gradientColor="rgb(255 255 255 / 0.22)"
+                gradientOpacity={0.55}
+                gradientFrom="#005b96"
+                gradientTo="#9ec9e4"
+              >
+                <img
+                  src={assetSrc(aboutIntegrateImage)}
+                  alt="Integrate — connecting systems and teams"
+                  width={1408}
+                  height={1008}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </MagicCard>
             </div>
             <div className="about-image about-image-wide">
-              <img
-                src={assetSrc(aboutElevateImage)}
-                alt="Elevate — scaling technology for growth"
-                width={1200}
-                height={1504}
-                loading="lazy"
-                decoding="async"
-              />
+              <MagicCard
+                className="about-magic-card"
+                gradientSize={280}
+                gradientColor="rgb(255 255 255 / 0.22)"
+                gradientOpacity={0.55}
+                gradientFrom="#005b96"
+                gradientTo="#9ec9e4"
+              >
+                <img
+                  src={assetSrc(aboutElevateImage)}
+                  alt="Elevate — scaling technology for growth"
+                  width={1200}
+                  height={1504}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </MagicCard>
             </div>
             <div className="about-stat">
               <strong>
@@ -1043,15 +1067,13 @@ export default function HomePage({ blogPosts, home, menu }: HomePageProps) {
               </label>
               <label>
                 <span className="sr-only">Choose a reason</span>
-                <select name="reason" defaultValue="">
-                  <option value="" disabled>
-                    Choose a Reason
-                  </option>
-                  <option>Web application</option>
-                  <option>Mobile application</option>
-                  <option>FileMaker development</option>
-                  <option>Support and maintenance</option>
-                </select>
+                <ModernDropdown
+                  name="reason"
+                  placeholder="Choose a Reason"
+                  options={CONTACT_REASON_OPTIONS}
+                  variant="line"
+                  aria-label="Choose a reason"
+                />
               </label>
             </div>
             <label className="contact-message">

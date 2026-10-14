@@ -1,9 +1,10 @@
 "use client";
 
-import { Menu, X, ArrowUpRight, ChevronDown } from "lucide-react";
+import { Menu, X, ArrowUpRight } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 
 import AnimatedCtaButton from "@/components/AnimatedCtaButton";
+import { AnimeSubmenu, NavDropdown } from "@/components/NavDropdown";
 import { usePrimaryMenu } from "@/hooks/use-primary-menu";
 import { splitPrimaryMenu } from "@/lib/navigation";
 
@@ -28,28 +29,7 @@ export function NaethraContentHeader() {
         <nav className="content-page-nav" aria-label="Primary navigation">
           {navigationItems.map((item) =>
             item.children.length > 0 ? (
-              <div className="content-page-nav-dropdown" key={item.id}>
-                <a
-                  href={item.href}
-                  target={item.target || undefined}
-                  rel={item.target === "_blank" ? "noreferrer" : undefined}
-                  aria-haspopup="true"
-                >
-                  {item.label} <ChevronDown size={13} aria-hidden="true" />
-                </a>
-                <div className="content-page-nav-menu">
-                  {item.children.map((child) => (
-                    <a
-                      key={child.id}
-                      href={child.href}
-                      target={child.target || undefined}
-                      rel={child.target === "_blank" ? "noreferrer" : undefined}
-                    >
-                      {child.label}
-                    </a>
-                  ))}
-                </div>
-              </div>
+              <NavDropdown key={item.id} item={item} variant="content" />
             ) : (
               <a
                 key={item.id}
@@ -90,18 +70,18 @@ export function NaethraContentHeader() {
                   {item.label} <span>{openMobileMenuId === item.id ? "-" : "+"}</span>
                 </button>
                 {openMobileMenuId === item.id && (
-                  <div className="content-page-mobile-submenu">
-                    <a href={item.href} onClick={() => setOpen(false)}>
+                  <AnimeSubmenu className="content-page-mobile-submenu">
+                    <a data-nav-item href={item.href} onClick={() => setOpen(false)}>
                       View {item.label}
                       <ArrowUpRight size={15} />
                     </a>
                     {item.children.map((child) => (
-                      <a key={child.id} href={child.href} onClick={() => setOpen(false)}>
+                      <a data-nav-item key={child.id} href={child.href} onClick={() => setOpen(false)}>
                         {child.label}
                         <ArrowUpRight size={15} />
                       </a>
                     ))}
-                  </div>
+                  </AnimeSubmenu>
                 )}
               </div>
             ) : (

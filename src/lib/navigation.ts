@@ -119,12 +119,24 @@ function normalizeMenuHref(url: string) {
   }
 }
 
+function decodeMenuLabel(value: string) {
+  return value
+    .replace(/&#(\d+);/g, (_, code: string) => String.fromCharCode(Number(code)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, code: string) => String.fromCharCode(Number.parseInt(code, 16)))
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/&quot;/gi, '"')
+    .replace(/&apos;/gi, "'");
+}
+
 function mapMenuItem(item: WordPressMenuItem): NavigationItem | null {
   if (typeof item.id !== "number" || !item.label || !item.url) return null;
 
   return {
     id: item.id,
-    label: item.label,
+    label: decodeMenuLabel(item.label),
     href: normalizeMenuHref(item.url),
     target: item.target ?? "",
     children: (item.children ?? [])
