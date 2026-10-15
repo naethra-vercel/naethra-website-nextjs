@@ -753,6 +753,16 @@ export default function HomePage({
               </strong>
               <span>Projects completed</span>
             </div>
+            <div className="about-visual-cta">
+              <p>
+                Ready to start your next build?
+                <br />
+                Let’s map the right stack together.
+              </p>
+              <a className="talk-to-us-button about-talk-to-us" href="/contact-us">
+                Talk to us
+              </a>
+            </div>
           </div>
           <div className="about-copy" data-reveal="fade-up" data-reveal-delay="1">
             <SectionEyebrow>About us</SectionEyebrow>

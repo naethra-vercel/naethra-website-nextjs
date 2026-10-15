@@ -1,6 +1,5 @@
-import { ArrowUpRight } from "lucide-react";
-
 import { NaethraContentHeader } from "@/components/NaethraContentPage";
+import TalkToUsSection from "@/components/TalkToUsSection";
 import type { ServiceDetail } from "@/lib/service-data";
 
 export default function ServiceDetailPage({
@@ -36,12 +35,7 @@ export default function ServiceDetailPage({
         </section>
       )}
       <article className="service-detail-content">
-        <div className="site-container service-detail-intro">
-          <p>{service.intro}</p>
-          <a className="button button-orange" href="/contact-us">
-            Talk to us <ArrowUpRight size={16} aria-hidden="true" />
-          </a>
-        </div>
+        <TalkToUsSection>{service.intro}</TalkToUsSection>
         {service.sections.map((section, index) => (
           <section
             className={`service-detail-section ${index % 2 ? "is-soft" : ""}`}

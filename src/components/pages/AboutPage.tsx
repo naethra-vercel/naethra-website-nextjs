@@ -249,9 +249,8 @@ export default function AboutPage({ about }: { about: AboutContent }) {
             <h2>Ready to build the next release?</h2>
             <p>Share the problem space. We will map the stack, timeline, and delivery model.</p>
           </div>
-          <a href="/contact-us" className="about-modern-btn about-modern-btn-dark">
+          <a href="/contact-us" className="talk-to-us-button">
             Talk to us
-            <ArrowUpRight size={18} weight="bold" />
           </a>
         </div>
       </section>

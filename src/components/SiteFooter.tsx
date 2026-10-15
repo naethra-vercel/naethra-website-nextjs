@@ -9,9 +9,16 @@ const MAP_EMBED =
 const MAP_LINK =
   "https://maps.google.com/?q=37,+Viswanathapuram+Main+Rd,+Kodambakkam,+Chennai+600024";
 
-type SiteFooterProps = HTMLAttributes<HTMLElement>;
+type SiteFooterProps = HTMLAttributes<HTMLElement> & {
+  /** Hide Send a Message / Free Demo (used on Contact + Meeting pages). */
+  hideTopContact?: boolean;
+};
 
-export default function SiteFooter({ className = "", ...props }: SiteFooterProps) {
+export default function SiteFooter({
+  className = "",
+  hideTopContact = false,
+  ...props
+}: SiteFooterProps) {
   const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -21,58 +28,60 @@ export default function SiteFooter({ className = "", ...props }: SiteFooterProps
 
   return (
     <footer className={`site-footer-detailed ${className}`.trim()} {...props}>
-      <div className="site-container site-footer-detailed-shell">
-        <div className="site-footer-message-panel">
-          <h2>Send A Message</h2>
-          <form className="site-footer-message-form" onSubmit={handleSubmit}>
-            <div className="site-footer-field-row">
-              <label>
-                <span>Your Name</span>
-                <input aria-label="Your name" name="name" required />
+      {!hideTopContact && (
+        <div className="site-container site-footer-detailed-shell">
+          <div className="site-footer-message-panel">
+            <h2>Send A Message</h2>
+            <form className="site-footer-message-form" onSubmit={handleSubmit}>
+              <div className="site-footer-field-row">
+                <label>
+                  <span>Your Name</span>
+                  <input aria-label="Your name" name="name" required />
+                </label>
+                <label>
+                  <span>Your Email</span>
+                  <input aria-label="Your email" name="email" type="email" required />
+                </label>
+              </div>
+              <div className="site-footer-field-row">
+                <label>
+                  <span>Your Number</span>
+                  <input aria-label="Your phone number" name="phone" type="tel" />
+                </label>
+                <label>
+                  <span>Choose a Reason</span>
+                  <select aria-label="Choose a reason" name="reason" defaultValue="">
+                    <option value="" disabled>
+                      Choose a Reason
+                    </option>
+                    <option>Flutter development</option>
+                    <option>Web application</option>
+                    <option>Mobile application</option>
+                    <option>FileMaker development</option>
+                    <option>Support and maintenance</option>
+                  </select>
+                </label>
+              </div>
+              <label className="site-footer-message-field">
+                <span>Message here.</span>
+                <textarea aria-label="Your message" name="message" rows={4} required />
               </label>
-              <label>
-                <span>Your Email</span>
-                <input aria-label="Your email" name="email" type="email" required />
-              </label>
-            </div>
-            <div className="site-footer-field-row">
-              <label>
-                <span>Your Number</span>
-                <input aria-label="Your phone number" name="phone" type="tel" />
-              </label>
-              <label>
-                <span>Choose a Reason</span>
-                <select aria-label="Choose a reason" name="reason" defaultValue="">
-                  <option value="" disabled>
-                    Choose a Reason
-                  </option>
-                  <option>Flutter development</option>
-                  <option>Web application</option>
-                  <option>Mobile application</option>
-                  <option>FileMaker development</option>
-                  <option>Support and maintenance</option>
-                </select>
-              </label>
-            </div>
-            <label className="site-footer-message-field">
-              <span>Message here.</span>
-              <textarea aria-label="Your message" name="message" rows={4} required />
-            </label>
-            <button type="submit">{submitted ? "Message sent" : "Send a message"}</button>
-          </form>
-        </div>
+              <button type="submit">{submitted ? "Message sent" : "Send a message"}</button>
+            </form>
+          </div>
 
-        <div className="site-footer-demo">
-          <h2>Request a Free Demo Today</h2>
-          <a href="/30-mins-meeting" className="site-footer-demo-card">
-            <span className="site-footer-demo-icon" aria-hidden="true">
-              ◉
-            </span>
-            <strong>Meet with Naethra Works</strong>
-            <small>Schedule a conversation about your next product.</small>
-          </a>
+          <div className="site-footer-demo">
+            <h2>Request a Free Demo Today</h2>
+            <a href="/30-mins-meeting" className="site-footer-demo-card">
+              <span className="site-footer-demo-icon" aria-hidden="true">
+                ◉
+              </span>
+              <strong>Meet with Naethra Works</strong>
+              <small>Schedule a conversation about your next product.</small>
+            </a>
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="site-footer-map-block">
         <div className="site-container site-footer-map-wrap">

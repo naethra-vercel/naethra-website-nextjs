@@ -1,5 +1,4 @@
 import {
-  ArrowUpRight,
   BriefcaseBusiness,
   Eye,
   FileText,
@@ -18,6 +17,7 @@ import reactIcon from "@/assets/icons/React.svg";
 import dotNetIcon from "@/assets/icons/NET.svg";
 import webHeroImage from "@/assets/web/hero.png";
 import { NaethraContentHeader } from "@/components/NaethraContentPage";
+import TalkToUsSection from "@/components/TalkToUsSection";
 import { getWebAppContent } from "@/lib/wordpress";
 import { assetSrc } from "@/lib/asset-src";
 
@@ -93,6 +93,8 @@ export default async function Page() {
         <img className="web-app-hero-banner" src={assetSrc(webHeroImage)} alt="" />
       </section>
 
+      <TalkToUsSection>{content.quoteSubtitle}</TalkToUsSection>
+
       <section className="web-app-quote-band">
         <div className="site-container web-app-quote-inner">
           <img
@@ -102,8 +104,8 @@ export default async function Page() {
           <div>
             <h1>{content.quoteTitle}</h1>
             <p>{content.quoteSubtitle}</p>
-            <a className="button button-orange" href="/contact-us">
-              Contact us <ArrowUpRight size={16} aria-hidden="true" />
+            <a className="talk-to-us-button" href="/contact-us">
+              Talk to us
             </a>
           </div>
         </div>
@@ -159,8 +161,8 @@ export default async function Page() {
       <section className="web-app-closing">
         <div className="site-container web-app-narrow">
           <p>{content.closingText}</p>
-          <a className="button button-orange" href="/contact-us">
-            Contact us <ArrowUpRight size={16} aria-hidden="true" />
+          <a className="talk-to-us-button" href="/contact-us">
+            Talk to us
           </a>
         </div>
       </section>

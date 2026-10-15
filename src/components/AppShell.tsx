@@ -16,14 +16,17 @@ const JarvisAIAssistant = dynamic(
   { ssr: false },
 );
 
+const HIDE_FOOTER_TOP_CONTACT = new Set(["/contact-us", "/30-mins-meeting"]);
+
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const hideTopContact = HIDE_FOOTER_TOP_CONTACT.has(pathname);
 
   return (
     <SmoothScroll>
       <SpotlightCursor />
       {children}
-      {pathname !== "/" && <SiteFooter />}
+      {pathname !== "/" && <SiteFooter hideTopContact={hideTopContact} />}
       <JarvisAIAssistant />
       {pathname === "/" && <FakeJobsDisclaimerModal />}
       <ScrollToTopButton />

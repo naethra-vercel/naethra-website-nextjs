@@ -19,6 +19,7 @@ import reactIcon from "@/assets/icons/React.svg";
 import dartIcon from "@/assets/icons/Dart.svg";
 import mobileHeroImage from "@/assets/mobile/hero.png";
 import { NaethraContentHeader } from "@/components/NaethraContentPage";
+import TalkToUsSection from "@/components/TalkToUsSection";
 import { getMobileAppContent } from "@/lib/wordpress";
 import { assetSrc } from "@/lib/asset-src";
 
@@ -46,6 +47,7 @@ export default async function Page() {
       <section className="mobile-app-hero">
         <img className="mobile-app-hero-banner" src={assetSrc(mobileHeroImage)} alt="" />
       </section>
+      <TalkToUsSection>{content.introParagraphs[0] ?? content.title}</TalkToUsSection>
       <section className="mobile-app-intro">
         <div className="site-container mobile-app-narrow">
           <h1>{content.title}</h1>
@@ -119,8 +121,8 @@ export default async function Page() {
         </div>
         <div className="site-container mobile-app-callout">
           <p>{content.callout}</p>
-          <a className="button button-orange" href="/contact-us">
-            Contact us <ArrowUpRight size={15} aria-hidden="true" />
+          <a className="talk-to-us-button" href="/contact-us">
+            Talk to us
           </a>
         </div>
       </section>
