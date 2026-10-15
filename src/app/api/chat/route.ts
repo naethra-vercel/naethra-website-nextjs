@@ -114,7 +114,7 @@ export async function POST(request: Request) {
       aiReply = await askGemini({
         system: buildFlowSystemPrompt(session),
         message,
-        history: body.history,
+        ...(body.history ? { history: body.history } : {}),
       });
     } catch (error) {
       console.error("Gemini chat error:", error);
