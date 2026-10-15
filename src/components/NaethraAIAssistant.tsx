@@ -11,10 +11,12 @@ import {
 } from "@hugeicons/core-free-icons";
 
 import {
-  APP_CATEGORIES,
   WELCOME_MESSAGE,
+  applyAgentChoice,
   createAgentSession,
+  findOptionMatch,
   getStepOptions,
+  getStepPrompt,
   type AgentOption,
   type AgentSession,
 } from "@/lib/agent-flow";
@@ -105,53 +107,67 @@ export function NaethraAIAssistant() {
     setIsLoading(true);
 
     try {
-      const history = [...messages, userMsg]
-        .filter((msg) => msg.id !== "welcome-1" || msg.sender === "assistant")
-        .slice(-10)
-        .map((msg) => ({ role: msg.sender, text: msg.text }));
-
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message: userText,
-          session,
-          history,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Chat request failed (${response.status})`);
+      if (session.step === "cta") {
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: `${Date.now()}-assistant`,
+            sender: "assistant",
+            text: "Your brief is ready. Use Contact Us or book a 30-minute meeting and our team will continue from here.",
+            timestamp: stamp(),
+            options: [],
+            showCta: true,
+          },
+        ]);
+        return;
       }
 
-      const data = (await response.json()) as {
-        reply: string;
-        session: AgentSession;
-        options?: AgentOption[];
-        showCta?: boolean;
-      };
+      const options = getStepOptions(session);
+      const matched = findOptionMatch(userText, options);
 
-      setSession(data.session);
+      if (matched) {
+        const result = applyAgentChoice(session, matched);
+        setSession(result.session);
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: `${Date.now()}-assistant`,
+            sender: "assistant",
+            text: result.reply,
+            timestamp: stamp(),
+            options: getStepOptions(result.session),
+            showCta: result.session.step === "cta",
+          },
+        ]);
+        return;
+      }
+
+      const prompt = getStepPrompt(session);
+      const reply =
+        options.length > 0
+          ? `Please choose one of the options below to continue.\n\n${prompt}`
+          : "Thanks for reaching out. Share a bit more about your project, or restart the assistant to begin the guided intake again.";
+
       setMessages((prev) => [
         ...prev,
         {
           id: `${Date.now()}-assistant`,
           sender: "assistant",
-          text: data.reply,
+          text: reply,
           timestamp: stamp(),
-          options: data.options ?? [],
-          showCta: Boolean(data.showCta),
+          options,
+          showCta: false,
         },
       ]);
     } catch (err) {
-      console.error("AI Error:", err);
+      console.error("Assistant Error:", err);
       setShowErrorAlert(true);
       setMessages((prev) => [
         ...prev,
         {
           id: `${Date.now()}-error`,
           sender: "assistant",
-          text: "I am having trouble connecting right now. Please try again, or reach us at info@naethra.com.",
+          text: "Something went wrong. Please try again, or reach us at info@naethra.com.",
           timestamp: stamp(),
           options: getStepOptions(session),
         },

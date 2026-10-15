@@ -1,8 +1,6 @@
-"use client";
-
-import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 
 import servicesHeaderImage from "@/assets/services/header.png";
 import { NaethraContentHeader } from "@/components/NaethraContentPage";
@@ -159,7 +157,7 @@ export default function ServicesIndexPage({ content }: { content: ServicesPageCo
               return (
                 <Link
                   className={`service-slide ${index % 2 === 1 ? "service-slide-blue" : ""}`}
-                  href={href}
+                  to={href}
                   key={title}
                 >
                   <div className="service-slide-main">

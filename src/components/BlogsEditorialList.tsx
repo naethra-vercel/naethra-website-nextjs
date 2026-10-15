@@ -1,6 +1,3 @@
-"use client";
-
-import Link from "next/link";
 import {
   useCallback,
   useEffect,
@@ -8,6 +5,7 @@ import {
   useState,
   type MouseEvent as ReactMouseEvent,
 } from "react";
+import { Link } from "react-router-dom";
 
 import { estimateReadTime } from "@/lib/blog-utils";
 import type { WpBlogPost } from "@/lib/wordpress";
@@ -137,7 +135,7 @@ export default function BlogsEditorialList({
           return (
             <li key={post.slug}>
               <Link
-                href={`/blogs/${post.slug}`}
+                to={`/blogs/${post.slug}`}
                 className="blogs-editorial-item"
                 onMouseEnter={(event) => showPreview(post, event, rotation)}
                 onMouseMove={movePreview}

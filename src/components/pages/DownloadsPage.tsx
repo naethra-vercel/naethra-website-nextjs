@@ -30,10 +30,9 @@ import googleCloudIcon from "@/assets/icons/Google Cloud.svg";
 import ionicIcon from "@/assets/icons/Ionic.svg";
 import nextIcon from "@/assets/icons/Next.js.svg";
 import typescriptIcon from "@/assets/icons/TypeScript.svg";
-import { unlockDownloadAction } from "@/app/download/actions";
 import NaethraContentPage from "@/components/NaethraContentPage";
 import { assetSrc } from "@/lib/asset-src";
-import type { DownloadResource } from "@/lib/downloads";
+import { unlockDownload, type DownloadResource } from "@/lib/downloads";
 
 type ViewMode = "grid" | "list";
 
@@ -193,7 +192,7 @@ export default function DownloadsPage({ downloads }: { downloads: DownloadResour
     setUnlockMessage("");
 
     try {
-      const downloadUrl = await unlockDownloadAction(selectedDownload.id, password);
+      const downloadUrl = await unlockDownload(selectedDownload.id, password);
       setSelectedDownload(null);
       window.location.assign(downloadUrl);
     } catch (error) {

@@ -1,5 +1,4 @@
-"use client";
-
+import { animate, createTimeline, stagger } from "animejs";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 
 import androidIcon from "@/assets/icons/Android.svg";
@@ -25,120 +24,193 @@ const technologies = [
   ["Next.js", "#111827", assetSrc(nextIcon)],
 ] as const;
 
-const duration = 5000;
+function prefersReducedMotion() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
 
-function PlatformLoader() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [complete, setComplete] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [elapsed, setElapsed] = useState(0);
-  const burstRef = useRef(false);
+type PlatformLoaderProps = {
+  /** fullscreen = first paint / boot; inline = route data wait */
+  variant?: "fullscreen" | "inline";
+  onComplete?: () => void;
+};
+
+export default function PlatformLoader({
+  variant = "fullscreen",
+  onComplete,
+}: PlatformLoaderProps) {
+  const rootRef = useRef<HTMLDivElement>(null);
+  const orbitRef = useRef<HTMLDivElement>(null);
+  const logoRef = useRef<HTMLDivElement>(null);
+  const ringRef = useRef<HTMLSpanElement>(null);
+  const progressRef = useRef<HTMLSpanElement>(null);
+  const labelRef = useRef<HTMLSpanElement>(null);
+  const [visible, setVisible] = useState(true);
+  const [status, setStatus] = useState("Connecting digital ecosystem");
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    const context = canvas?.getContext("2d");
-    if (!canvas || !context) return;
+    const root = rootRef.current;
+    if (!root) return;
 
-    let frame = 0;
-    const start = performance.now();
-    let particles: Array<{
-      x: number;
-      y: number;
-      vx: number;
-      vy: number;
-      life: number;
-      color: string;
-    }> = [];
+    const stoppers: Array<{ cancel: () => void }> = [];
+    const reduced = prefersReducedMotion();
+    const orbs = root.querySelectorAll<HTMLElement>("[data-loader-orb]");
 
-    const resize = () => {
-      const scale = window.devicePixelRatio || 1;
-      canvas.width = window.innerWidth * scale;
-      canvas.height = window.innerHeight * scale;
-      canvas.style.width = `${window.innerWidth}px`;
-      canvas.style.height = `${window.innerHeight}px`;
-      context.setTransform(scale, 0, 0, scale, 0, 0);
+    const cleanup = () => {
+      stoppers.forEach((entry) => entry.cancel());
     };
 
-    const createBurst = () => {
-      const centerX = window.innerWidth / 2;
-      const centerY = window.innerHeight / 2;
-      particles = technologies.flatMap(([, color]) =>
-        Array.from({ length: 12 }, () => {
-          const angle = Math.random() * Math.PI * 2;
-          const speed = 2 + Math.random() * 5;
-          return {
-            x: centerX,
-            y: centerY,
-            vx: Math.cos(angle) * speed,
-            vy: Math.sin(angle) * speed,
-            life: 1,
-            color,
-          };
+    if (reduced) {
+      orbs.forEach((orb) => {
+        orb.style.opacity = "1";
+      });
+      if (progressRef.current) progressRef.current.style.width = "100%";
+      root.style.opacity = "1";
+      if (variant === "fullscreen") {
+        const timer = window.setTimeout(() => {
+          setVisible(false);
+          onComplete?.();
+        }, 350);
+        return () => {
+          window.clearTimeout(timer);
+          cleanup();
+        };
+      }
+      return cleanup;
+    }
+
+    const enter = createTimeline({ defaults: { ease: "out(3)" } });
+    enter.add(root, { opacity: [0, 1], duration: 420 });
+    if (logoRef.current) {
+      enter.add(
+        logoRef.current,
+        { opacity: [0, 1], scale: [0.9, 1], duration: 560 },
+        70,
+      );
+    }
+    if (orbs.length) {
+      // Opacity only — keep CSS rotate/translate orbit transform intact
+      enter.add(
+        orbs,
+        {
+          opacity: [0, 1],
+          delay: stagger(50),
+          duration: 640,
+          ease: "out(4)",
+        },
+        140,
+      );
+    }
+    stoppers.push(enter);
+
+    if (orbitRef.current) {
+      stoppers.push(
+        animate(orbitRef.current, {
+          rotate: "1turn",
+          duration: variant === "inline" ? 9000 : 12000,
+          ease: "linear",
+          loop: true,
         }),
       );
-    };
+    }
 
-    const animate = (now: number) => {
-      const currentElapsed = Math.min(now - start, duration);
-      const currentProgress = currentElapsed / duration;
-      setElapsed(currentElapsed);
-      setProgress(currentProgress * 100);
+    if (ringRef.current) {
+      stoppers.push(
+        animate(ringRef.current, {
+          scale: [1, 1.3],
+          opacity: [0.55, 0.16],
+          duration: 1700,
+          ease: "inOut(2)",
+          loop: true,
+          alternate: true,
+        }),
+      );
+    }
 
-      context.clearRect(0, 0, window.innerWidth, window.innerHeight);
-      particles = particles.filter((particle) => particle.life > 0);
-      particles.forEach((particle) => {
-        particle.x += particle.vx;
-        particle.y += particle.vy;
-        particle.vx *= 0.94;
-        particle.vy *= 0.94;
-        particle.life -= 0.025;
-        context.globalAlpha = particle.life;
-        context.fillStyle = particle.color;
-        context.beginPath();
-        context.arc(particle.x, particle.y, 2.5, 0, Math.PI * 2);
-        context.fill();
-      });
-      context.globalAlpha = 1;
+    if (logoRef.current) {
+      stoppers.push(
+        animate(logoRef.current, {
+          scale: [1, 1.025],
+          duration: 1500,
+          ease: "inOut(2)",
+          loop: true,
+          alternate: true,
+          delay: 650,
+        }),
+      );
+    }
 
-      if (currentElapsed >= 3800 && !burstRef.current) {
-        burstRef.current = true;
-        createBurst();
-      }
-      if (currentElapsed >= duration) {
-        setComplete(true);
-        return;
-      }
-      frame = requestAnimationFrame(animate);
-    };
+    if (variant === "fullscreen" && progressRef.current) {
+      stoppers.push(
+        animate(progressRef.current, {
+          width: ["0%", "100%"],
+          duration: 2600,
+          ease: "inOut(3)",
+          onUpdate: (self) => {
+            const pct = Math.round((self.progress ?? 0) * 100);
+            if (pct > 70) setStatus("System integrated");
+          },
+          onComplete: () => {
+            setStatus("Ready");
+            if (labelRef.current) {
+              stoppers.push(
+                animate(labelRef.current, {
+                  opacity: [1, 0.5, 1],
+                  duration: 320,
+                  ease: "out(2)",
+                }),
+              );
+            }
+            stoppers.push(
+              animate(root, {
+                opacity: [1, 0],
+                duration: 460,
+                ease: "in(2)",
+                delay: 160,
+                onComplete: () => {
+                  setVisible(false);
+                  onComplete?.();
+                },
+              }),
+            );
+          },
+        }),
+      );
+    } else if (variant === "inline" && progressRef.current) {
+      progressRef.current.style.width = "38%";
+      stoppers.push(
+        animate(progressRef.current, {
+          x: ["-130%", "270%"],
+          duration: 1100,
+          ease: "inOut(2)",
+          loop: true,
+        }),
+      );
+    }
 
-    resize();
-    window.addEventListener("resize", resize);
-    frame = requestAnimationFrame(animate);
-    return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener("resize", resize);
-    };
-  }, []);
+    return cleanup;
+  }, [onComplete, variant]);
 
-  if (complete) return null;
+  if (!visible && variant === "fullscreen") return null;
 
-  const isConverging = elapsed >= 3800;
-  const isFading = elapsed >= 4500;
+  const isInline = variant === "inline";
+
   return (
     <div
-      className={`platform-loader ${isConverging ? "is-converging" : ""} ${isFading ? "is-fading" : ""}`}
+      ref={rootRef}
+      className={`platform-loader ${isInline ? "platform-loader-inline" : ""}`}
       role="status"
       aria-live="polite"
+      aria-busy="true"
     >
-      <canvas ref={canvasRef} className="platform-loader-canvas" aria-hidden="true" />
       <div className="platform-loader-glow platform-loader-glow-top" aria-hidden="true" />
       <div className="platform-loader-glow platform-loader-glow-bottom" aria-hidden="true" />
 
       <div className="platform-loader-stage">
-        <div className="platform-loader-orbit" aria-hidden="true">
+        <div ref={orbitRef} className="platform-loader-orbit" aria-hidden="true">
           {technologies.map(([name, color, icon], index) => (
             <span
               className="platform-loader-orb"
+              data-loader-orb
               key={name}
               style={
                 {
@@ -147,24 +219,22 @@ function PlatformLoader() {
                 } as CSSProperties
               }
             >
-              <img src={icon} alt={`${name} technology`} className="platform-loader-icon" />
+              <img src={icon} alt="" className="platform-loader-icon" />
             </span>
           ))}
         </div>
-        <div className="platform-loader-logo-wrap">
-          <img src="/logo.png" alt="Naethra Simplify IT" className="platform-loader-logo" />
-          <span className="platform-loader-ring" aria-hidden="true" />
+        <div ref={logoRef} className="platform-loader-logo-wrap">
+          <img src="/logo.png" alt="Naethra" className="platform-loader-logo" />
+          <span ref={ringRef} className="platform-loader-ring" aria-hidden="true" />
         </div>
       </div>
 
       <footer className="platform-loader-footer">
         <div className="platform-loader-progress" aria-hidden="true">
-          <span style={{ width: `${progress}%` }} />
+          <span ref={progressRef} />
         </div>
-        <span>{isConverging ? "System integrated" : "Connecting digital ecosystem..."}</span>
+        <span ref={labelRef}>{isInline ? "Loading" : status}</span>
       </footer>
     </div>
   );
 }
-
-export default PlatformLoader;

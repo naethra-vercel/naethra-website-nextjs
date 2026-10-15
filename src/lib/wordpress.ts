@@ -1,8 +1,7 @@
 import { extractBlogArticleHtml } from "@/lib/blog-html";
+import { getWordpressApiUrl } from "@/lib/env";
 
-const WP_BASE =
-  process.env["NEXT_PUBLIC_WORDPRESS_API_URL"]?.replace(/\/$/, "") ||
-  "https://naethra.com/wp-json/wp/v2";
+const WP_BASE = getWordpressApiUrl();
 
 const WP_ORIGIN =
   WP_BASE.replace(/\/wp-json\/wp\/v2\/?$/i, "") || "https://naethra.com";
@@ -28,7 +27,6 @@ async function wpFetch<T>(path: string): Promise<T> {
     headers: {
       Accept: "application/json",
     },
-    next: { revalidate: 60 },
   });
   if (!res.ok) throw new Error(`WP ${res.status}: ${path}`);
   return (await res.json()) as T;

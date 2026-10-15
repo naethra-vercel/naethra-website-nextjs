@@ -1,12 +1,12 @@
-const WORDPRESS_API_BASE =
-  process.env["NEXT_PUBLIC_WORDPRESS_API_URL"]?.replace(/\/$/, "") ||
-  "https://naethra.com/wp-json/wp/v2";
+import { getRecaptchaSiteKey, getWordpressApiUrl } from "@/lib/env";
+
+const WORDPRESS_API_BASE = getWordpressApiUrl();
 
 const WORDPRESS_ORIGIN =
   WORDPRESS_API_BASE.replace(/\/wp-json\/wp\/v2\/?$/i, "") || "https://naethra.com";
 
 const CONTACT_FORM_ID = 136;
-const RECAPTCHA_SITE_KEY = process.env["NEXT_PUBLIC_RECAPTCHA_SITE_KEY"]?.trim();
+const RECAPTCHA_SITE_KEY = getRecaptchaSiteKey();
 
 type RecaptchaApi = {
   ready: (callback: () => void) => void;

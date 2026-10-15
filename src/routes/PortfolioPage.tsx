@@ -1,0 +1,57 @@
+import { NaethraContentHeader } from "@/components/NaethraContentPage";
+import PortfolioCarousel from "@/components/PortfolioCarousel";
+import { RouteLoading } from "@/components/RouteLoading";
+import { useAsyncResource } from "@/hooks/use-async-resource";
+import { useDocumentTitle } from "@/hooks/use-document-title";
+import { getPortfolio } from "@/lib/wordpress";
+
+const technologiesByCategory: Record<string, string[]> = {
+  ".Net": [".NET", "C#", "SQL"],
+  CMS: ["CMS", "PHP", "MySQL"],
+  CWP: ["FileMaker", "PHP", "API"],
+  "Java/J2EE": ["Java", "J2EE", "PostgreSQL"],
+  "Mobile App": ["Flutter", "Android", "iOS"],
+  "Web App": ["React", "Node.js", "Cloud"],
+};
+
+export default function PortfolioPage() {
+  useDocumentTitle("Portfolio | Naethra Technologies");
+  const state = useAsyncResource(() => getPortfolio(50), []);
+  if (state.status === "loading") return <RouteLoading />;
+  if (state.status === "error" || !state.data) {
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center">
+        <p>Unable to load portfolio right now.</p>
+      </div>
+    );
+  }
+  const portfolioProjects = state.data;
+
+  return (
+    <main className="portfolio-page">
+      <NaethraContentHeader />
+      <section className="portfolio-hero">
+        <div className="site-container portfolio-hero-inner">
+          <p className="portfolio-kicker">Selected work / Naethra Technologies</p>
+          <h1>Useful systems for ambitious teams.</h1>
+          <p>
+            From mobile products and web platforms to operational tools, we design and build digital
+            work that makes complex business simpler.
+          </p>
+        </div>
+      </section>
+
+      <section className="portfolio-index site-container" aria-label="Portfolio projects">
+        <PortfolioCarousel
+          projects={portfolioProjects.map((project) => ({
+            id: project.id || project.slug,
+            title: project.title,
+            technologies: technologiesByCategory[project.category] ?? [project.category],
+            image: project.image,
+            slug: project.href,
+          }))}
+        />
+      </section>
+    </main>
+  );
+}

@@ -1,6 +1,6 @@
-const WORDPRESS_API_BASE =
-  process.env["NEXT_PUBLIC_WORDPRESS_API_URL"]?.replace(/\/$/, "") ||
-  "https://naethra.com/wp-json/wp/v2";
+import { getWordpressApiUrl } from "@/lib/env";
+
+const WORDPRESS_API_BASE = getWordpressApiUrl();
 
 const WORDPRESS_ORIGIN =
   WORDPRESS_API_BASE.replace(/\/wp-json\/wp\/v2\/?$/i, "") || "https://naethra.com";
@@ -62,9 +62,7 @@ const fallbackById = new Map(DOWNLOADS_FALLBACK.map((item, index) => [item.id, {
 
 export async function getDownloads() {
   try {
-    const response = await fetch(`${WORDPRESS_ORIGIN}/wp-json/wpdm/search`, {
-      next: { revalidate: 60 },
-    });
+    const response = await fetch(`${WORDPRESS_ORIGIN}/wp-json/wpdm/search`);
     if (!response.ok) throw new Error(`Downloads request failed: ${response.status}`);
 
     const data = (await response.json()) as DownloadManagerResponse;

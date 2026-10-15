@@ -1,6 +1,6 @@
-const WORDPRESS_API_BASE =
-  process.env["NEXT_PUBLIC_WORDPRESS_API_URL"]?.replace(/\/$/, "") ||
-  "https://naethra.com/wp-json/wp/v2";
+import { getWordpressApiUrl } from "@/lib/env";
+
+const WORDPRESS_API_BASE = getWordpressApiUrl();
 
 const WORDPRESS_ORIGIN =
   WORDPRESS_API_BASE.replace(/\/wp-json\/wp\/v2\/?$/i, "") || "https://naethra.com";
@@ -147,9 +147,7 @@ function mapMenuItem(item: WordPressMenuItem): NavigationItem | null {
 
 export async function getPrimaryMenu() {
   try {
-    const response = await fetch(`${WORDPRESS_ORIGIN}/wp-json/naethra/v1/menu/primary`, {
-      next: { revalidate: 60 },
-    });
+    const response = await fetch(`${WORDPRESS_ORIGIN}/wp-json/naethra/v1/menu/primary`);
     if (!response.ok) throw new Error(`Menu request failed: ${response.status}`);
 
     const data = (await response.json()) as WordPressMenuResponse;
