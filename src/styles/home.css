@@ -900,22 +900,27 @@
 }
 .about-modern-team-head { margin-bottom: clamp(2.5rem, 5vw, 4rem); }
 .about-modern-team-stack {
-  display: grid;
+  position: relative;
+  display: flex;
+  flex-direction: column;
   gap: 1.25rem;
+  padding-bottom: clamp(4rem, 14vh, 8rem);
+}
+.about-modern-team-stack-card {
+  position: sticky;
+  width: 100%;
+  transform-origin: top center;
 }
 .about-modern-team-card {
-  position: sticky;
-  top: 6.5rem;
   display: grid;
   grid-template-columns: minmax(14rem, .75fr) minmax(0, 1.25fr);
+  min-height: min(28rem, calc(100svh - 9rem));
   overflow: hidden;
   border: 1px solid var(--about-line);
   border-radius: 1.5rem;
   background: #fff;
   box-shadow: 0 1.4rem 2.8rem rgb(15 27 49 / .07);
 }
-.about-modern-team-card-2 { top: 7.25rem; }
-.about-modern-team-card-3 { top: 8rem; }
 .about-modern-team-photo {
   overflow: hidden;
   min-height: 22rem;
@@ -964,6 +969,14 @@
   line-height: 1.7;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .about-modern-team-stack-card {
+    position: static !important;
+    top: auto !important;
+    transform: none !important;
+  }
+}
+
 .about-modern-cta {
   border-top: 1px solid var(--about-line);
   background:
@@ -1007,10 +1020,13 @@
     grid-template-columns: 1fr;
     gap: .85rem;
   }
-  .about-modern-team-card,
-  .about-modern-team-card-2,
-  .about-modern-team-card-3 {
-    position: static;
+  .about-modern-team-stack-card {
+    position: static !important;
+    top: auto !important;
+    transform: none !important;
+  }
+  .about-modern-team-card {
+    min-height: 0;
     grid-template-columns: 1fr;
   }
   .about-modern-team-photo { min-height: 16rem; aspect-ratio: 16 / 11; }

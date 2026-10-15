@@ -2,17 +2,30 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 import { AppShell } from "@/components/AppShell";
+import OrganizationJsonLd from "@/components/OrganizationJsonLd";
 
 import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://naethra.com"),
-  authors: [{ name: "Putech" }],
+  title: {
+    default: "Naethra Technologies | Full Stack Development Outsourcing",
+    template: "%s | Naethra Technologies",
+  },
+  description:
+    "Naethra Technologies — FileMaker, mobile, Flutter, and web application development company in India.",
+  authors: [{ name: "Naethra Technologies", url: "https://naethra.com" }],
+  creator: "Naethra Technologies",
+  publisher: "Naethra Technologies",
+  applicationName: "Naethra Technologies",
   openGraph: {
     type: "website",
+    siteName: "Naethra Technologies",
+    locale: "en_IN",
   },
   twitter: {
     card: "summary_large_image",
+    site: "@naethratech",
   },
   icons: {
     icon: [{ url: "/favicon.png", type: "image/png" }],
@@ -32,6 +45,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
         />
+        <OrganizationJsonLd />
       </head>
       <body suppressHydrationWarning>
         <AppShell>{children}</AppShell>

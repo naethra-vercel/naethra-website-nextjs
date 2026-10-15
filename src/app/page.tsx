@@ -9,12 +9,12 @@ export const revalidate = 60;
 export const metadata: Metadata = {
   title: "Naethra Technologies | Comprehensive Full Stack Development Outsourcing",
   description:
-    "Naethra Technologies delivers full-stack web, mobile, cross-platform, UX/UI, FileMaker, and enterprise application development.",
+    "Naethra Technologies is a FileMaker, mobile, Flutter, and web development company in India delivering full-stack outsourcing.",
   alternates: { canonical: "/" },
   openGraph: {
     title: "Naethra Technologies | Comprehensive Full Stack Development Outsourcing",
     description:
-      "Mastering web, mobile native, and cross-platform applications for ambitious businesses.",
+      "Naethra Technologies — FileMaker development company India, plus mobile, Flutter, and web application engineering.",
     type: "website",
     url: "/",
   },

@@ -3,6 +3,8 @@
 import { type FormEvent, useState, type HTMLAttributes } from "react";
 import { ExternalLink, Mail, MapPin, Phone } from "lucide-react";
 
+import { SOCIAL_PROFILES } from "@/lib/social";
+
 const MAP_EMBED =
   "https://maps.google.com/maps?q=37%2C%20Viswanathapuram%20Main%20Rd%2C%20Azeez%20Nagar%2C%20Kodambakkam%2C%20Chennai%2C%20Tamil%20Nadu%20600024&t=m&z=14&output=embed&iwloc=near";
 
@@ -108,15 +110,17 @@ export default function SiteFooter({
               innovation, automation, and connectivity.
             </p>
             <div className="site-footer-socials" aria-label="Social links">
-              <a href="https://www.facebook.com/naethratechnologies" aria-label="Facebook">
-                f
-              </a>
-              <a href="https://www.linkedin.com/company/naethra-technologies/" aria-label="LinkedIn">
-                in
-              </a>
-              <a href="https://twitter.com/naethratech" aria-label="X">
-                X
-              </a>
+              {SOCIAL_PROFILES.map((profile) => (
+                <a
+                  key={profile.id}
+                  href={profile.href}
+                  target="_blank"
+                  rel="noreferrer me"
+                  aria-label={profile.label}
+                >
+                  {profile.short}
+                </a>
+              ))}
             </div>
           </div>
 

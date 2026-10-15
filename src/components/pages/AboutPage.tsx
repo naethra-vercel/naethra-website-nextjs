@@ -2,7 +2,7 @@
 
 import { ArrowUpRight, CloudArrowUp, Code, Database } from "@phosphor-icons/react";
 import { motion, useReducedMotion } from "framer-motion";
-import { useState, type ComponentType } from "react";
+import { useMemo, useState, type ComponentType } from "react";
 
 import aboutElevateImage from "@/assets/design/about-section/about-elevate.jpg";
 import aboutInnovateImage from "@/assets/design/about-section/about-innovate.jpg";
@@ -11,6 +11,7 @@ import muraliImage from "@/assets/founders/Murali_Ramakrishnan.webp";
 import npMuraliImage from "@/assets/founders/NP_Murali.webp";
 import ramachandranImage from "@/assets/founders/Ramachandran.webp";
 import { NaethraContentHeader } from "@/components/NaethraContentPage";
+import { StackCard, StackContainer } from "@/components/StackCards";
 import type { AboutContent } from "@/lib/wordpress";
 import { assetSrc } from "@/lib/asset-src";
 
@@ -28,6 +29,14 @@ const teamImages: Record<string, string> = {
   Ramachandran: assetSrc(ramachandranImage),
 };
 
+const TEAM_STACK_ORDER = ["CEO", "CFO", "COO"] as const;
+
+function teamStackRank(role: string) {
+  const normalized = role.trim().toUpperCase();
+  const index = TEAM_STACK_ORDER.findIndex((title) => normalized.includes(title));
+  return index === -1 ? TEAM_STACK_ORDER.length : index;
+}
+
 const fadeUp = {
   hidden: { opacity: 0, y: 28 },
   visible: { opacity: 1, y: 0 },
@@ -43,6 +52,10 @@ const stagger = {
 export default function AboutPage({ about }: { about: AboutContent }) {
   const reduceMotion = useReducedMotion();
   const [activeService, setActiveService] = useState(0);
+  const teamStack = useMemo(
+    () => [...about.team].sort((a, b) => teamStackRank(a.role) - teamStackRank(b.role)),
+    [about.team],
+  );
 
   const motionProps = reduceMotion
     ? {}
@@ -53,7 +66,7 @@ export default function AboutPage({ about }: { about: AboutContent }) {
       };
 
   return (
-    <main className="about-modern overflow-x-hidden w-full max-w-full">
+    <main className="about-modern overflow-x-clip w-full max-w-full">
       <NaethraContentHeader />
 
       <section className="about-modern-hero">
@@ -205,41 +218,31 @@ export default function AboutPage({ about }: { about: AboutContent }) {
             </motion.p>
           </motion.div>
 
-          <div className="about-modern-team-stack">
-            {about.team.map((member, index) => (
-              <motion.article
-                className={`about-modern-team-card about-modern-team-card-${index + 1}`}
+          <StackContainer>
+            {teamStack.map((member, index) => (
+              <StackCard
                 key={`${member.name}-${member.role}-${index}`}
-                {...(reduceMotion
-                  ? { initial: false as const }
-                  : {
-                      initial: { opacity: 0, y: 40 },
-                      whileInView: { opacity: 1, y: 0 },
-                    })}
-                viewport={{ once: true, amount: 0.25 }}
-                transition={{
-                  type: "spring",
-                  stiffness: 100,
-                  damping: 20,
-                  delay: index * 0.06,
-                }}
+                index={index}
+                totalCards={teamStack.length}
               >
-                <div className="about-modern-team-photo">
-                  <img
-                    src={member.image || teamImages[member.name] || assetSrc(muraliImage)}
-                    alt={member.name}
-                    width={1200}
-                    height={1104}
-                  />
-                </div>
-                <div className="about-modern-team-copy">
-                  <span>{member.role}</span>
-                  <h3>{member.name}</h3>
-                  <p>{member.description}</p>
-                </div>
-              </motion.article>
+                <article className="about-modern-team-card">
+                  <div className="about-modern-team-photo">
+                    <img
+                      src={member.image || teamImages[member.name] || assetSrc(muraliImage)}
+                      alt={member.name}
+                      width={1200}
+                      height={1104}
+                    />
+                  </div>
+                  <div className="about-modern-team-copy">
+                    <span>{member.role}</span>
+                    <h3>{member.name}</h3>
+                    <p>{member.description}</p>
+                  </div>
+                </article>
+              </StackCard>
             ))}
-          </div>
+          </StackContainer>
         </div>
       </section>
 

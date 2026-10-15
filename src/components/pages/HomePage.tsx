@@ -75,6 +75,7 @@ const CONTACT_REASON_OPTIONS = [
 import { submitContactForm } from "@/lib/contact-form";
 import { getPrimaryMenu, splitPrimaryMenu } from "@/lib/navigation";
 import { portfolioProjects as portfolioFallback } from "@/lib/portfolio-data";
+import { SOCIAL_PROFILES } from "@/lib/social";
 import { getHomeContent, getPosts, type WpPortfolioProject } from "@/lib/wordpress";
 import { assetSrc } from "@/lib/asset-src";
 
@@ -257,7 +258,11 @@ function Logo({ inverse = false }: { inverse?: boolean }) {
 
 function isPlaceholderPortrait(src?: string) {
   if (!src) return true;
-  return /profile|avatar|placeholder|default|gravatar|mystery|dummy|user[-_]?icon/i.test(src);
+  // Shared WP profile-2.png counts as placeholder; unique ui-avatars do not.
+  if (/ui-avatars\.com/i.test(src)) return false;
+  return /profile|avatar|placeholder|default|gravatar|mystery|dummy|user[-_]?icon|profile-2/i.test(
+    src,
+  );
 }
 
 function initialsFromName(name: string) {
@@ -267,6 +272,12 @@ function initialsFromName(name: string) {
     .slice(0, 2)
     .map((part) => part[0]?.toUpperCase() ?? "")
     .join("");
+}
+
+function uniquePortrait(name: string, index: number) {
+  const colors = ["005b96", "061d45", "0a6fae", "1d4ed8", "334155"];
+  const background = colors[index % colors.length];
+  return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=${background}&color=fff&size=256&bold=true&format=png`;
 }
 
 export type HomePageProps = {
@@ -309,12 +320,12 @@ export default function HomePage({
             mediaUrl: home.heroVideo,
           },
         ];
-  const testimonials = home.testimonials.map((item) => {
+  const testimonials = home.testimonials.map((item, index) => {
     const rawImage = item.image?.trim() ?? "";
     const hasRealPortrait = rawImage.length > 0 && !isPlaceholderPortrait(rawImage);
     return {
       ...item,
-      image: hasRealPortrait ? rawImage : "",
+      image: hasRealPortrait ? rawImage : uniquePortrait(item.name, index),
     };
   });
   const clients = home.clients.length > 0 ? home.clients : valuedClients;
@@ -1173,18 +1184,17 @@ export default function HomePage({
               innovation, automation, and connectivity.
             </p>
             <div className="footer-socials" aria-label="Social links">
-              <a href="#contact" aria-label="Facebook">
-                f
-              </a>
-              <a href="#contact" aria-label="X">
-                X
-              </a>
-              <a href="#contact" aria-label="LinkedIn">
-                in
-              </a>
-              <a href="#contact" aria-label="Pinterest">
-                p
-              </a>
+              {SOCIAL_PROFILES.map((profile) => (
+                <a
+                  key={profile.id}
+                  href={profile.href}
+                  target="_blank"
+                  rel="noreferrer me"
+                  aria-label={profile.label}
+                >
+                  {profile.short}
+                </a>
+              ))}
             </div>
           </div>
           <div className="footer-address">

@@ -893,10 +893,10 @@ export type FileMakerContent = {
 
 const FILEMAKER_FALLBACK: FileMakerContent = {
   slug: "claris-filemaker-application",
-  title: "Claris FileMaker Application",
-  eyebrow: "FileMaker solutions",
+  title: "FileMaker Development Company India",
+  eyebrow: "Claris FileMaker solutions",
   intro:
-    "One-stop FileMaker solutions for design, development, hosting, maintenance, and 24 x 7 support services.",
+    "Naethra is a FileMaker development company in India offering one-stop Claris FileMaker design, development, hosting, Custom Web Publishing, migration, and 24×7 support.",
   heroImage: FILEMAKER_HERO_FALLBACK,
   sections: [
     {
@@ -1825,41 +1825,48 @@ export type HomeTestimonial = {
   image: string;
 };
 
+const TESTIMONIAL_AVATAR_COLORS = ["005b96", "061d45", "0a6fae", "1d4ed8", "334155"] as const;
+
+function portraitForName(name: string, index: number) {
+  const background = TESTIMONIAL_AVATAR_COLORS[index % TESTIMONIAL_AVATAR_COLORS.length];
+  return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=${background}&color=fff&size=256&bold=true&format=png`;
+}
+
 const HOME_TESTIMONIALS_FALLBACK: HomeTestimonial[] = [
   {
     name: "Steve Chun",
     role: "Miller/Howard Investments Inc., NY ,United States",
     quote:
       "Continues to do great work for us. Look forward to additional development of our custom app.",
-    image: "https://naethra.com/wp-content/uploads/2022/07/profile-2.png",
+    image: portraitForName("Steve Chun", 0),
   },
   {
     name: "Konstantinos",
     role: "New South Wales,Australia",
     quote:
       "Great to deal with, professional, and much cheaper than using an Australian company. will use them again in the future.",
-    image: "https://naethra.com/wp-content/uploads/2022/07/profile-2.png",
+    image: portraitForName("Konstantinos", 1),
   },
   {
     name: "Shazad din BORO BLINDS",
     role: "Middlesbrough, England",
     quote:
       "These guys are filemaker experts. They really know Their stuff. Thanks for all your great work.",
-    image: "https://naethra.com/wp-content/uploads/2022/07/profile-2.png",
+    image: portraitForName("Shazad din", 2),
   },
   {
     name: "Sandeep Shah",
     role: "Director, Rajdeep Automation Pvt Ltd",
     quote:
       "We would like to thank you for your efforts, detailed explanation and professionalism towards the website development. Been a pleasure working with you and looking forward to expand our co operation to other areas.",
-    image: "https://naethra.com/wp-content/uploads/2022/07/profile-2.png",
+    image: portraitForName("Sandeep Shah", 3),
   },
   {
     name: "Vasudha Bhushan",
     role: "Manager Software Technology and Engineering, AECO Energy, Australia",
     quote:
       "We recently had the pleasure of outsourcing our application development to your team (FMNaethra), and we are extremely satisfied with the results. Your team did an outstanding job of understanding our requirements and delivering a solution that meets our needs perfectly. From the beginning, your team demonstrated a thorough understanding of our needs. There have been numerous design changes that we did during the project, and we appreciate the flexibility your team showed in accommodating these changes. Your willingness to adapt and implement modifications as per our feedback was commendable. Overall, working with your organization has been a positive experience. Your professionalism, expertise, and commitment to delivering a high-quality product were evident throughout the project. We look forward to potential future collaborations and highly recommend your services to others. Thank you for your excellent work.",
-    image: "https://naethra.com/wp-content/uploads/2022/07/profile-2.png",
+    image: portraitForName("Vasudha Bhushan", 4),
   },
 ];
 
@@ -1881,7 +1888,7 @@ export function mapHomeTestimonials(html: string): HomeTestimonial[] {
   const blocks = cleaned.split(/class=["'][^"']*gem-testimonial-item/i).slice(1);
 
   const testimonials = blocks
-    .map((block) => {
+    .map((block, index) => {
       const name = extractByClass(block, "gem-testimonial-name");
       const role = extractByClass(block, "gem-testimonial-position");
       const quote = extractByClass(block, "gem-testimonial-text")
@@ -1890,9 +1897,10 @@ export function mapHomeTestimonials(html: string): HomeTestimonial[] {
         .trim();
       const imageMatch = block.match(/<img[^>]+src=["']([^"']+)["']/i);
       const rawImage = imageMatch?.[1] ?? "";
-      const image = /profile|avatar|placeholder|default|gravatar|mystery|dummy/i.test(rawImage)
-        ? ""
-        : rawImage;
+      const isSharedPlaceholder =
+        /profile|avatar|placeholder|default|gravatar|mystery|dummy|profile-2/i.test(rawImage);
+      const image =
+        rawImage && !isSharedPlaceholder ? rawImage : name ? portraitForName(name, index) : "";
 
       if (!name || !quote) return null;
       return { name, role, quote, image };
@@ -2976,14 +2984,39 @@ export async function getMobileAppContent() {
   }
 }
 
+/** WordPress still publishes these Latin-placeholder demos — keep them off the site + index. */
+const DEMO_POST_SLUGS = new Set([
+  "excepteur-sint-cupidatat-non-proident-sunt-in-culpa-2",
+  "duis-aute-irure-dolor-in-reprehenderit-in-voluptate-2",
+  "excepteur-sint-cupidatat-non-proident-sunt-in-culpa",
+  "duis-aute-irure-dolor-in-reprehenderit-in-voluptate",
+]);
+
+function isDemoBlogPost(post: { slug?: string; title?: { rendered?: string } | string }) {
+  const slug = typeof post.slug === "string" ? post.slug : "";
+  if (DEMO_POST_SLUGS.has(slug)) return true;
+  const title =
+    typeof post.title === "string"
+      ? post.title
+      : stripHtml(post.title?.rendered ?? "");
+  return (
+    /\(demo\)/i.test(title) ||
+    /\b(lorem ipsum|excepteur sint|duis aute irure|cupidatat non proident)\b/i.test(title)
+  );
+}
+
 export async function getPosts(page = 1, perPage = 20) {
   // List views omit full post HTML so the route payload stays small enough for
   // client navigations (full content is only loaded on the detail route).
+  // Over-fetch slightly so demo placeholders can be filtered without short lists.
   try {
     const posts = await wpFetch<WpPost[]>(
-      `/posts?page=${page}&per_page=${perPage}&_embed&status=publish&_fields=id,date,slug,title,excerpt,_links,_embedded`,
+      `/posts?page=${page}&per_page=${Math.min(perPage + 8, 100)}&_embed&status=publish&_fields=id,date,slug,title,excerpt,_links,_embedded`,
     );
-    return posts.map((post) => mapWpPost(post, { includeContent: false }));
+    return posts
+      .filter((post) => !isDemoBlogPost(post))
+      .slice(0, perPage)
+      .map((post) => mapWpPost(post, { includeContent: false }));
   } catch {
     return [];
   }
@@ -2991,11 +3024,15 @@ export async function getPosts(page = 1, perPage = 20) {
 
 export async function getPostBySlug(slug: string) {
   try {
+    if (DEMO_POST_SLUGS.has(slug) || isDemoBlogPost({ slug, title: slug })) {
+      return null;
+    }
     const posts = await wpFetch<WpPost[]>(
       `/posts?slug=${encodeURIComponent(slug)}&_embed&status=publish`,
     );
     const post = posts[0];
-    return post ? mapWpPost(post, { includeContent: true }) : null;
+    if (!post || isDemoBlogPost(post)) return null;
+    return mapWpPost(post, { includeContent: true });
   } catch {
     return null;
   }
