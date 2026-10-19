@@ -811,28 +811,29 @@ export default function HomePage({
             {offerServices.map((service, index) => {
               const Icon = service.icon;
               return (
-                <a
+                <article
                   className="service-card"
-                  href={service.href}
                   key={service.title}
                   data-reveal="fade-up"
                   data-reveal-delay={String((index % 3) + 1)}
                 >
                   <img
                     src={service.image}
-                    alt={service.title}
+                    alt=""
                     width={1000}
                     height={750}
                     loading="lazy"
                   />
                   <div className="service-card-content">
-                    <span className="service-icon-badge">
+                    <span className="service-icon-badge" aria-hidden="true">
                       <Icon className="w-5 h-5 stroke-[2]" />
                     </span>
-                    <h3 className="service-card-title">{service.title}</h3>
+                    <h3 className="service-card-title">
+                      <a href={service.href}>{service.title}</a>
+                    </h3>
                     <p className="service-card-desc">{service.description}</p>
                   </div>
-                </a>
+                </article>
               );
             })}
           </div>
@@ -854,36 +855,45 @@ export default function HomePage({
             data-count={recentProjects.length}
             aria-label="Recent portfolio projects"
           >
-            {recentProjects.map((project, index) => (
-              <a
-                className="work-card"
-                key={project.id || project.slug || project.href}
-                href={project.href || "/portfolio"}
-                target={project.href?.startsWith("http") ? "_blank" : undefined}
-                rel={project.href?.startsWith("http") ? "noreferrer" : undefined}
-                data-reveal="fade-up"
-                data-reveal-delay={String((index % 3) + 1)}
-              >
-                {project.image ? (
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    width={1200}
-                    height={1104}
-                    loading="lazy"
-                  />
-                ) : (
-                  <span className="work-card-fallback" aria-hidden="true" />
-                )}
-                <div className="work-hover-content">
-                  <span>{project.category}</span>
-                  <h3>{project.title}</h3>
-                </div>
-                <span className="work-hover-arrow" aria-hidden="true">
-                  ↗
-                </span>
-              </a>
-            ))}
+            {recentProjects.map((project, index) => {
+              const href = project.href || "/portfolio";
+              const isExternal = href.startsWith("http");
+              return (
+                <article
+                  className="work-card"
+                  key={project.id || project.slug || href}
+                  data-reveal="fade-up"
+                  data-reveal-delay={String((index % 3) + 1)}
+                >
+                  {project.image ? (
+                    <img
+                      src={project.image}
+                      alt=""
+                      width={1200}
+                      height={1104}
+                      loading="lazy"
+                    />
+                  ) : (
+                    <span className="work-card-fallback" aria-hidden="true" />
+                  )}
+                  <div className="work-hover-content">
+                    <span>{project.category}</span>
+                    <h3>
+                      <a
+                        href={href}
+                        target={isExternal ? "_blank" : undefined}
+                        rel={isExternal ? "noreferrer" : undefined}
+                      >
+                        {project.title}
+                      </a>
+                    </h3>
+                  </div>
+                  <span className="work-hover-arrow" aria-hidden="true">
+                    ↗
+                  </span>
+                </article>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -909,8 +919,7 @@ export default function HomePage({
           </div>
           <div className="insights-grid">
             {blogPosts.map((post, index) => (
-              <a
-                href={`/blogs/${post.slug}`}
+              <article
                 className="insight-card"
                 key={post.slug}
                 data-reveal="fade-up"
@@ -926,10 +935,12 @@ export default function HomePage({
                     <span>{post.category}</span>
                     <time dateTime={post.dateIso}>{post.date}</time>
                   </div>
-                  <h3>{post.title}</h3>
+                  <h3>
+                    <a href={`/blogs/${post.slug}`}>{post.title}</a>
+                  </h3>
                 </div>
                 <HugeiconsIcon className="insight-arrow" icon={ArrowUpRight01Icon} size={19} />
-              </a>
+              </article>
             ))}
           </div>
         </div>

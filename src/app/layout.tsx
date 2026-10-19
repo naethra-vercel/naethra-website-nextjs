@@ -38,11 +38,21 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "Naethra Technologies",
     locale: "en_IN",
+    images: [
+      {
+        url: "/logo.png",
+        width: 2169,
+        height: 725,
+        alt: "Naethra Technologies",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     site: "@naethratech",
+    images: ["/logo.png"],
   },
+
   icons: {
     icon: [{ url: "/favicon.png", type: "image/png" }],
   },
