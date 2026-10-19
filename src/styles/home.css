@@ -372,6 +372,12 @@
 }
 .about-layout h2 { max-width: 46rem; }
 .about-copy { align-self: center; padding-bottom: 0.5rem; }
+/* Give descenders (y/p/g) room so the title does not collide with body copy */
+.about-copy h2 {
+  margin: 1.4rem 0 1.35rem;
+  line-height: 1.02;
+  padding-bottom: 0.12em;
+}
 .about-copy p { margin: 0 0 1.5rem; color: var(--muted); font-size: 1rem; line-height: 1.75; }
 .about-statements { display: grid; gap: 0.8rem; border-radius: 0.75rem; background: var(--blue-soft); padding: 1.4rem 1.5rem; color: var(--muted); font-family: var(--font-display); font-size: 0.9rem; line-height: 1.35; }
 .about-statements span { display: flex; gap: 0.65rem; }
