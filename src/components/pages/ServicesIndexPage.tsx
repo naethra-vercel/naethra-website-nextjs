@@ -1,5 +1,7 @@
 "use client";
 
+import "@/styles/pages.css";
+
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { useEffect } from "react";

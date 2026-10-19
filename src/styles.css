@@ -6,10 +6,5 @@
 @source "./lib";
 @import "tw-animate-css";
 
-/* Split for maintainability / parse performance (~1000-line modules) */
+/* Global chrome only. Route sheets are imported by the pages/components that need them. */
 @import "./styles/base.css";
-@import "./styles/home.css";
-@import "./styles/content.css";
-@import "./styles/pages.css";
-@import "./styles/blog-prose.css";
-@import "./styles/downloads.css";

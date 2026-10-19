@@ -1,3 +1,5 @@
+import "@/styles/pages.css";
+
 import { NaethraContentHeader } from "@/components/NaethraContentPage";
 import TalkToUsSection from "@/components/TalkToUsSection";
 import type { ServiceDetail } from "@/lib/service-data";

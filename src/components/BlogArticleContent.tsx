@@ -1,3 +1,5 @@
+import "@/styles/blog-prose.css";
+
 import { createElement, type ReactNode } from "react";
 
 type ArticleBlock =

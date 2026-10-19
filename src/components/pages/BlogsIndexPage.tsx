@@ -1,5 +1,7 @@
 "use client";
 
+import "@/styles/pages.css";
+
 import { ChevronDown } from "lucide-react";
 import {
   useCallback,

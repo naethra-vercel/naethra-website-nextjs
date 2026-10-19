@@ -1,3 +1,5 @@
+import "@/styles/pages.css";
+
 import { NaethraContentHeader } from "@/components/NaethraContentPage";
 import PortfolioCarousel from "@/components/PortfolioCarousel";
 import { getPortfolio } from "@/lib/wordpress";

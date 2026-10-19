@@ -1,5 +1,7 @@
 "use client";
 
+import "@/styles/home.css";
+
 import { HugeiconsIcon } from "@hugeicons/react";
 import { WORDPRESS_ORIGIN } from "@/lib/wordpress-config";
 import {

@@ -1,3 +1,5 @@
+import "@/styles/pages.css";
+
 import type { Metadata } from "next";
 
 import NaethraContentPage from "@/components/NaethraContentPage";

@@ -1,3 +1,5 @@
+import "@/styles/pages.css";
+
 import {
   ArrowUpRight,
   Brain,

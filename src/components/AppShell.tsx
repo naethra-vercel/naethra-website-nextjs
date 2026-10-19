@@ -6,9 +6,10 @@ import { type ReactNode } from "react";
 
 import { FakeJobsDisclaimerModal } from "@/components/FakeJobsDisclaimerModal";
 import { ScrollToTopButton } from "@/components/ScrollToTopButton";
-import SiteFooter from "@/components/SiteFooter";
 import { SmoothScroll } from "@/components/ui/smooth-scroll";
 import { SpotlightCursor } from "@/components/ui/spotlight-cursor";
+
+const SiteFooter = dynamic(() => import("@/components/SiteFooter"));
 
 const JarvisAIAssistant = dynamic(
   () =>

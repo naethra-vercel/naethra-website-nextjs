@@ -1,5 +1,7 @@
 "use client";
 
+import "@/styles/home.css";
+
 import { ArrowUpRight, CloudArrowUp, Code, Database } from "@phosphor-icons/react";
 import { motion, useReducedMotion } from "framer-motion";
 import { useMemo, useState, type ComponentType } from "react";

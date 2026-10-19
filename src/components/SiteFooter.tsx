@@ -1,5 +1,7 @@
 "use client";
 
+import "@/styles/content.css";
+
 import { type FormEvent, useState, type HTMLAttributes } from "react";
 import { ExternalLink, Mail, MapPin, Phone } from "lucide-react";
 

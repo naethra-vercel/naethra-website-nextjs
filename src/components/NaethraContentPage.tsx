@@ -1,5 +1,7 @@
 "use client";
 
+import "@/styles/content.css";
+
 import { Menu, X, ArrowUpRight } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 

@@ -1,30 +1,27 @@
 import type { NextConfig } from "next";
-import { createRequire } from "module";
 import path from "path";
 import { fileURLToPath } from "url";
 
-const require = createRequire(import.meta.url);
 const projectRoot = path.dirname(fileURLToPath(import.meta.url));
 const emptyPolyfill = path.join(projectRoot, "src/lib/empty-polyfill.js");
-
-const nextPolyfillModule = require.resolve("next/dist/build/polyfills/polyfill-module");
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   outputFileTracingRoot: projectRoot,
   // Drop Next's always-on Baseline polyfill module (Lighthouse "Legacy JavaScript").
   // Safe for Chrome/Edge/Firefox 111+ and Safari 16.4+ (Next 16 default targets).
+  // Turbopack resolves the relative key from next/dist/client; keep both aliases.
   turbopack: {
     resolveAlias: {
-      "next/dist/build/polyfills/polyfill-module": emptyPolyfill,
-      [nextPolyfillModule]: emptyPolyfill,
+      "../build/polyfills/polyfill-module": "./src/lib/empty-polyfill.js",
+      "next/dist/build/polyfills/polyfill-module": "./src/lib/empty-polyfill.js",
     },
   },
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,
+      "../build/polyfills/polyfill-module": false,
       "next/dist/build/polyfills/polyfill-module": emptyPolyfill,
-      [nextPolyfillModule]: emptyPolyfill,
     };
     return config;
   },

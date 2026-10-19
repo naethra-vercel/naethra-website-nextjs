@@ -1,3 +1,5 @@
+import "@/styles/home.css";
+
 import type { ReactNode } from "react";
 
 import SectionEyebrow from "@/components/SectionEyebrow";

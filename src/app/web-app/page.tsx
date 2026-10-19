@@ -1,3 +1,5 @@
+import "@/styles/pages.css";
+
 import { WORDPRESS_ORIGIN } from "@/lib/wordpress-config";
 import {
   BriefcaseBusiness,

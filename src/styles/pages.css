@@ -56,24 +56,6 @@
   .mobile-app-orbit { transform: scale(.9); transform-origin: top center; margin-bottom: -2rem; }
 }
 
-@media (max-width: 1020px) {
-  .content-page-nav, .content-page-cta { display: none; }
-  .content-page-menu-button { display: grid; margin-left: auto; }
-  .content-page-mobile-nav { display: grid; border-top: 1px solid #cbd5e1; padding: .5rem max(1.25rem, calc((100% - 82rem) / 2)); background: #f8fafc; }
-  .content-page-mobile-nav > a, .content-page-mobile-group > button, .content-page-mobile-group > a { display: flex; min-height: 48px; align-items: center; justify-content: space-between; border: 0; border-bottom: 1px solid #e2e8f0; background: transparent; padding: .8rem 0; color: #0f172a; font: inherit; font-size: .85rem; font-weight: 700; text-align: left; text-transform: uppercase; }
-  .content-page-mobile-submenu { display: grid; padding: .2rem 0 .6rem 1rem; }
-  .content-page-mobile-submenu a { display: flex; min-height: 44px; align-items: center; justify-content: space-between; color: #475569; font-size: .8rem; font-weight: 700; text-transform: uppercase; }
-}
-@media (max-width: 700px) {
-  .content-page-header-inner { min-height: 4.75rem; }
-  .content-page-header .brand-logo { width: 10.5rem; }
-  .content-page-hero h1 { font-size: clamp(3.1rem, 15vw, 5rem); }
-  .content-feature-grid, .content-steps, .contact-page-grid { grid-template-columns: 1fr; }
-  .content-callout { grid-template-columns: 1fr; }
-  .content-callout-mark { width: 7rem; height: 7rem; }
-  .content-section { margin-bottom: 2.8rem; }
-}
-
 .blogs-page, .blog-detail-page { min-height: 100vh; background: var(--paper); color: var(--ink); }
 .blogs-hero { overflow: hidden; border-bottom: 1px solid var(--line); background: #fff; }
 .blogs-hero-banner { display: block; width: 100%; height: auto; }

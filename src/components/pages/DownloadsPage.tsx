@@ -1,5 +1,7 @@
 "use client";
 
+import "@/styles/downloads.css";
+
 import {
   Code as PhosphorCode,
   Database as PhosphorDatabase,
