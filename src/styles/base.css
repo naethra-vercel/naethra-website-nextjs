@@ -12,9 +12,9 @@
   --muted: #637086;
   --line: rgb(0 91 150 / 0.16);
   --green: #b6e76b;
-  --font-display: "Manrope", sans-serif;
-  --font-body: "Arimo", sans-serif;
-  --font-mono: "Arimo", monospace;
+  --font-display: var(--font-manrope), "Manrope", sans-serif;
+  --font-body: var(--font-arimo), "Arimo", sans-serif;
+  --font-mono: var(--font-arimo), "Arimo", monospace;
 }
 
 @theme inline {

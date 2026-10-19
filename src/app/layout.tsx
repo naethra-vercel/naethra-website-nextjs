@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Arimo, Manrope } from "next/font/google";
 import type { ReactNode } from "react";
 
 import { AppShell } from "@/components/AppShell";
@@ -6,6 +7,20 @@ import OrganizationJsonLd from "@/components/OrganizationJsonLd";
 import { WORDPRESS_ORIGIN } from "@/lib/wordpress-config";
 
 import "./globals.css";
+
+const manrope = Manrope({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-manrope",
+  display: "swap",
+});
+
+const arimo = Arimo({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-arimo",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://naethra.com"),
@@ -35,17 +50,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${manrope.variable} ${arimo.variable}`}
+      suppressHydrationWarning
+    >
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href={WORDPRESS_ORIGIN} />
         <link rel="dns-prefetch" href="https://automation-saas-ns-next.vercel.app" />
         <link rel="dns-prefetch" href="https://d8j0ntlcm91z4.cloudfront.net" />
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
-        />
         <OrganizationJsonLd />
       </head>
       <body suppressHydrationWarning>
