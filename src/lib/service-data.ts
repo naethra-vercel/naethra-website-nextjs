@@ -1,3 +1,4 @@
+import { WORDPRESS_ORIGIN } from "@/lib/wordpress-config";
 import {
   Cloud,
   Code2,
@@ -86,7 +87,7 @@ export const services = [
   },
 ] satisfies Array<{ title: string; description: string; href: string; icon: LucideIcon }>;
 
-const base = "https://naethra.com/wp-content/uploads";
+const base = `${WORDPRESS_ORIGIN}/wp-content/uploads`;
 
 export const serviceDetails = {
   cms: {

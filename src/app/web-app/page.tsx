@@ -1,3 +1,4 @@
+import { WORDPRESS_ORIGIN } from "@/lib/wordpress-config";
 import {
   BriefcaseBusiness,
   Eye,
@@ -98,7 +99,7 @@ export default async function Page() {
       <section className="web-app-quote-band">
         <div className="site-container web-app-quote-inner">
           <img
-            src="https://naethra.com/wp-content/uploads/2022/09/web-app-img.jpg"
+            src={`${WORDPRESS_ORIGIN}/wp-content/uploads/2022/09/web-app-img.jpg`}
             alt="Web application interface on a laptop"
           />
           <div>

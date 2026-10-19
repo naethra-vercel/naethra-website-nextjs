@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 
 import { AppShell } from "@/components/AppShell";
 import OrganizationJsonLd from "@/components/OrganizationJsonLd";
+import { WORDPRESS_ORIGIN } from "@/lib/wordpress-config";
 
 import "./globals.css";
 
@@ -38,7 +39,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://naethra.com" />
+        <link rel="preconnect" href={WORDPRESS_ORIGIN} />
         <link rel="dns-prefetch" href="https://automation-saas-ns-next.vercel.app" />
         <link rel="dns-prefetch" href="https://d8j0ntlcm91z4.cloudfront.net" />
         <link

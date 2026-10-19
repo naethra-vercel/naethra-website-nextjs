@@ -1,6 +1,7 @@
 "use client";
 
 import { HugeiconsIcon } from "@hugeicons/react";
+import { WORDPRESS_ORIGIN } from "@/lib/wordpress-config";
 import {
   ArrowRight01Icon,
   ArrowUpRight01Icon,
@@ -149,39 +150,39 @@ const integrations = [
 ];
 
 const valuedClients = [
-  { name: "Chemtools", logo: "https://naethra.com/wp-content/uploads/2023/04/Chemtools.webp" },
-  { name: "Namanama", logo: "https://naethra.com/wp-content/uploads/2023/02/namanama-Logo.jpeg" },
+  { name: "Chemtools", logo: `${WORDPRESS_ORIGIN}/wp-content/uploads/2023/04/Chemtools.webp` },
+  { name: "Namanama", logo: `${WORDPRESS_ORIGIN}/wp-content/uploads/2023/02/namanama-Logo.jpeg` },
   {
     name: "Sabine Surveyors",
-    logo: "https://naethra.com/wp-content/uploads/2023/04/Sabine-Surveyors.webp",
+    logo: `${WORDPRESS_ORIGIN}/wp-content/uploads/2023/04/Sabine-Surveyors.webp`,
   },
-  { name: "Shingda", logo: "https://naethra.com/wp-content/uploads/2023/04/shingda.webp" },
+  { name: "Shingda", logo: `${WORDPRESS_ORIGIN}/wp-content/uploads/2023/04/shingda.webp` },
   {
     name: "Fyrepower",
-    logo: "https://naethra.com/wp-content/uploads/2023/02/New-fyrepower-logo-copy.png",
+    logo: `${WORDPRESS_ORIGIN}/wp-content/uploads/2023/02/New-fyrepower-logo-copy.png`,
   },
   {
     name: "CURA Emergency Services",
-    logo: "https://naethra.com/wp-content/uploads/2023/04/CURA-Emergency-Services.webp",
+    logo: `${WORDPRESS_ORIGIN}/wp-content/uploads/2023/04/CURA-Emergency-Services.webp`,
   },
   {
     name: "Expat Aircon Services",
-    logo: "https://naethra.com/wp-content/uploads/2023/02/EXPAT-AIRCON-SERVICES.png",
+    logo: `${WORDPRESS_ORIGIN}/wp-content/uploads/2023/02/EXPAT-AIRCON-SERVICES.png`,
   },
   {
     name: "Sauna Specialist",
-    logo: "https://naethra.com/wp-content/uploads/2023/04/Sauna_Specialist_Logo.png",
+    logo: `${WORDPRESS_ORIGIN}/wp-content/uploads/2023/04/Sauna_Specialist_Logo.png`,
   },
-  { name: "Syndeo", logo: "https://naethra.com/wp-content/uploads/2023/02/Syndeo.jpg" },
-  { name: "Sabine", logo: "https://naethra.com/wp-content/uploads/2023/04/Sabine.png" },
-  { name: "OEG", logo: "https://naethra.com/wp-content/uploads/2023/02/OEG-logo.svg" },
-  { name: "Mahathri", logo: "https://naethra.com/wp-content/uploads/2023/04/Mahathri-Logo.webp" },
+  { name: "Syndeo", logo: `${WORDPRESS_ORIGIN}/wp-content/uploads/2023/02/Syndeo.jpg` },
+  { name: "Sabine", logo: `${WORDPRESS_ORIGIN}/wp-content/uploads/2023/04/Sabine.png` },
+  { name: "OEG", logo: `${WORDPRESS_ORIGIN}/wp-content/uploads/2023/02/OEG-logo.svg` },
+  { name: "Mahathri", logo: `${WORDPRESS_ORIGIN}/wp-content/uploads/2023/04/Mahathri-Logo.webp` },
   {
     name: "MacPros",
-    logo: "https://naethra.com/wp-content/uploads/2023/04/MacPros_Logo_med_white.webp",
+    logo: `${WORDPRESS_ORIGIN}/wp-content/uploads/2023/04/MacPros_Logo_med_white.webp`,
   },
-  { name: "IRITS", logo: "https://naethra.com/wp-content/uploads/2023/04/IRITS-logo.webp" },
-  { name: "AARMS", logo: "https://naethra.com/wp-content/uploads/2023/02/AARMS.png" },
+  { name: "IRITS", logo: `${WORDPRESS_ORIGIN}/wp-content/uploads/2023/04/IRITS-logo.webp` },
+  { name: "AARMS", logo: `${WORDPRESS_ORIGIN}/wp-content/uploads/2023/02/AARMS.png` },
   { name: "Driev", logo: "https://driev.bike/assets/newimgs/longlogodriev.png" },
 ];
 

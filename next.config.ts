@@ -10,6 +10,7 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "naethra.com" },
+      { protocol: "https", hostname: "data.naethra.com" },
       { protocol: "https", hostname: "**.naethra.com" },
       { protocol: "https", hostname: "d8j0ntlcm91z4.cloudfront.net" },
       { protocol: "https", hostname: "**.cloudfront.net" },

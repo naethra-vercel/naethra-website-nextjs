@@ -1,25 +1,23 @@
 import { extractBlogArticleHtml } from "@/lib/blog-html";
-
-const WP_BASE =
-  process.env["NEXT_PUBLIC_WORDPRESS_API_URL"]?.replace(/\/$/, "") ||
-  "https://naethra.com/wp-json/wp/v2";
-
-const WP_ORIGIN =
-  WP_BASE.replace(/\/wp-json\/wp\/v2\/?$/i, "") || "https://naethra.com";
+import {
+  WORDPRESS_API_BASE as WP_BASE,
+  WORDPRESS_ORIGIN as WP_ORIGIN,
+  wordpressAssetUrl,
+} from "@/lib/wordpress-config";
 
 /** Lightweight CDN fallbacks — avoid bundling multi-MB local PNGs into every wordpress import. */
 const CMS_HERO_FALLBACK =
-  "https://naethra.com/wp-content/uploads/2022/09/cms-details.jpg";
+  `${WP_ORIGIN}/wp-content/uploads/2022/09/cms-details.jpg`;
 const FILEMAKER_HERO_FALLBACK =
-  "https://naethra.com/wp-content/uploads/2022/05/7-4-1.jpg";
+  `${WP_ORIGIN}/wp-content/uploads/2022/05/7-4-1.jpg`;
 const DOTNET_HERO_FALLBACK =
-  "https://naethra.com/wp-content/uploads/2022/09/cms-details.jpg";
+  `${WP_ORIGIN}/wp-content/uploads/2022/09/cms-details.jpg`;
 const AWS_HERO_FALLBACK =
-  "https://naethra.com/wp-content/uploads/2022/05/7-4-1.jpg";
+  `${WP_ORIGIN}/wp-content/uploads/2022/05/7-4-1.jpg`;
 const CUSTOM_WEB_HERO_FALLBACK =
-  "https://naethra.com/wp-content/uploads/2022/09/cms-details.jpg";
+  `${WP_ORIGIN}/wp-content/uploads/2022/09/cms-details.jpg`;
 const FILEMAKER_SERVICES_FALLBACK =
-  "https://naethra.com/wp-content/uploads/2022/05/7-4-1.jpg";
+  `${WP_ORIGIN}/wp-content/uploads/2022/05/7-4-1.jpg`;
 
 async function wpFetch<T>(path: string): Promise<T> {
   // Avoid custom headers like User-Agent — browsers treat them as
@@ -226,11 +224,11 @@ const ABOUT_TEAM_INCLUDE_IDS = [348, 349, 217] as const;
 /** Public CDN URLs for portfolio items whose featured media is not publicly embeddable. */
 const PORTFOLIO_IMAGE_FALLBACKS: Record<string, string> = {
   "courier-management-system":
-    "https://naethra.com/wp-content/uploads/2022/06/courier-management-system-thegem-portfolio-masonry.jpg",
+    `${WP_ORIGIN}/wp-content/uploads/2022/06/courier-management-system-thegem-portfolio-masonry.jpg`,
   "proof-of-coverage":
-    "https://naethra.com/wp-content/uploads/2019/09/proof-of-coverage-thegem-portfolio-masonry.jpg",
+    `${WP_ORIGIN}/wp-content/uploads/2019/09/proof-of-coverage-thegem-portfolio-masonry.jpg`,
   "healthcare-marketing-website":
-    "https://naethra.com/wp-content/uploads/2022/06/healthcare-marketing-website-thegem-portfolio-masonry.jpg",
+    `${WP_ORIGIN}/wp-content/uploads/2022/06/healthcare-marketing-website-thegem-portfolio-masonry.jpg`,
 };
 
 function stripHtml(markup: string) {
@@ -295,11 +293,11 @@ function estimateReadTimeFromText(...parts: string[]) {
 
 export function mapWpPost(post: WpPost, options?: { includeContent?: boolean }): WpBlogPost {
   const includeContent = options?.includeContent !== false;
-  const rawContent = includeContent ? (post.content?.rendered ?? "") : "";
+  const rawContent = includeContent ? wordpressAssetUrl(post.content?.rendered ?? "") : "";
   const title = stripHtml(post.title?.rendered ?? "Untitled");
   const contentHtml = includeContent ? extractBlogArticleHtml(rawContent, title) : "";
   const categories = getCategories(post);
-  const image = post._embedded?.["wp:featuredmedia"]?.[0]?.source_url ?? "";
+  const image = wordpressAssetUrl(post._embedded?.["wp:featuredmedia"]?.[0]?.source_url ?? "");
   const dateIso = post.date ?? "";
   const author = post._embedded?.author?.[0]?.name?.trim() || "Naethra";
   const excerpt = stripHtml(post.excerpt?.rendered ?? "");
@@ -322,7 +320,9 @@ export function mapWpPost(post: WpPost, options?: { includeContent?: boolean }):
 export function mapWpPortfolio(post: WpPost): WpPortfolioProject {
   const slug = post.slug ?? "";
   const categories = getCategories(post, "portfolio-category");
-  const embeddedImage = post._embedded?.["wp:featuredmedia"]?.[0]?.source_url ?? "";
+  const embeddedImage = wordpressAssetUrl(
+    post._embedded?.["wp:featuredmedia"]?.[0]?.source_url ?? "",
+  );
   const contentText = stripHtml(post.content?.rendered ?? "");
   const summary =
     stripHtml(post.excerpt?.rendered ?? "") ||
@@ -335,7 +335,7 @@ export function mapWpPortfolio(post: WpPost): WpPortfolioProject {
     category: categories[0] ?? "Portfolio",
     categories,
     image: embeddedImage || PORTFOLIO_IMAGE_FALLBACKS[slug] || "",
-    href: post.link ?? `https://naethra.com/blog/portfolio/${slug}/`,
+    href: wordpressAssetUrl(post.link ?? `${WP_ORIGIN}/blog/portfolio/${slug}/`),
     summary,
   };
 }
@@ -346,7 +346,7 @@ export function mapWpPage(page: WpPost): WpPage {
     slug: page.slug ?? "",
     title: stripHtml(page.title?.rendered ?? "Untitled"),
     excerpt: stripHtml(page.excerpt?.rendered ?? ""),
-    contentHtml: page.content?.rendered ?? "",
+    contentHtml: wordpressAssetUrl(page.content?.rendered ?? ""),
     modified: page.modified ?? "",
   };
 }
@@ -379,7 +379,7 @@ function findChunk(chunks: string[], matcher: (text: string) => boolean) {
 function extractWpImages(html: string) {
   const matches = Array.from(
     html.matchAll(/(?:data-src|src)=["'](https?:\/\/[^"']+\.(?:jpe?g|png|webp|gif)(?:\?[^"']*)?)["']/gi),
-  ).map((match) => match[1] ?? "");
+  ).map((match) => wordpressAssetUrl(match[1] ?? ""));
 
   const seen = new Set<string>();
   const images: string[] = [];
@@ -464,7 +464,7 @@ export function mapTeamPerson(post: WpPost) {
     "Team member";
   const role = post.person?.position?.trim() || "";
   const description = stripHtml(post.content?.rendered ?? post.excerpt?.rendered ?? "");
-  const image = post._embedded?.["wp:featuredmedia"]?.[0]?.source_url ?? "";
+  const image = wordpressAssetUrl(post._embedded?.["wp:featuredmedia"]?.[0]?.source_url ?? "");
   const teamSlugs = (post.teams ?? [])
     .map((term) => term.slug?.trim())
     .filter((slug): slug is string => Boolean(slug));
@@ -775,7 +775,7 @@ const CMS_FALLBACK: CmsContent = {
     {
       title: "Website and CMS development in India",
       body: "For over 8 years, Indian website developers have delivered custom-tailored CMS solutions that are flexible and agile enough to adapt to a changing business model. From design and development to security enhancement, we create robust systems that fit the way your organisation works.",
-      image: "https://naethra.com/wp-content/uploads/2022/09/cms-details.jpg",
+      image: `${WP_ORIGIN}/wp-content/uploads/2022/09/cms-details.jpg`,
     },
     {
       title: "A complete publishing system",
@@ -784,7 +784,7 @@ const CMS_FALLBACK: CmsContent = {
     {
       title: "Benefits of outsourcing CMS development",
       body: "Outsourcing gives you access to specialist teams, reliable delivery, and a flexible cost model while your internal team stays focused on the work only it can do.",
-      image: "https://naethra.com/wp-content/uploads/2022/05/7-4-1.jpg",
+      image: `${WP_ORIGIN}/wp-content/uploads/2022/05/7-4-1.jpg`,
       bullets: [
         "Quality assurance",
         "Cost-effective services",
@@ -1029,7 +1029,7 @@ const DOT_NET_FALLBACK: DotNetContent = {
     {
       title: "Benefits of ASP.NET in development",
       body: ".NET provides a steady, adaptable, user-friendly, dependable, and flexible platform with low maintenance cost and strong compatibility. It enables teams to build ecommerce and business applications for customers wherever they are.",
-      image: "https://naethra.com/wp-content/uploads/2022/12/net-2.jpg",
+      image: `${WP_ORIGIN}/wp-content/uploads/2022/12/net-2.jpg`,
     },
     {
       title: "Maintenance and support services",
@@ -1259,7 +1259,7 @@ const JAVA_FALLBACK: JavaContent = {
   eyebrow: "Java / J2EE development",
   intro:
     "Java/J2EE: a mature, platform-independent stack for building web, mobile and enterprise applications that hold up under real production load. We’ve been designing, building and supporting Java based systems for customers in India, the US and Canada for more than a decade.",
-  heroImage: "https://naethra.com/wp-content/uploads/2026/09/java-dev.jpg",
+  heroImage: `${WP_ORIGIN}/wp-content/uploads/2026/09/java-dev.jpg`,
   sections: [
     {
       title: "The frameworks we build enterprise Java on",
@@ -1535,7 +1535,7 @@ const CWP_FALLBACK: CustomWebPublishingContent = {
     {
       title: "Custom web publishing with PHP",
       body: "The FileMaker API for PHP provides an object-oriented interface to FileMaker Pro databases. Because the web pages are built as a custom application, your team has complete control over the interface and how users interact with the data.",
-      image: "https://naethra.com/wp-content/uploads/2022/12/filemaker-api-php.jpg",
+      image: `${WP_ORIGIN}/wp-content/uploads/2022/12/filemaker-api-php.jpg`,
       bullets: [
         "Integrate your database with another website",
         "Determine how users interact with data",
@@ -2022,39 +2022,39 @@ const HOME_OFFER_SERVICE_FALLBACK: HomeOfferService[] = [
 ];
 
 const HOME_CLIENTS_FALLBACK: HomeClient[] = [
-  { name: "Chemtools", logo: "https://naethra.com/wp-content/uploads/2023/04/Chemtools.webp" },
-  { name: "Namanama", logo: "https://naethra.com/wp-content/uploads/2023/02/namanama-Logo.jpeg" },
+  { name: "Chemtools", logo: `${WP_ORIGIN}/wp-content/uploads/2023/04/Chemtools.webp` },
+  { name: "Namanama", logo: `${WP_ORIGIN}/wp-content/uploads/2023/02/namanama-Logo.jpeg` },
   {
     name: "Sabine Surveyors",
-    logo: "https://naethra.com/wp-content/uploads/2023/04/Sabine-Surveyors.webp",
+    logo: `${WP_ORIGIN}/wp-content/uploads/2023/04/Sabine-Surveyors.webp`,
   },
-  { name: "Shingda", logo: "https://naethra.com/wp-content/uploads/2023/04/shingda.webp" },
+  { name: "Shingda", logo: `${WP_ORIGIN}/wp-content/uploads/2023/04/shingda.webp` },
   {
     name: "Fyrepower",
-    logo: "https://naethra.com/wp-content/uploads/2023/02/New-fyrepower-logo-copy.png",
+    logo: `${WP_ORIGIN}/wp-content/uploads/2023/02/New-fyrepower-logo-copy.png`,
   },
   {
     name: "CURA Emergency Services",
-    logo: "https://naethra.com/wp-content/uploads/2023/04/CURA-Emergency-Services.webp",
+    logo: `${WP_ORIGIN}/wp-content/uploads/2023/04/CURA-Emergency-Services.webp`,
   },
   {
     name: "Expat Aircon Services",
-    logo: "https://naethra.com/wp-content/uploads/2023/02/EXPAT-AIRCON-SERVICES.png",
+    logo: `${WP_ORIGIN}/wp-content/uploads/2023/02/EXPAT-AIRCON-SERVICES.png`,
   },
   {
     name: "Sauna Specialist",
-    logo: "https://naethra.com/wp-content/uploads/2023/04/Sauna_Specialist_Logo.png",
+    logo: `${WP_ORIGIN}/wp-content/uploads/2023/04/Sauna_Specialist_Logo.png`,
   },
-  { name: "Syndeo", logo: "https://naethra.com/wp-content/uploads/2023/02/Syndeo.jpg" },
-  { name: "Sabine", logo: "https://naethra.com/wp-content/uploads/2023/04/Sabine.png" },
-  { name: "OEG", logo: "https://naethra.com/wp-content/uploads/2023/02/OEG-logo.svg" },
-  { name: "Mahathri", logo: "https://naethra.com/wp-content/uploads/2023/04/Mahathri-Logo.webp" },
+  { name: "Syndeo", logo: `${WP_ORIGIN}/wp-content/uploads/2023/02/Syndeo.jpg` },
+  { name: "Sabine", logo: `${WP_ORIGIN}/wp-content/uploads/2023/04/Sabine.png` },
+  { name: "OEG", logo: `${WP_ORIGIN}/wp-content/uploads/2023/02/OEG-logo.svg` },
+  { name: "Mahathri", logo: `${WP_ORIGIN}/wp-content/uploads/2023/04/Mahathri-Logo.webp` },
   {
     name: "MacPros",
-    logo: "https://naethra.com/wp-content/uploads/2023/04/MacPros_Logo_med_white.webp",
+    logo: `${WP_ORIGIN}/wp-content/uploads/2023/04/MacPros_Logo_med_white.webp`,
   },
-  { name: "IRITS", logo: "https://naethra.com/wp-content/uploads/2023/04/IRITS-logo.webp" },
-  { name: "AARMS", logo: "https://naethra.com/wp-content/uploads/2023/02/AARMS.png" },
+  { name: "IRITS", logo: `${WP_ORIGIN}/wp-content/uploads/2023/04/IRITS-logo.webp` },
+  { name: "AARMS", logo: `${WP_ORIGIN}/wp-content/uploads/2023/02/AARMS.png` },
 ];
 
 const HOME_HERO_SLIDE_FALLBACK: HomeHeroSlide = {
@@ -2903,7 +2903,7 @@ const MOBILE_APP_FALLBACK: MobileAppContent = {
   skillPoolTitle: "LARGE SKILL POOL",
   skillPoolBody:
     "India is home to a large pool of skilled developers, making it an attractive location for app development companies. The cost of doing business in India is also relatively low, which lowers the overall project budget. This makes India an attractive destination for mobile app development companies.",
-  skillPoolImage: "https://naethra.com/wp-content/uploads/2022/07/mob-app-landing.jpg",
+  skillPoolImage: `${WP_ORIGIN}/wp-content/uploads/2022/07/mob-app-landing.jpg`,
   callout:
     "If you are looking for a software development company or a Web and Mobile app development solution, Naethra Technologies is here to help you. We have put together a team that is dedicated to helping you achieve your goals.",
   blogTitle: "Blogs",
@@ -2913,7 +2913,7 @@ const MOBILE_APP_FALLBACK: MobileAppContent = {
     "Hybrid App development is a kind of coding approach, rather than a particular variety of apps.",
   blogHref: "/blogs/hybrid-app",
   blogImage:
-    "https://naethra.com/wp-content/uploads/2022/08/hyprid-app-thegem-post-thumb-large.png",
+    `${WP_ORIGIN}/wp-content/uploads/2022/08/hyprid-app-thegem-post-thumb-large.png`,
 };
 
 export function mapMobileAppContent(html: string): MobileAppContent {

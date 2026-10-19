@@ -1,9 +1,4 @@
-const WORDPRESS_API_BASE =
-  process.env["NEXT_PUBLIC_WORDPRESS_API_URL"]?.replace(/\/$/, "") ||
-  "https://naethra.com/wp-json/wp/v2";
-
-const WORDPRESS_ORIGIN =
-  WORDPRESS_API_BASE.replace(/\/wp-json\/wp\/v2\/?$/i, "") || "https://naethra.com";
+import { WORDPRESS_ORIGIN, wordpressAssetUrl } from "@/lib/wordpress-config";
 
 export type DownloadResource = {
   id: number;
@@ -98,11 +93,11 @@ export async function getDownloads() {
 
 function extractDownloadUrl(result: DownloadUnlockResponse) {
   const value = result.downloadurl || result.download_url || result.url || "";
-  if (/^https?:\/\//i.test(value)) return value;
+  if (/^https?:\/\//i.test(value)) return wordpressAssetUrl(value);
 
   const html = `${value} ${result.message ?? ""}`;
   const href = html.match(/href=["']([^"']+)["']/i)?.[1];
-  return href ? new URL(href, WORDPRESS_ORIGIN).toString() : "";
+  return href ? wordpressAssetUrl(new URL(href, WORDPRESS_ORIGIN).toString()) : "";
 }
 
 function plainMessage(message?: string) {

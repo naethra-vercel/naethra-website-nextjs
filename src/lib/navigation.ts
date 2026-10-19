@@ -1,9 +1,4 @@
-const WORDPRESS_API_BASE =
-  process.env["NEXT_PUBLIC_WORDPRESS_API_URL"]?.replace(/\/$/, "") ||
-  "https://naethra.com/wp-json/wp/v2";
-
-const WORDPRESS_ORIGIN =
-  WORDPRESS_API_BASE.replace(/\/wp-json\/wp\/v2\/?$/i, "") || "https://naethra.com";
+import { WORDPRESS_ORIGIN, wordpressAssetUrl } from "@/lib/wordpress-config";
 
 export type NavigationItem = {
   id: number;
@@ -106,8 +101,14 @@ type WordPressMenuResponse = {
 function normalizeMenuHref(url: string) {
   try {
     const parsed = new URL(url, WORDPRESS_ORIGIN);
+    const host = parsed.hostname.replace(/^www\./, "");
+    const dataHost = new URL(WORDPRESS_ORIGIN).hostname;
 
-    if (parsed.origin !== new URL(WORDPRESS_ORIGIN).origin) {
+    if (/^\/wp-(?:content|includes|json)\b/.test(parsed.pathname)) {
+      return wordpressAssetUrl(parsed.toString());
+    }
+
+    if (host !== "naethra.com" && host !== dataHost) {
       return url;
     }
 
