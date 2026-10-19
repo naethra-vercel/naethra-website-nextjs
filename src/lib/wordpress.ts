@@ -6,18 +6,12 @@ import {
 } from "@/lib/wordpress-config";
 
 /** Lightweight CDN fallbacks — avoid bundling multi-MB local PNGs into every wordpress import. */
-const CMS_HERO_FALLBACK =
-  `${WP_ORIGIN}/wp-content/uploads/2022/09/cms-details.jpg`;
-const FILEMAKER_HERO_FALLBACK =
-  `${WP_ORIGIN}/wp-content/uploads/2022/05/7-4-1.jpg`;
-const DOTNET_HERO_FALLBACK =
-  `${WP_ORIGIN}/wp-content/uploads/2022/09/cms-details.jpg`;
-const AWS_HERO_FALLBACK =
-  `${WP_ORIGIN}/wp-content/uploads/2022/05/7-4-1.jpg`;
-const CUSTOM_WEB_HERO_FALLBACK =
-  `${WP_ORIGIN}/wp-content/uploads/2022/09/cms-details.jpg`;
-const FILEMAKER_SERVICES_FALLBACK =
-  `${WP_ORIGIN}/wp-content/uploads/2022/05/7-4-1.jpg`;
+const CMS_HERO_FALLBACK = `${WP_ORIGIN}/wp-content/uploads/2022/09/cms-details.jpg`;
+const FILEMAKER_HERO_FALLBACK = `${WP_ORIGIN}/wp-content/uploads/2022/05/7-4-1.jpg`;
+const DOTNET_HERO_FALLBACK = `${WP_ORIGIN}/wp-content/uploads/2022/09/cms-details.jpg`;
+const AWS_HERO_FALLBACK = `${WP_ORIGIN}/wp-content/uploads/2022/05/7-4-1.jpg`;
+const CUSTOM_WEB_HERO_FALLBACK = `${WP_ORIGIN}/wp-content/uploads/2022/09/cms-details.jpg`;
+const FILEMAKER_SERVICES_FALLBACK = `${WP_ORIGIN}/wp-content/uploads/2022/05/7-4-1.jpg`;
 
 async function wpFetch<T>(path: string): Promise<T> {
   // Avoid custom headers like User-Agent — browsers treat them as
@@ -223,12 +217,9 @@ const ABOUT_TEAM_INCLUDE_IDS = [348, 349, 217] as const;
 
 /** Public CDN URLs for portfolio items whose featured media is not publicly embeddable. */
 const PORTFOLIO_IMAGE_FALLBACKS: Record<string, string> = {
-  "courier-management-system":
-    `${WP_ORIGIN}/wp-content/uploads/2022/06/courier-management-system-thegem-portfolio-masonry.jpg`,
-  "proof-of-coverage":
-    `${WP_ORIGIN}/wp-content/uploads/2019/09/proof-of-coverage-thegem-portfolio-masonry.jpg`,
-  "healthcare-marketing-website":
-    `${WP_ORIGIN}/wp-content/uploads/2022/06/healthcare-marketing-website-thegem-portfolio-masonry.jpg`,
+  "courier-management-system": `${WP_ORIGIN}/wp-content/uploads/2022/06/courier-management-system-thegem-portfolio-masonry.jpg`,
+  "proof-of-coverage": `${WP_ORIGIN}/wp-content/uploads/2019/09/proof-of-coverage-thegem-portfolio-masonry.jpg`,
+  "healthcare-marketing-website": `${WP_ORIGIN}/wp-content/uploads/2022/06/healthcare-marketing-website-thegem-portfolio-masonry.jpg`,
 };
 
 function stripHtml(markup: string) {
@@ -378,7 +369,9 @@ function findChunk(chunks: string[], matcher: (text: string) => boolean) {
 /** Prefer full-size uploads; skip logos, icons, and Elementor thumb caches when possible. */
 function extractWpImages(html: string) {
   const matches = Array.from(
-    html.matchAll(/(?:data-src|src)=["'](https?:\/\/[^"']+\.(?:jpe?g|png|webp|gif)(?:\?[^"']*)?)["']/gi),
+    html.matchAll(
+      /(?:data-src|src)=["'](https?:\/\/[^"']+\.(?:jpe?g|png|webp|gif)(?:\?[^"']*)?)["']/gi,
+    ),
   ).map((match) => wordpressAssetUrl(match[1] ?? ""));
 
   const seen = new Set<string>();
@@ -426,8 +419,9 @@ export function mapAboutContent(html: string): AboutContent {
       return {
         ...service,
         description:
-          findChunk(chunks, (text) => /widely-used general-purpose scripting language/i.test(text)) ||
-          service.description,
+          findChunk(chunks, (text) =>
+            /widely-used general-purpose scripting language/i.test(text),
+          ) || service.description,
       };
     }
     if (/cloud solutions/i.test(service.title)) {
@@ -458,10 +452,7 @@ export function mapAboutContent(html: string): AboutContent {
 }
 
 export function mapTeamPerson(post: WpPost) {
-  const name =
-    post.person?.name?.trim() ||
-    stripHtml(post.title?.rendered ?? "") ||
-    "Team member";
+  const name = post.person?.name?.trim() || stripHtml(post.title?.rendered ?? "") || "Team member";
   const role = post.person?.position?.trim() || "";
   const description = stripHtml(post.content?.rendered ?? post.excerpt?.rendered ?? "");
   const image = wordpressAssetUrl(post._embedded?.["wp:featuredmedia"]?.[0]?.source_url ?? "");
@@ -519,9 +510,7 @@ function dedupeTeamPersonsForAbout(
     return canonical;
   }
 
-  const idRank = new Map<number, number>(
-    ABOUT_TEAM_INCLUDE_IDS.map((id, index) => [id, index]),
-  );
+  const idRank = new Map<number, number>(ABOUT_TEAM_INCLUDE_IDS.map((id, index) => [id, index]));
   const byName = new Map<string, ReturnType<typeof mapTeamPerson>>();
   for (const person of sortTeamPersons([...byId.values()], ABOUT_TEAM_INCLUDE_IDS)) {
     const key = normalizeTeamPersonName(person.name);
@@ -545,15 +534,12 @@ function personMatchesTeamSlugs(post: WpPost, teamSlugs: readonly string[]) {
 
   const embedded = post._embedded?.["wp:term"]?.flat() ?? [];
   return embedded.some(
-    (term) =>
-      term.taxonomy === "thegem_teams" && Boolean(term.slug) && wanted.has(term.slug!),
+    (term) => term.taxonomy === "thegem_teams" && Boolean(term.slug) && wanted.has(term.slug!),
   );
 }
 
 async function fetchTeamTermIds(teamSlugs: readonly string[]) {
-  const terms = await wpFetch<WpTeamTerm[]>(
-    `/thegem_teams?per_page=100&hide_empty=false`,
-  );
+  const terms = await wpFetch<WpTeamTerm[]>(`/thegem_teams?per_page=100&hide_empty=false`);
   return terms
     .filter((term) => term.slug && teamSlugs.includes(term.slug) && term.id != null)
     .map((term) => term.id!);
@@ -569,13 +555,10 @@ async function fetchTeamPersonsByTermIds(termIds: number[], perPage: number) {
 
 export async function getTeamPersons(
   perPageOrOptions:
-    | number
-    | { perPage?: number; teamSlugs?: readonly string[]; forAbout?: boolean } = 20,
+    number | { perPage?: number; teamSlugs?: readonly string[]; forAbout?: boolean } = 20,
 ) {
   const options =
-    typeof perPageOrOptions === "number"
-      ? { perPage: perPageOrOptions }
-      : perPageOrOptions;
+    typeof perPageOrOptions === "number" ? { perPage: perPageOrOptions } : perPageOrOptions;
   const perPage = options.perPage ?? 20;
   const teamSlugs = options.teamSlugs ?? ABOUT_TEAM_CATEGORY_SLUGS;
   const forAbout = options.forAbout ?? false;
@@ -725,8 +708,7 @@ export function mapWebAppContent(html: string): WebAppContent {
     introParagraphs:
       introParagraphs.length > 0 ? introParagraphs : WEB_APP_FALLBACK.introParagraphs,
     outsourcingTitle:
-      extractHeadingText(html, "h2", /reasons to outsource/i) ||
-      WEB_APP_FALLBACK.outsourcingTitle,
+      extractHeadingText(html, "h2", /reasons to outsource/i) || WEB_APP_FALLBACK.outsourcingTitle,
     outsourcingReasons: [
       mapReason(WEB_APP_FALLBACK.outsourcingReasons[0]!, /professionalism/i),
       mapReason(WEB_APP_FALLBACK.outsourcingReasons[1]!, /eye for detail/i),
@@ -824,24 +806,18 @@ export function mapCmsContent(html: string): CmsContent {
 
   const images = extractWpImages(html);
   const developmentImage =
-    pickWpImage(images, /cms-details/i) ||
-    images[1] ||
-    CMS_FALLBACK.sections[0]?.image;
+    pickWpImage(images, /cms-details/i) || images[1] || CMS_FALLBACK.sections[0]?.image;
   const benefitsImage =
-    pickWpImage(images, /7-4-1/i) ||
-    images[2] ||
-    CMS_FALLBACK.sections[2]?.image;
+    pickWpImage(images, /7-4-1/i) || images[2] || CMS_FALLBACK.sections[2]?.image;
   const benefitsBullets =
     bulletTitles.length > 0 ? bulletTitles : CMS_FALLBACK.sections[2]?.bullets;
 
   return {
     slug: "cms",
-    title:
-      extractHeadingText(html, "h1", /outsource cms development/i) || CMS_FALLBACK.title,
+    title: extractHeadingText(html, "h1", /outsource cms development/i) || CMS_FALLBACK.title,
     eyebrow: CMS_FALLBACK.eyebrow,
     intro,
-    heroImage:
-      pickWpImage(images, /web-app-changed/i) || images[0] || CMS_FALLBACK.heroImage,
+    heroImage: pickWpImage(images, /web-app-changed/i) || images[0] || CMS_FALLBACK.heroImage,
     sections: [
       {
         title:
@@ -855,7 +831,9 @@ export function mapCmsContent(html: string): CmsContent {
         body:
           [
             findChunk(chunks, (text) => /open-source cms frameworks/i.test(text)),
-            findChunk(chunks, (text) => /endeavour to provide services in all technologies/i.test(text)),
+            findChunk(chunks, (text) =>
+              /endeavour to provide services in all technologies/i.test(text),
+            ),
           ]
             .filter(Boolean)
             .join(" ") || CMS_FALLBACK.sections[1]!.body,
@@ -940,7 +918,10 @@ export function mapFileMakerContent(html: string): FileMakerContent {
 
   const experienceBody = [
     findChunk(chunks, (text) => /20 years of market experience/i.test(text)),
-    findChunk(chunks, (text) => /sectors\s*[–-]/i.test(text) || /finance,? construction/i.test(text)),
+    findChunk(
+      chunks,
+      (text) => /sectors\s*[–-]/i.test(text) || /finance,? construction/i.test(text),
+    ),
     findChunk(chunks, (text) => /over 100 clients/i.test(text)),
   ]
     .filter(Boolean)
@@ -957,26 +938,20 @@ export function mapFileMakerContent(html: string): FileMakerContent {
 
   const images = extractWpImages(html);
   const experienceImage =
-    pickWpImage(images, /naethra-filemaker/i) ||
-    images[1] ||
-    FILEMAKER_FALLBACK.sections[1]?.image;
-  const serviceBullets =
-    bullets.length > 0 ? bullets : FILEMAKER_FALLBACK.sections[0]?.bullets;
+    pickWpImage(images, /naethra-filemaker/i) || images[1] || FILEMAKER_FALLBACK.sections[1]?.image;
+  const serviceBullets = bullets.length > 0 ? bullets : FILEMAKER_FALLBACK.sections[0]?.bullets;
 
   return {
     slug: "claris-filemaker-application",
     title:
-      extractHeadingText(html, "h1", /one-stop shop for filemaker/i) ||
-      FILEMAKER_FALLBACK.title,
+      extractHeadingText(html, "h1", /one-stop shop for filemaker/i) || FILEMAKER_FALLBACK.title,
     eyebrow: FILEMAKER_FALLBACK.eyebrow,
     intro:
       extractHeadingText(html, "h5", /design.*develop.*hosting/i) ||
       findChunk(chunks, (text) => /design\s*\|\s*develop/i.test(text)) ||
       FILEMAKER_FALLBACK.intro,
     heroImage:
-      pickWpImage(images, /filemaker-ser-new/i) ||
-      images[0] ||
-      FILEMAKER_FALLBACK.heroImage,
+      pickWpImage(images, /filemaker-ser-new/i) || images[0] || FILEMAKER_FALLBACK.heroImage,
     sections: [
       {
         title:
@@ -1048,7 +1023,9 @@ export function mapDotNetContent(html: string): DotNetContent {
   const intro =
     [
       findChunk(chunks, (text) => /asp\s*\.?\s*net/i.test(text) && /cross-platform/i.test(text)),
-      findChunk(chunks, (text) => /excelled in delivering customized web based applications/i.test(text)),
+      findChunk(chunks, (text) =>
+        /excelled in delivering customized web based applications/i.test(text),
+      ),
     ]
       .filter(Boolean)
       .join(" ") || DOT_NET_FALLBACK.intro;
@@ -1058,24 +1035,22 @@ export function mapDotNetContent(html: string): DotNetContent {
     DOT_NET_FALLBACK.sections[0]!.body;
 
   const maintenanceBody =
-    findChunk(chunks, (text) => /sustainable|prompt maintenance|specialized backings/i.test(text)) ||
-    DOT_NET_FALLBACK.sections[1]!.body;
+    findChunk(chunks, (text) =>
+      /sustainable|prompt maintenance|specialized backings/i.test(text),
+    ) || DOT_NET_FALLBACK.sections[1]!.body;
 
   const whyBody =
-    findChunk(chunks, (text) => /wide range of asp|proven potential|scalable web and custom/i.test(text)) ||
-    DOT_NET_FALLBACK.sections[2]!.body;
+    findChunk(chunks, (text) =>
+      /wide range of asp|proven potential|scalable web and custom/i.test(text),
+    ) || DOT_NET_FALLBACK.sections[2]!.body;
 
-  const migrationBody = findChunk(
-    chunks,
-    (text) => /migrate to \.?net|flawless migration from legacy/i.test(text),
+  const migrationBody = findChunk(chunks, (text) =>
+    /migrate to \.?net|flawless migration from legacy/i.test(text),
   );
 
   const images = extractWpImages(html).map(preferFullSizeImage);
   const wpHero =
-    pickWpImage(images, /net-2/i) ||
-    pickWpImage(images, /\.net|dotnet|asp/i) ||
-    images[0] ||
-    "";
+    pickWpImage(images, /net-2/i) || pickWpImage(images, /\.net|dotnet|asp/i) || images[0] || "";
   const benefitsImage =
     pickWpImage(images, /net-2/i) || images[0] || DOT_NET_FALLBACK.sections[0]?.image;
 
@@ -1088,8 +1063,7 @@ export function mapDotNetContent(html: string): DotNetContent {
     sections: [
       {
         title:
-          extractHeadingText(html, "h4", /benefits of asp/i) ||
-          DOT_NET_FALLBACK.sections[0]!.title,
+          extractHeadingText(html, "h4", /benefits of asp/i) || DOT_NET_FALLBACK.sections[0]!.title,
         body: benefitsBody,
         ...(benefitsImage ? { image: benefitsImage } : {}),
       },
@@ -1197,8 +1171,7 @@ export function mapAwsContent(html: string): AwsContent {
 
   const managedList =
     managedBullets.length > 0 ? managedBullets : AWS_FALLBACK.sections[0]?.bullets;
-  const cloudList =
-    cloudBullets.length > 0 ? cloudBullets : AWS_FALLBACK.sections[1]?.bullets;
+  const cloudList = cloudBullets.length > 0 ? cloudBullets : AWS_FALLBACK.sections[1]?.bullets;
 
   const images = extractWpImages(html);
   const wpHero = pickWpImage(images, /cim|aws|cloud/i) || images[0] || "";
@@ -1213,16 +1186,13 @@ export function mapAwsContent(html: string): AwsContent {
     sections: [
       {
         title:
-          extractHeadingText(html, "h4", /managed services/i) ||
-          AWS_FALLBACK.sections[0]!.title,
+          extractHeadingText(html, "h4", /managed services/i) || AWS_FALLBACK.sections[0]!.title,
         body: managedBody,
         ...(managedList ? { bullets: managedList } : {}),
         ...(sectionImage ? { image: sectionImage } : {}),
       },
       {
-        title:
-          extractHeadingText(html, "h4", /cloud services/i) ||
-          AWS_FALLBACK.sections[1]!.title,
+        title: extractHeadingText(html, "h4", /cloud services/i) || AWS_FALLBACK.sections[1]!.title,
         body: cloudBody,
         ...(cloudList ? { bullets: cloudList } : {}),
       },
@@ -1295,7 +1265,10 @@ export function mapJavaContent(html: string): JavaContent {
   const intro =
     [
       findChunk(chunks, (text) => /java\/j2ee/i.test(text) && /platform-independent/i.test(text)),
-      findChunk(chunks, (text) => /more than a decade/i.test(text) && /java based systems/i.test(text)),
+      findChunk(
+        chunks,
+        (text) => /more than a decade/i.test(text) && /java based systems/i.test(text),
+      ),
     ]
       .filter(Boolean)
       .join(" ") || JAVA_FALLBACK.intro;
@@ -1331,7 +1304,11 @@ export function mapJavaContent(html: string): JavaContent {
           JAVA_FALLBACK.sections[0]!.title,
         body:
           [
-            findChunk(chunks, (text) => /classic mvc/i.test(text) || (/controller/i.test(text) && /spring mvc/i.test(text))),
+            findChunk(
+              chunks,
+              (text) =>
+                /classic mvc/i.test(text) || (/controller/i.test(text) && /spring mvc/i.test(text)),
+            ),
             findChunk(chunks, (text) => /spring boot/i.test(text) && /spring security/i.test(text)),
           ]
             .filter(Boolean)
@@ -1347,8 +1324,7 @@ export function mapJavaContent(html: string): JavaContent {
       },
       {
         title:
-          extractHeadingText(html, "h5", /data,? persistence/i) ||
-          JAVA_FALLBACK.sections[2]!.title,
+          extractHeadingText(html, "h5", /data,? persistence/i) || JAVA_FALLBACK.sections[2]!.title,
         body:
           findChunk(chunks, (text) => /postgresql/i.test(text) && /hibernate/i.test(text)) ||
           JAVA_FALLBACK.sections[2]!.body,
@@ -1555,7 +1531,11 @@ export function mapCustomWebPublishingContent(html: string): CustomWebPublishing
 
   const intro =
     [
-      findChunk(chunks, (text) => /custom web publishing/i.test(text) && /integrate a filemaker database/i.test(text)),
+      findChunk(
+        chunks,
+        (text) =>
+          /custom web publishing/i.test(text) && /integrate a filemaker database/i.test(text),
+      ),
       findChunk(chunks, (text) => /with cwp, a website can be developed/i.test(text)),
     ]
       .filter(Boolean)
@@ -1590,22 +1570,17 @@ export function mapCustomWebPublishingContent(html: string): CustomWebPublishing
 
   const images = extractWpImages(html);
   const phpImage =
-    pickWpImage(images, /filemaker-api-php/i) ||
-    images[1] ||
-    CWP_FALLBACK.sections[1]?.image;
+    pickWpImage(images, /filemaker-api-php/i) || images[1] || CWP_FALLBACK.sections[1]?.image;
   const techList = techBullets.length > 0 ? techBullets : CWP_FALLBACK.sections[0]?.bullets;
   const phpList =
-    phpCapabilityBullets.length > 0
-      ? phpCapabilityBullets
-      : CWP_FALLBACK.sections[1]?.bullets;
+    phpCapabilityBullets.length > 0 ? phpCapabilityBullets : CWP_FALLBACK.sections[1]?.bullets;
 
   return {
     slug: "custom-web-publishing",
     title: CWP_FALLBACK.title,
     eyebrow: CWP_FALLBACK.eyebrow,
     intro,
-    heroImage:
-      pickWpImage(images, /filemaker-server/i) || images[0] || CWP_FALLBACK.heroImage,
+    heroImage: pickWpImage(images, /filemaker-server/i) || images[0] || CWP_FALLBACK.heroImage,
     sections: [
       {
         title: CWP_FALLBACK.sections[0]!.title,
@@ -1700,13 +1675,18 @@ const SERVICES_FALLBACK: ServicesPageContent = {
     },
     {
       title: "Cloud solutions",
-      description: "Cloud infrastructure, support, and application delivery that can scale with you.",
+      description:
+        "Cloud infrastructure, support, and application delivery that can scale with you.",
       href: "/services/aws-cloud-support",
     },
   ],
 };
 
-function findServiceDescription(chunks: string[], titleMatcher: RegExp, descriptionMatcher: RegExp) {
+function findServiceDescription(
+  chunks: string[],
+  titleMatcher: RegExp,
+  descriptionMatcher: RegExp,
+) {
   const titled = chunks.find((text) => titleMatcher.test(text));
   if (titled && titled.length > 40 && descriptionMatcher.test(titled)) {
     return titled.replace(titleMatcher, "").trim() || titled;
@@ -2200,7 +2180,7 @@ function mapHomeHeroVideo(sectionHtml: string) {
     encoded ||
     sectionHtml.match(/"background_video_link"\s*:\s*"([^"]+)"/i)?.[1] ||
     "";
-  const url = decodeElementorValue(raw);
+  const url = wordpressAssetUrl(decodeElementorValue(raw));
   return /\.(mp4|webm|ogg)(?:\?|$)/i.test(url) ? url : "";
 }
 
@@ -2246,8 +2226,8 @@ function extractBackgroundImageUrl(markup: string) {
     markup.match(/background-image\s*:\s*url\((['"]?)([^'")]+)\1\)/i);
   const url = (match?.[2] ?? "").trim();
   if (!url) return "";
-  if (url.startsWith("http")) return preferFullSizeImage(url);
-  if (url.startsWith("//")) return preferFullSizeImage(`https:${url}`);
+  if (url.startsWith("http")) return preferFullSizeImage(wordpressAssetUrl(url));
+  if (url.startsWith("//")) return preferFullSizeImage(wordpressAssetUrl(`https:${url}`));
   return "";
 }
 
@@ -2256,10 +2236,8 @@ function extractElementorBackgroundImage(markup: string) {
     /background_image(?:&quot;|")\s*:\s*\{[^}]*?url(?:&quot;|")\s*:\s*(?:&quot;|")([^&"']+)/i,
   )?.[1];
   const raw =
-    encoded ||
-    markup.match(/"background_image"\s*:\s*\{[^}]*?"url"\s*:\s*"([^"]+)"/i)?.[1] ||
-    "";
-  const url = raw.replace(/\\\//g, "/").trim();
+    encoded || markup.match(/"background_image"\s*:\s*\{[^}]*?"url"\s*:\s*"([^"]+)"/i)?.[1] || "";
+  const url = wordpressAssetUrl(raw.replace(/\\\//g, "/").trim());
   return url && mediaTypeFromUrl(url) === "image" ? preferFullSizeImage(url) : "";
 }
 
@@ -2275,7 +2253,7 @@ function extractElementorVideoFallbackImage(markup: string) {
     encoded ||
     markup.match(/"background_video_fallback_image"\s*:\s*\{[^}]*?"url"\s*:\s*"([^"]+)"/i)?.[1] ||
     "";
-  const url = raw.replace(/\\\//g, "/").trim();
+  const url = wordpressAssetUrl(raw.replace(/\\\//g, "/").trim());
   return url && mediaTypeFromUrl(url) === "image" ? preferFullSizeImage(url) : "";
 }
 
@@ -2287,17 +2265,14 @@ function mapSlideFromMarkup(
   },
 ): HomeHeroSlide | null {
   const headingTitles = Array.from(
-    slideHtml.matchAll(
-      /class=["'][^"']*elementor-heading-title[^"']*["'][^>]*>([\s\S]*?)<\//gi,
-    ),
+    slideHtml.matchAll(/class=["'][^"']*elementor-heading-title[^"']*["'][^>]*>([\s\S]*?)<\//gi),
   )
     .map((match) => stripHtml(match[1] ?? ""))
     .filter(Boolean);
 
   const slideHeading = stripHtml(
-    slideHtml.match(
-      /class=["'][^"']*elementor-slide-heading[^"']*["'][^>]*>([\s\S]*?)<\//i,
-    )?.[1] ?? "",
+    slideHtml.match(/class=["'][^"']*elementor-slide-heading[^"']*["'][^>]*>([\s\S]*?)<\//i)?.[1] ??
+      "",
   );
   const slideDescription = stripHtml(
     slideHtml.match(
@@ -2330,21 +2305,23 @@ function mapSlideFromMarkup(
   const cta = stripHtml(ctaMatch?.[2] ?? "") || defaults.cta;
   const ctaHref = normalizeInternalHref(ctaMatch?.[1] ?? "", defaults.ctaHref);
 
-  const videoUrl =
+  const videoUrl = wordpressAssetUrl(
     extractElementorBackgroundVideo(slideHtml) ||
-    slideHtml.match(/<video[^>]+(?:src|data-src)=["']([^"']+)["']/i)?.[1] ||
-    slideHtml.match(/(https?:\/\/[^"'&\s]+\.(?:mp4|webm|ogg))/i)?.[1] ||
-    "";
+      slideHtml.match(/<video[^>]+(?:src|data-src)=["']([^"']+)["']/i)?.[1] ||
+      slideHtml.match(/(https?:\/\/[^"'&\s]+\.(?:mp4|webm|ogg))/i)?.[1] ||
+      "",
+  );
 
-  const imageUrl =
+  const imageUrl = wordpressAssetUrl(
     extractElementorBackgroundImage(slideHtml) ||
-    extractElementorVideoFallbackImage(slideHtml) ||
-    extractBackgroundImageUrl(slideHtml) ||
-    preferFullSizeImage(
-      slideHtml.match(
-        /<(?:img)[^>]+(?:data-src|src)=["'](https?:\/\/[^"']+\.(?:jpe?g|png|webp|gif|avif)(?:\?[^"']*)?)["']/i,
-      )?.[1] ?? "",
-    );
+      extractElementorVideoFallbackImage(slideHtml) ||
+      extractBackgroundImageUrl(slideHtml) ||
+      preferFullSizeImage(
+        slideHtml.match(
+          /<(?:img)[^>]+(?:data-src|src)=["'](https?:\/\/[^"']+\.(?:jpe?g|png|webp|gif|avif)(?:\?[^"']*)?)["']/i,
+        )?.[1] ?? "",
+      ),
+  );
 
   if (videoUrl && mediaTypeFromUrl(videoUrl) === "video") {
     return {
@@ -2369,7 +2346,7 @@ function mapSlideFromMarkup(
       cta,
       ctaHref,
       mediaType: defaults.fallbackMediaType ?? "image",
-      mediaUrl: defaults.fallbackMediaUrl || "",
+      mediaUrl: wordpressAssetUrl(defaults.fallbackMediaUrl || ""),
     };
   }
 
@@ -2417,7 +2394,7 @@ async function fetchElementorSectionBackgroundImage(
         "i",
       ),
     );
-    const url = (scoped?.[2] ?? "").trim();
+    const url = wordpressAssetUrl((scoped?.[2] ?? "").trim());
     return url && mediaTypeFromUrl(url) === "image" ? preferFullSizeImage(url) : "";
   } catch {
     return "";
@@ -2429,17 +2406,19 @@ function resolveHeroFallbackMedia(
   heroVideo: string,
   backgroundType: "video" | "image" | "" = "",
 ) {
-  if (backgroundType === "video" && heroVideo) {
+  const image = wordpressAssetUrl(heroImage);
+  const video = wordpressAssetUrl(heroVideo);
+  if (backgroundType === "video" && video) {
     return {
-      fallbackMediaUrl: heroVideo,
+      fallbackMediaUrl: video,
       fallbackMediaType: "video" as const,
     };
   }
-  if (heroImage) {
-    return { fallbackMediaUrl: heroImage, fallbackMediaType: "image" as const };
+  if (image) {
+    return { fallbackMediaUrl: image, fallbackMediaType: "image" as const };
   }
-  if (heroVideo) {
-    return { fallbackMediaUrl: heroVideo, fallbackMediaType: "video" as const };
+  if (video) {
+    return { fallbackMediaUrl: video, fallbackMediaType: "video" as const };
   }
   return {
     fallbackMediaUrl: "",
@@ -2586,9 +2565,7 @@ function mapHomeOfferServices(html: string): HomeOfferService[] {
 
     const [, bodyRe] = pair;
     const description = findChunk(chunks, (text) => bodyRe.test(text)) || fallback.description;
-    const titleChunk = chunks.find(
-      (text) => pair[0].test(text) && text.length < 90,
-    );
+    const titleChunk = chunks.find((text) => pair[0].test(text) && text.length < 90);
     const title = titleChunk
       ? titleChunk
           .replace(/\s+/g, " ")
@@ -2621,11 +2598,17 @@ export function mapHomeContent(
   const aboutParagraphs = [
     findChunk(chunks, (text) => /full of software development experts/i.test(text)),
     findChunk(chunks, (text) => /based in india specializes/i.test(text)),
-    findChunk(chunks, (text) => /passionate about helping businesses succeed/i.test(text) && /customer service/i.test(text)),
+    findChunk(
+      chunks,
+      (text) =>
+        /passionate about helping businesses succeed/i.test(text) && /customer service/i.test(text),
+    ),
   ].filter(Boolean);
 
   const whyParagraphs = [
-    findChunk(chunks, (text) => /perfect choice for full stack development outsourcing/i.test(text)),
+    findChunk(chunks, (text) =>
+      /perfect choice for full stack development outsourcing/i.test(text),
+    ),
     findChunk(chunks, (text) => /latest trends and technologies in web and mobile/i.test(text)),
   ].filter(Boolean);
 
@@ -2699,21 +2682,21 @@ export function mapHomeContent(
     whyTitle:
       findChunk(chunks, (text) => /why naethra technologies for full stack/i.test(text)) ||
       HOME_CONTENT_FALLBACK.whyTitle,
-    whyParagraphs:
-      whyParagraphs.length > 0 ? whyParagraphs : HOME_CONTENT_FALLBACK.whyParagraphs,
+    whyParagraphs: whyParagraphs.length > 0 ? whyParagraphs : HOME_CONTENT_FALLBACK.whyParagraphs,
     servicesEyebrow: HOME_CONTENT_FALLBACK.servicesEyebrow,
     servicesTitle:
       findChunk(chunks, (text) => /our scalable customised solutions/i.test(text)) ||
       HOME_CONTENT_FALLBACK.servicesTitle,
     servicesIntro:
-      findChunk(chunks, (text) => /tailored solutions to meet the individual requirements/i.test(text)) ||
-      HOME_CONTENT_FALLBACK.servicesIntro,
+      findChunk(chunks, (text) =>
+        /tailored solutions to meet the individual requirements/i.test(text),
+      ) || HOME_CONTENT_FALLBACK.servicesIntro,
     offerServices: mapHomeOfferServices(html),
-    majorServices:
-      majorServices.length > 0 ? majorServices : HOME_CONTENT_FALLBACK.majorServices,
+    majorServices: majorServices.length > 0 ? majorServices : HOME_CONTENT_FALLBACK.majorServices,
     clientsHeading:
-      findChunk(chunks, (text) => /providing superior software solutions for our valued clients/i.test(text)) ||
-      HOME_CONTENT_FALLBACK.clientsHeading,
+      findChunk(chunks, (text) =>
+        /providing superior software solutions for our valued clients/i.test(text),
+      ) || HOME_CONTENT_FALLBACK.clientsHeading,
     clients: mapHomeClients(html),
     testimonials: mapHomeTestimonials(html),
   };
@@ -2726,11 +2709,7 @@ export async function getHomeContent() {
 
     const firstSection = extractFirstTopSection(page.contentHtml);
     const sectionId = getFirstTopSectionElementId(page.contentHtml);
-    const cssImage = await fetchElementorSectionBackgroundImage(
-      page.id,
-      sectionId,
-      page.modified,
-    );
+    const cssImage = await fetchElementorSectionBackgroundImage(page.id, sectionId, page.modified);
     const heroImage =
       cssImage ||
       extractElementorBackgroundImage(firstSection) ||
@@ -2762,8 +2741,7 @@ export type FlutterContent = {
 const FLUTTER_FALLBACK: FlutterContent = {
   eyebrow: "Flutter application development",
   title: "Build innovative apps with Flutter",
-  intro:
-    "Build innovative apps with Flutter for enhanced web and mobile experience.",
+  intro: "Build innovative apps with Flutter for enhanced web and mobile experience.",
   calloutEyebrow: "Why Flutter",
   calloutTitle: "One thoughtful experience across the devices your customers use.",
   calloutBody:
@@ -2787,8 +2765,14 @@ export function mapFlutterContent(html: string): FlutterContent {
   const benefitMatchers: Array<[RegExp, string]> = [
     [/one codebase|efficient code building/i, "One codebase for iOS and Android"],
     [/fast,? high-performance|smooth performance/i, "Fast, expressive interfaces"],
-    [/support for older devices|consistently across multiple platforms/i, "A flexible foundation for future web and mobile experiences"],
-    [/support and maintenance|bug fixing|feature updates/i, "Support for upgrades, fixes, and extensions after launch"],
+    [
+      /support for older devices|consistently across multiple platforms/i,
+      "A flexible foundation for future web and mobile experiences",
+    ],
+    [
+      /support and maintenance|bug fixing|feature updates/i,
+      "Support for upgrades, fixes, and extensions after launch",
+    ],
   ];
 
   const benefits = benefitMatchers
@@ -2832,7 +2816,9 @@ export function mapFlutterContent(html: string): FlutterContent {
       FLUTTER_FALLBACK.closingTitle,
     closingBody:
       findChunk(chunks, (text) => /mobile app development using flutter/i.test(text)) ||
-      findChunk(chunks, (text) => /flutter mobile app development services are designed/i.test(text)) ||
+      findChunk(chunks, (text) =>
+        /flutter mobile app development services are designed/i.test(text),
+      ) ||
       FLUTTER_FALLBACK.closingBody,
   };
 }
@@ -2912,8 +2898,7 @@ const MOBILE_APP_FALLBACK: MobileAppContent = {
   blogExcerpt:
     "Hybrid App development is a kind of coding approach, rather than a particular variety of apps.",
   blogHref: "/blogs/hybrid-app",
-  blogImage:
-    `${WP_ORIGIN}/wp-content/uploads/2022/08/hyprid-app-thegem-post-thumb-large.png`,
+  blogImage: `${WP_ORIGIN}/wp-content/uploads/2022/08/hyprid-app-thegem-post-thumb-large.png`,
 };
 
 export function mapMobileAppContent(html: string): MobileAppContent {
@@ -2943,8 +2928,7 @@ export function mapMobileAppContent(html: string): MobileAppContent {
       mapCard(MOBILE_APP_FALLBACK.trackRecord[1]!, /popular destination/i),
       mapCard(MOBILE_APP_FALLBACK.trackRecord[2]!, /government support/i),
     ],
-    techTitle:
-      extractHeadingText(html, "h2", /^mobile app$/i) || MOBILE_APP_FALLBACK.techTitle,
+    techTitle: extractHeadingText(html, "h2", /^mobile app$/i) || MOBILE_APP_FALLBACK.techTitle,
     capabilities: [
       mapCard(MOBILE_APP_FALLBACK.capabilities[0]!, /familiarity with technologies/i),
       mapCard(MOBILE_APP_FALLBACK.capabilities[1]!, /delivering high-quality standards/i),
@@ -2957,18 +2941,19 @@ export function mapMobileAppContent(html: string): MobileAppContent {
       MOBILE_APP_FALLBACK.skillPoolBody,
     skillPoolImage: MOBILE_APP_FALLBACK.skillPoolImage,
     callout:
-      findChunk(chunks, (text) => /software development company in india that suits your budget/i.test(text)) ||
+      findChunk(chunks, (text) =>
+        /software development company in india that suits your budget/i.test(text),
+      ) ||
       findChunk(chunks, (text) => /naethra technologies in chennai/i.test(text)) ||
       MOBILE_APP_FALLBACK.callout,
-    blogTitle:
-      extractHeadingText(html, "h4", /blogs/i) || MOBILE_APP_FALLBACK.blogTitle,
+    blogTitle: extractHeadingText(html, "h4", /blogs/i) || MOBILE_APP_FALLBACK.blogTitle,
     blogCategory: MOBILE_APP_FALLBACK.blogCategory,
     blogHeadline:
-      findChunk(chunks, (text) => /^hybrid app$/i.test(text)) ||
-      MOBILE_APP_FALLBACK.blogHeadline,
+      findChunk(chunks, (text) => /^hybrid app$/i.test(text)) || MOBILE_APP_FALLBACK.blogHeadline,
     blogExcerpt:
-      findChunk(chunks, (text) => /hybrid (app )?development is a kind of coding approach/i.test(text)) ||
-      MOBILE_APP_FALLBACK.blogExcerpt,
+      findChunk(chunks, (text) =>
+        /hybrid (app )?development is a kind of coding approach/i.test(text),
+      ) || MOBILE_APP_FALLBACK.blogExcerpt,
     blogHref: MOBILE_APP_FALLBACK.blogHref,
     blogImage: MOBILE_APP_FALLBACK.blogImage,
   };
@@ -2995,10 +2980,7 @@ const DEMO_POST_SLUGS = new Set([
 function isDemoBlogPost(post: { slug?: string; title?: { rendered?: string } | string }) {
   const slug = typeof post.slug === "string" ? post.slug : "";
   if (DEMO_POST_SLUGS.has(slug)) return true;
-  const title =
-    typeof post.title === "string"
-      ? post.title
-      : stripHtml(post.title?.rendered ?? "");
+  const title = typeof post.title === "string" ? post.title : stripHtml(post.title?.rendered ?? "");
   return (
     /\(demo\)/i.test(title) ||
     /\b(lorem ipsum|excepteur sint|duis aute irure|cupidatat non proident)\b/i.test(title)

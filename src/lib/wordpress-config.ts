@@ -16,19 +16,20 @@ export const WORDPRESS_ORIGIN =
   WORDPRESS_API_BASE.replace(/\/wp-json\/wp\/v2\/?$/i, "") || "https://data.naethra.com";
 
 /**
- * WordPress media and plugin files live on the data host.
- * Public page URLs on naethra.com are left unchanged.
+ * Force every WordPress file / media URL onto the data host.
+ * Covers plain URLs and Elementor-escaped forms (https:\/\/naethra.com\/wp-content\/...).
+ * Public marketing page URLs on naethra.com are left unchanged.
  */
 export function wordpressAssetUrl(value: string) {
-  if (!value || !value.includes("naethra.com")) return value;
+  if (!value || !/naethra\.com/i.test(value)) return value;
 
   return value
     .replace(
-      /https?:\/\/i\d\.wp\.com\/(?:www\.)?naethra\.com(?=\/wp-(?:content|includes)\b)/gi,
+      /https?:\\?\/\\?\/i\d\.wp\.com\\?\/(?:www\.)?naethra\.com(?=(?:\\?\/)wp-(?:content|includes)\b)/gi,
       WORDPRESS_ORIGIN,
     )
     .replace(
-      /https?:\/\/(?:www\.)?naethra\.com(?=\/wp-(?:content|includes)\b)/gi,
+      /https?:\\?\/\\?\/(?:www\.)?naethra\.com(?=(?:\\?\/)wp-(?:content|includes)\b)/gi,
       WORDPRESS_ORIGIN,
     );
 }
