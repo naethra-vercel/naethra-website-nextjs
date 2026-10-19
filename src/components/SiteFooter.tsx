@@ -5,6 +5,7 @@ import "@/styles/content.css";
 import { type FormEvent, useState, type HTMLAttributes } from "react";
 import { ExternalLink, Mail, MapPin, Phone } from "lucide-react";
 
+import { submitFooterContactForm } from "@/lib/contact-form";
 import { SOCIAL_PROFILES } from "@/lib/social";
 
 const MAP_EMBED =
@@ -23,11 +24,33 @@ export default function SiteFooter({
   hideTopContact = false,
   ...props
 }: SiteFooterProps) {
-  const [submitted, setSubmitted] = useState(false);
+  const [formStatus, setFormStatus] = useState<"idle" | "submitting" | "success" | "error">(
+    "idle",
+  );
+  const [formMessage, setFormMessage] = useState("");
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setSubmitted(true);
+    const form = event.currentTarget;
+    const data = new FormData(form);
+
+    setFormStatus("submitting");
+    setFormMessage("");
+
+    try {
+      await submitFooterContactForm({
+        name: String(data.get("name") ?? ""),
+        email: String(data.get("email") ?? ""),
+        phone: String(data.get("phone") ?? ""),
+        reason: String(data.get("reason") ?? ""),
+        message: String(data.get("message") ?? ""),
+      });
+      form.reset();
+      setFormStatus("success");
+    } catch (error) {
+      setFormMessage(error instanceof Error ? error.message : "Unable to send your message.");
+      setFormStatus("error");
+    }
   };
 
   return (
@@ -70,7 +93,19 @@ export default function SiteFooter({
                 <span>Message here.</span>
                 <textarea aria-label="Your message" name="message" rows={4} required />
               </label>
-              <button type="submit">{submitted ? "Message sent" : "Send a message"}</button>
+              <button type="submit" disabled={formStatus === "submitting"}>
+                {formStatus === "submitting" ? "Sending…" : "Send a message"}
+              </button>
+              {formStatus === "success" ? (
+                <p className="site-footer-form-success" role="status">
+                  Thanks. We&apos;ll get back to you at the earliest.
+                </p>
+              ) : null}
+              {formStatus === "error" ? (
+                <p className="site-footer-form-error" role="alert">
+                  {formMessage}
+                </p>
+              ) : null}
             </form>
           </div>
 

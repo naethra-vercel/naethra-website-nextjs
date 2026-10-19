@@ -75,7 +75,7 @@ const CONTACT_REASON_OPTIONS = [
     description: "Ongoing care for what you already run",
   },
 ];
-import { submitContactForm } from "@/lib/contact-form";
+import { submitFooterContactForm } from "@/lib/contact-form";
 import { getPrimaryMenu, splitPrimaryMenu } from "@/lib/navigation";
 import { portfolioProjects as portfolioFallback } from "@/lib/portfolio-data";
 import { SOCIAL_PROFILES } from "@/lib/social";
@@ -440,14 +440,12 @@ export default function HomePage({
     setContactMessage("");
 
     try {
-      await submitContactForm({
+      await submitFooterContactForm({
         name: String(data.get("name") ?? ""),
         email: String(data.get("email") ?? ""),
+        phone: String(data.get("phone") ?? ""),
+        reason: String(data.get("reason") ?? ""),
         message: String(data.get("message") ?? ""),
-        details: [
-          ["Phone", String(data.get("phone") ?? "")],
-          ["Reason", String(data.get("reason") ?? "")],
-        ],
       });
       form.reset();
       setContactStatus("success");

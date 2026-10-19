@@ -742,6 +742,9 @@ a.contact-submit-button {
 .site-footer-message-field { margin-top: .25rem; }
 .site-footer-message-form textarea { min-height: 5.5rem; resize: vertical; }
 .site-footer-message-form button { width: fit-content; max-width: 100%; border: 0; border-radius: 999px; background: linear-gradient(135deg, #0f172a, #1d4ed8); padding: .8rem 1.6rem; color: #fff; cursor: pointer; font: inherit; font-size: .8rem; font-weight: 700; }
+.site-footer-message-form button:disabled { cursor: wait; opacity: .7; }
+.site-footer-form-success { margin: 0; color: #166534; font-size: .78rem; }
+.site-footer-form-error { margin: 0; color: #b42318; font-size: .78rem; }
 .site-footer-demo-card { display: grid; min-height: 17rem; place-items: center; align-content: center; gap: .9rem; border-radius: 1rem; background: linear-gradient(135deg, #f79b57, #e86f2b); padding: 1.5rem; color: #fff; text-align: center; }
 .site-footer-demo-icon { display: grid; width: 3.4rem; height: 3.4rem; place-items: center; border: 2px solid rgb(255 255 255 / .9); border-radius: 50%; font-size: 1.15rem; }
 .site-footer-demo-card strong { font-size: 1.1rem; }
