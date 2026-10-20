@@ -49,6 +49,44 @@ export function parseArticleBlocks(html: string): ArticleBlock[] {
     }
 
     if (tag === "p") {
+      // WP often emits <p><ol>…</ol></p>. Promote the list so we never nest
+      // block elements inside <p> (browsers hoist them → hydration mismatch).
+      const onlyList = inner.match(/^\s*<(ul|ol)\b[^>]*>([\s\S]*?)<\/\1>\s*$/i);
+      if (onlyList) {
+        const items = extractListItems(onlyList[2]!);
+        if (items.length > 0) {
+          blocks.push({ type: "list", ordered: onlyList[1]!.toLowerCase() === "ol", items });
+        }
+        continue;
+      }
+
+      if (/<(ul|ol|figure|blockquote|pre|table|h[2-6])\b/i.test(inner)) {
+        // Split inline text and nested blocks so neither is dropped.
+        const nestedPattern =
+          /<(ul|ol|figure|blockquote|pre|table|h[2-6])\b[^>]*>[\s\S]*?<\/\1>/gi;
+        let cursor = 0;
+        let nested: RegExpExecArray | null;
+        while ((nested = nestedPattern.exec(inner)) !== null) {
+          const before = inner.slice(cursor, nested.index).trim();
+          if (before) {
+            const beforeText = decodeBasicEntities(
+              before.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim(),
+            );
+            if (beforeText) blocks.push({ type: "paragraph", html: before });
+          }
+          blocks.push(...parseArticleBlocks(nested[0]!));
+          cursor = nested.index + nested[0].length;
+        }
+        const after = inner.slice(cursor).trim();
+        if (after) {
+          const afterText = decodeBasicEntities(
+            after.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim(),
+          );
+          if (afterText) blocks.push({ type: "paragraph", html: after });
+        }
+        continue;
+      }
+
       const text = decodeBasicEntities(inner.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim());
       if (!text) continue;
       blocks.push({ type: "paragraph", html: inner.trim() });
@@ -120,8 +158,11 @@ export default function BlogArticleContent({ html }: { html: string }) {
         }
 
         if (block.type === "paragraph") {
+          // Safety net: never put block-level HTML inside <p>.
+          const hasBlockChild = /<(ul|ol|figure|blockquote|pre|table|h[2-6])\b/i.test(block.html);
+          const Tag = hasBlockChild ? "div" : "p";
           return (
-            <p
+            <Tag
               key={`p-${index}`}
               className="mb-5 max-w-[42rem] text-[1.05rem] leading-[1.8] text-[var(--muted)]"
               dangerouslySetInnerHTML={{ __html: block.html }}

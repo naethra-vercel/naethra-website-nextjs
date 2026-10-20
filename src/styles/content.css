@@ -75,8 +75,15 @@
 
 .content-page-hero { border-bottom: 1px solid #cbd5e1; background: linear-gradient(135deg, #eef2ff, #f8fafc 62%, #fef3c7); padding: clamp(5rem, 10vw, 9rem) 0 clamp(4rem, 8vw, 7rem); }
 .content-page-hero-compact { padding-block: clamp(4rem, 7vw, 6rem); }
-.content-page-hero-banner { padding: 0; background: #fff; }
-.content-page-hero-banner-img { display: block; width: 100%; height: auto; }
+.content-page-hero-banner { padding: 0; background: #fff; overflow: hidden; }
+.content-page-hero-banner-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1888 / 833;
+  object-fit: cover;
+  object-position: center;
+}
 .content-page-eyebrow { margin: 0 0 1.2rem; color: var(--blue); font-size: .75rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
 .content-page-hero h1 { max-width: 62rem; margin: 0; font-family: var(--font-display); font-size: clamp(3.6rem, 8vw, 7.6rem); font-weight: 600; letter-spacing: -.045em; line-height: .88; }
 .content-page-intro { max-width: 47rem; margin: 1.6rem 0 0; color: #475569; font-size: clamp(1.05rem, 2vw, 1.35rem); line-height: 1.65; }
@@ -93,14 +100,26 @@
 .content-section a.button:hover {
   color: #fff;
 }
-.content-section a.talk-to-us-button,
-.content-inline-cta.talk-to-us-button {
+.content-section a.talk-to-us-button {
   color: var(--blue);
   text-decoration: none;
 }
-.content-section a.talk-to-us-button:hover,
-.content-inline-cta.talk-to-us-button:hover {
+.content-section a.talk-to-us-button:hover {
   color: #fff;
+}
+.content-inline-cta.talk-to-us-button,
+.content-section a.content-inline-cta.talk-to-us-button {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: #fff;
+  text-decoration: none;
+}
+.content-inline-cta.talk-to-us-button:hover,
+.content-section a.content-inline-cta.talk-to-us-button:hover {
+  color: #fff;
+}
+.content-inline-cta.talk-to-us-button::before {
+  background-color: #0b3d66;
 }
 .content-section ol { padding-left: 1.5rem; }
 .content-section li { margin-bottom: 1rem; padding-left: .45rem; }
@@ -140,7 +159,95 @@
 .content-check-list { display: grid; gap: .75rem; }
 .content-check-list p { display: flex; align-items: center; gap: .7rem; margin: 0; }
 .content-check-list svg { flex: 0 0 auto; color: var(--blue); }
-.content-inline-cta { margin-top: 1rem; background: var(--blue); box-shadow: none; }
+.content-inline-cta { margin-top: 1rem; box-shadow: none; }
+
+.flutter-highlights { margin-top: 1.25rem; }
+.flutter-offer-list { margin: 1.25rem 0 1.5rem; padding-left: 1.2rem; color: #334155; }
+.flutter-offer-list li { margin-bottom: .85rem; line-height: 1.7; }
+.flutter-offer-list strong { color: #0f172a; }
+.flutter-card-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin: 1.5rem 0 0; }
+.flutter-card-grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.flutter-card { border: 1px solid #cbd5e1; background: #fff; padding: 1.35rem 1.4rem; }
+.flutter-card h3 { margin: 0 0 .7rem; color: #0f172a; font-family: var(--font-display); font-size: 1.15rem; line-height: 1.25; }
+.flutter-card p { margin: 0; color: #475569; font-size: .95rem; line-height: 1.7; }
+.flutter-chip-row { display: flex; flex-wrap: wrap; gap: .65rem; margin-top: 1.4rem; }
+.flutter-chip { display: inline-flex; max-width: 100%; border: 1px solid #cbd5e1; background: #fff; padding: .55rem .85rem; color: #0f172a; font-size: .82rem; line-height: 1.4; }
+.unique-accordion { width: 100%; max-width: 42rem; }
+.unique-accordion-list { display: grid; }
+.unique-accordion-item { position: relative; }
+.unique-accordion-trigger {
+  position: relative;
+  display: block;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+.unique-accordion-row {
+  display: flex;
+  align-items: center;
+  gap: 1.35rem;
+  padding: 1.15rem 0.15rem;
+}
+.unique-accordion-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.15rem, 2.2vw, 1.55rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.25;
+}
+.unique-accordion-icon {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  margin-left: auto;
+  place-items: center;
+  color: var(--ink);
+}
+.unique-accordion-rule {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  background: var(--line);
+  transform-origin: left;
+}
+.unique-accordion-rule-active {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  width: 100%;
+  background: var(--ink);
+  transform-origin: left;
+}
+.unique-accordion-panel { overflow: hidden; }
+.unique-accordion-content {
+  margin: 0;
+  padding: 0 2.5rem 1.4rem 0.15rem;
+  color: var(--muted);
+  font-size: 0.98rem;
+  line-height: 1.75;
+}
+
+.flutter-quote-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.flutter-quote { margin: 0; border: 1px solid #cbd5e1; background: #fff; padding: 1.35rem 1.4rem; }
+.flutter-quote p { margin: 0 0 1.1rem; color: #334155; font-size: .95rem; line-height: 1.7; }
+.flutter-quote footer { display: grid; gap: .2rem; }
+.flutter-quote strong { color: #0f172a; }
+.flutter-quote span { color: #64748b; font-size: .85rem; }
+
+@media (max-width: 900px) {
+  .flutter-card-grid,
+  .flutter-card-grid-2,
+  .flutter-quote-grid { grid-template-columns: 1fr; }
+}
 .contact-page-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: clamp(2.5rem, 6vw, 6rem); }
 .contact-page-details { display: grid; gap: 1.1rem; }
 .contact-page-details > div, .contact-page-details > a { display: flex; align-items: flex-start; gap: .8rem; color: #334155; }

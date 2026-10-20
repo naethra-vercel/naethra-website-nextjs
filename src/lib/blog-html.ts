@@ -321,6 +321,22 @@ function promoteNumberedParagraphs(html: string) {
   );
 }
 
+/**
+ * WordPress/Elementor often wraps lists (and other blocks) in `<p>…</p>`.
+ * Browsers hoist those out of `<p>`, which breaks React hydration when we
+ * re-inject the same HTML via dangerouslySetInnerHTML.
+ */
+function unwrapBlockElementsFromParagraphs(html: string) {
+  const blockTag = "ol|ul|figure|blockquote|pre|table|h[2-6]";
+  return html.replace(
+    new RegExp(
+      `<p(?:\\s[^>]*)?>\\s*((?:<(?:${blockTag})\\b[\\s\\S]*?<\\/(?:${blockTag})>\\s*)+)<\\/p>`,
+      "gi",
+    ),
+    "$1",
+  );
+}
+
 /** Convert WordPress/Elementor HTML into clean article markup. */
 export function extractBlogArticleHtml(html: string, title?: string): string {
   if (!html) return "";
@@ -358,6 +374,7 @@ export function extractBlogArticleHtml(html: string, title?: string): string {
     .replace(/&nbsp;/gi, " ");
 
   article = promoteNumberedParagraphs(article);
+  article = unwrapBlockElementsFromParagraphs(article);
 
   return article
     .replace(/\b(Most popular|Clear Filters|View all posts)\b/gi, "")

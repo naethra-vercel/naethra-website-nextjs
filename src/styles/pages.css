@@ -1,8 +1,22 @@
 /* Extracted from styles.css lines 1305-1870 */
+
+/* Shared subpage hero banner size — keeps every service/product hero even. */
+.mobile-app-hero-banner,
+.web-app-hero-banner,
+.blogs-hero-banner,
+.content-page-hero-banner-img,
+.service-detail-hero-banner-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1888 / 833;
+  object-fit: cover;
+  object-position: center;
+}
+
 .mobile-app-page { --mobile-ink: #f3f5fa; --mobile-blue: #242957; --mobile-purple: #403376; background: var(--mobile-blue); color: var(--mobile-ink); }
 .mobile-app-page .content-page-header { background: rgb(255 255 255 / .96); }
 .mobile-app-hero { overflow: hidden; background: #fff; }
-.mobile-app-hero-banner { display: block; width: 100%; height: auto; }
 .mobile-app-intro { background: var(--mobile-blue); padding: clamp(2.8rem, 6vw, 5rem) 0; text-align: center; }
 .mobile-app-narrow { width: min(calc(100% - 5rem), 68rem); margin-inline: auto; }
 .mobile-app-intro h1, .mobile-app-tech h2, .mobile-app-skill-pool h2, .mobile-app-blog h2, .mobile-app-contact h2 { margin: 0 0 1.3rem; font-family: var(--font-display); font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 800; letter-spacing: .02em; line-height: 1.15; text-transform: uppercase; }
@@ -58,7 +72,6 @@
 
 .blogs-page, .blog-detail-page { min-height: 100vh; background: var(--paper); color: var(--ink); }
 .blogs-hero { overflow: hidden; border-bottom: 1px solid var(--line); background: #fff; }
-.blogs-hero-banner { display: block; width: 100%; height: auto; }
 .blogs-kicker { margin: 0; color: var(--blue); font-size: .7rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
 .blogs-index, .blog-related { padding-block: clamp(4rem, 8vw, 7rem); }
 .blogs-index-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 1.5rem; margin-bottom: 2.5rem; }
@@ -431,7 +444,6 @@
 
 .web-app-page { min-height: 100vh; background: #242650; color: #fff; }
 .web-app-hero { overflow: hidden; background: #fff; }
-.web-app-hero-banner { display: block; width: 100%; height: auto; }
 .web-app-quote-band { background: #172b43; padding: clamp(2rem, 5vw, 4.5rem) 0; }
 .web-app-quote-inner { display: grid; grid-template-columns: minmax(15rem, 1fr) minmax(18rem, 1fr); align-items: center; gap: clamp(2rem, 6vw, 6rem); }
 .web-app-quote-inner img { width: 100%; max-height: 16rem; object-fit: cover; box-shadow: 0 1.5rem 3rem rgb(0 0 0 / .2); }
@@ -525,7 +537,6 @@
 .services-cta h2 { max-width: 50rem; margin: 0 0 2rem; font-family: var(--font-display); font-size: clamp(2.3rem, 5vw, 5rem); letter-spacing: -.07em; line-height: .98; }
 .service-detail-hero { position: relative; min-height: clamp(19rem, 36vw, 34rem); overflow: hidden; }
 .service-detail-hero-banner { min-height: 0; background: #fff; }
-.service-detail-hero-banner-img { display: block; width: 100%; height: auto; }
 .service-detail-hero-image { position: absolute; inset: 0; background-position: center; background-size: cover; filter: saturate(.72); }
 .service-detail-hero-overlay { position: absolute; inset: 0; background: linear-gradient(90deg, rgb(6 29 69 / .82), rgb(6 29 69 / .18)); }
 .service-detail-hero-copy { position: relative; z-index: 1; display: flex; min-height: inherit; flex-direction: column; justify-content: flex-end; padding-block: clamp(3rem, 7vw, 6rem); color: #fff; }

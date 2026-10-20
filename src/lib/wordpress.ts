@@ -8,7 +8,7 @@ import {
 /** Lightweight CDN fallbacks — avoid bundling multi-MB local PNGs into every wordpress import. */
 const CMS_HERO_FALLBACK = `${WP_ORIGIN}/wp-content/uploads/2022/09/cms-details.jpg`;
 const FILEMAKER_HERO_FALLBACK = `${WP_ORIGIN}/wp-content/uploads/2022/05/7-4-1.jpg`;
-const DOTNET_HERO_FALLBACK = `${WP_ORIGIN}/wp-content/uploads/2022/09/cms-details.jpg`;
+const DOTNET_HERO_FALLBACK = `${WP_ORIGIN}/wp-content/uploads/2022/12/net-2.jpg`;
 const AWS_HERO_FALLBACK = `${WP_ORIGIN}/wp-content/uploads/2022/05/7-4-1.jpg`;
 const CUSTOM_WEB_HERO_FALLBACK = `${WP_ORIGIN}/wp-content/uploads/2022/09/cms-details.jpg`;
 const FILEMAKER_SERVICES_FALLBACK = `${WP_ORIGIN}/wp-content/uploads/2022/05/7-4-1.jpg`;
@@ -1048,47 +1048,51 @@ export function mapDotNetContent(html: string): DotNetContent {
     /migrate to \.?net|flawless migration from legacy/i.test(text),
   );
 
-  const images = extractWpImages(html).map(preferFullSizeImage);
-  const wpHero =
-    pickWpImage(images, /net-2/i) || pickWpImage(images, /\.net|dotnet|asp/i) || images[0] || "";
-  const benefitsImage =
-    pickWpImage(images, /net-2/i) || images[0] || DOT_NET_FALLBACK.sections[0]?.image;
+  // Prefer the full upload; Elementor thumbs are too small for banner/section art.
+  const benefitsImage = DOT_NET_FALLBACK.sections[0]?.image || DOTNET_HERO_FALLBACK;
+
+  const migrationSection = migrationBody
+    ? {
+        title:
+          extractHeadingText(html, "h4", /migration of other applications/i) ||
+          "Why migrate other applications to ASP.NET",
+        body: migrationBody,
+      }
+    : null;
+
+  const benefitsSection = {
+    title:
+      extractHeadingText(html, "h4", /benefits of asp/i) || DOT_NET_FALLBACK.sections[0]!.title,
+    body: benefitsBody,
+    ...(benefitsImage ? { image: benefitsImage } : {}),
+  };
+
+  const maintenanceSection = {
+    title:
+      extractHeadingText(html, "h4", /maintenance and support/i) ||
+      DOT_NET_FALLBACK.sections[1]!.title,
+    body: maintenanceBody,
+  };
+
+  const whySection = {
+    title:
+      extractHeadingText(html, "h4", /why choose naethra/i) || DOT_NET_FALLBACK.sections[2]!.title,
+    body: whyBody,
+  };
 
   return {
     slug: "dot-net-application",
-    title: DOT_NET_FALLBACK.title,
+    title:
+      extractHeadingText(html, "h1", /dot\s*net|asp\s*\.?\s*net/i) || DOT_NET_FALLBACK.title,
     eyebrow: DOT_NET_FALLBACK.eyebrow,
     intro,
-    heroImage: wpHero || DOT_NET_FALLBACK.heroImage,
+    heroImage: DOT_NET_FALLBACK.heroImage,
+    // Match WordPress section order: migration → benefits → maintenance → why.
     sections: [
-      {
-        title:
-          extractHeadingText(html, "h4", /benefits of asp/i) || DOT_NET_FALLBACK.sections[0]!.title,
-        body: benefitsBody,
-        ...(benefitsImage ? { image: benefitsImage } : {}),
-      },
-      {
-        title:
-          extractHeadingText(html, "h4", /maintenance and support/i) ||
-          DOT_NET_FALLBACK.sections[1]!.title,
-        body: maintenanceBody,
-      },
-      {
-        title:
-          extractHeadingText(html, "h4", /why choose naethra/i) ||
-          DOT_NET_FALLBACK.sections[2]!.title,
-        body: whyBody,
-      },
-      ...(migrationBody
-        ? [
-            {
-              title:
-                extractHeadingText(html, "h4", /migration of other applications/i) ||
-                "Why migrate other applications to ASP.NET",
-              body: migrationBody,
-            },
-          ]
-        : []),
+      ...(migrationSection ? [migrationSection] : []),
+      benefitsSection,
+      maintenanceSection,
+      whySection,
     ],
   };
 }
@@ -1097,7 +1101,10 @@ export async function getDotNetContent() {
   try {
     const page = await getPageBySlug("dot-net-application");
     if (!page?.contentHtml) return DOT_NET_FALLBACK;
-    return mapDotNetContent(page.contentHtml);
+    return {
+      ...mapDotNetContent(page.contentHtml),
+      title: page.title?.trim() || DOT_NET_FALLBACK.title,
+    };
   } catch {
     return DOT_NET_FALLBACK;
   }
@@ -2726,100 +2733,399 @@ export async function getHomeContent() {
 }
 
 export type FlutterContent = {
-  eyebrow: string;
-  title: string;
-  intro: string;
-  calloutEyebrow: string;
-  calloutTitle: string;
-  calloutBody: string;
-  benefitsTitle: string;
-  benefits: string[];
-  closingTitle: string;
-  closingBody: string;
+  lead: string;
+  highlights: string[];
+  aboutTitle: string;
+  aboutEyebrow: string;
+  aboutBody: string;
+  offeringItems: Array<{ title: string; body: string }>;
+  aboutClosing: string;
+  servicesTitle: string;
+  servicesIntro: string;
+  services: Array<{ title: string; body: string }>;
+  hireTitle: string;
+  hireBody: string;
+  integrations: string[];
+  reasonsTitle: string;
+  reasonsIntro: string;
+  reasons: Array<{ title: string; body: string }>;
+  whyTitle: string;
+  whyIntro: string;
+  whyPoints: Array<{ title: string; body: string }>;
+  comprehensiveTitle: string;
+  comprehensiveBody: string;
+  faqs: Array<{ question: string; answer: string }>;
+  testimonialsTitle: string;
+  testimonials: Array<{ quote: string; name: string; location: string }>;
 };
 
 const FLUTTER_FALLBACK: FlutterContent = {
-  eyebrow: "Flutter application development",
-  title: "Build innovative apps with Flutter",
-  intro: "Build innovative apps with Flutter for enhanced web and mobile experience.",
-  calloutEyebrow: "Why Flutter",
-  calloutTitle: "One thoughtful experience across the devices your customers use.",
-  calloutBody:
-    "Flutter app development is quickly transforming the world of native applications. With a single codebase, teams ship polished, responsive interfaces without treating mobile and web as separate worlds.",
-  benefitsTitle: "What we can help you ship",
-  benefits: [
-    "One codebase for iOS and Android",
-    "Fast, expressive interfaces",
-    "A flexible foundation for future web and mobile experiences",
-    "Support for upgrades, fixes, and extensions after launch",
+  lead: "Build innovative apps with Flutter for enhanced Web and Mobile experience.",
+  highlights: ["Advanced Features", "Best User Experience", "Cost Effective"],
+  aboutTitle: "Hire the Best Flutter App Development Company!",
+  aboutEyebrow: "Naethra Technologies - One of the leading Flutter App Development Companies",
+  aboutBody:
+    "Naethra Technologies is a Web/Mobile App development company that has recently started offering Flutter development services to its clients Worldwide. Founded in 2006, it offers services like:",
+  offeringItems: [
+    {
+      title: "Custom Flutter UI/UX Design",
+      body: "Designing custom user interfaces and experiences according to the application requirements.",
+    },
+    {
+      title: "Flutter Cross-Platform App Development",
+      body: "Developing apps that can be deployed to both Android and iOS app stores.",
+    },
+    {
+      title: "Backend Development",
+      body: "Developing the Flutter backend architecture and components of the application.",
+    },
+    {
+      title: "Quality Assurance",
+      body: "Testing the Flutter application to ensure it meets the highest standards of performance.",
+    },
+    {
+      title: "App Maintenance",
+      body: "Providing ongoing maintenance and support for the application.",
+    },
   ],
-  closingTitle: "A clear route to the next release",
-  closingBody:
-    "Whether you are starting from a product idea, extending an existing application, or resolving a difficult technical issue, we begin with the context and finish with a useful, supportable result.",
+  aboutClosing:
+    "Naethra Technologies’ Flutter Mobile App Development Services are designed to fit your needs and help you build stunning apps. Leverage our native app development and mobile application development expertise to create apps with captivating designs. Our development team brings your business dreams to fruition. Schedule a free 30-minute consultation for your next Flutter project.",
+  servicesTitle: "Flutter App Development Services",
+  servicesIntro:
+    "At Naethra Technologies, we provide complete confidentiality for your source code, making sure that your project is secure. We are committed to providing the best quality and reliable services so you can be sure that your project is in safe hands.",
+  services: [
+    {
+      title: "Flutter App Migration",
+      body: "Migration is the process of transferring an existing app to the Flutter platform. To ensure that the app migration is successful, we work closely with our clients to understand their existing app, analyze the codebase, and identify areas for optimization. We will ensure successful, cost-effective app migration, preserving the existing app’s look, feel, and functionality while optimizing for the Flutter platform.",
+    },
+    {
+      title: "Flutter App Upgradation",
+      body: "Upgradation is the process to ensure your app is kept up-to-date with the latest version. We provide turnkey solutions from analyzing your existing codebase, upgrading it to the latest version to testing, optimizing and providing ongoing technical support. Our experienced Flutter app developers will ensure your app runs smoothly and at optimum performance levels.",
+    },
+    {
+      title: "Support And Maintenance",
+      body: "Naethra Technologies understands the need for ongoing support and maintenance to ensure continuity in the engagement. Our expert team provide bug fixing, security patches, and feature updates, including new libraries, tools and APIs tailored to your specific needs.",
+    },
+  ],
+  hireTitle: "Hire Flutter App Developers to unlock the Potential of Flutter App",
+  hireBody:
+    "We can provide you with mobile app development using Flutter that will be designed to meet your business’s specific requirements and that will be highly scalable. Our experienced developers are well-versed in developing applications that can grow and expand your business over time. Our solutions will be tailored to your specific needs, allowing for a seamless user experience.",
+  integrations: [
+    "Flutter Native Third-Party SDK-UI integration",
+    "Dart UI + Flutter Native SDK - Flutter Communicate With Platform Native Code",
+    "Platform-specific code with Flutter",
+    "Third-party Flutter theme integration",
+    "GPS Integration",
+    "Payment Gateway Integration",
+  ],
+  reasonsTitle: "Persuasive Reasons to Choose Flutter Cross-Platform App Development",
+  reasonsIntro:
+    "Flutter app development is quickly transforming the world of native applications! Here’s why Flutter App is so trendy!",
+  reasons: [
+    {
+      title: "User-Friendly Widgets",
+      body: "Flutter provides a comprehensive set of development tools that allow app makers to create stunning functional experiences for their users across platforms. By embracing platform-specific nuances such as navigation flows, icons, scrolling styles and fonts Flutter ensures high performance across devices.",
+    },
+    {
+      title: "Efficient Code Building",
+      body: "Flutter revolutionizes the way we create mobile apps. With a single codebase, developers can craft efficient and effective applications compatible with both iOS and Android platforms – significantly reducing development time.",
+    },
+    {
+      title: "Fast, High-Performance apps",
+      body: "Flutter apps bring reliability, efficiency, and speed together. With no hanging or cutting during scrolling experienced by the user – for both iOS and Android users – Flutter offers smooth performance and accelerates development time to get your app into the market faster than ever!",
+    },
+    {
+      title: "Support for Older Devices",
+      body: "By leveraging Flutter, app developers can rest assured that their applications will look and perform consistently across multiple platforms — regardless of whether iOS or Android is running an old version. So they don’t have to invest extra time into developing legacy systems.",
+    },
+    {
+      title: "Cost Effective",
+      body: "The Flutter app eliminates the need for separate codes for different platforms, and its hot reload feature allows developers to make changes in real time without restarting the app.",
+    },
+    {
+      title: "Quick Analysis and Testing",
+      body: "As the Flutter app can be used on multiple platforms, testing becomes faster and more efficient. Flutter app streamlines the quality assurance (QA) process and helps ensure the app is bug-free. It ensures the app is released on time and within budget.",
+    },
+  ],
+  whyTitle: "Why Naethra Technologies for your Flutter app Development?",
+  whyIntro:
+    "Naethra Technologies is one of the top Flutter app development companies in India with expertise in developing Web and Mobile applications. We also offer various features such as API integrations and cross-platform compatibility.",
+  whyPoints: [
+    {
+      title: "Flexible-Engagement-Models",
+      body: "From one-time engagements to long-term projects, we offer tailored solutions with hourly or fixed-rate hiring options.",
+    },
+    {
+      title: "100% Transparency",
+      body: "Our team strives to maintain an open and honest rapport with our clients.",
+    },
+    {
+      title: "Experienced Developers",
+      body: "Our expert developers team can meet any challenge your business faces with ease. Their experience in various industries gives them a uniquely multifaceted approach to problem-solving.",
+    },
+    {
+      title: "Timely Delivery",
+      body: "We consistently exceed our customer expectations and deliver projects on time. With cutting-edge tools and practices, we ensure best results.",
+    },
+    {
+      title: "Technical Support",
+      body: "Our tech experts are on standby to answer any of your queries and provide you with reliable solutions.",
+    },
+  ],
+  comprehensiveTitle: "Comprehensive Flutter App Development Services for Businesses of All Sizes",
+  comprehensiveBody:
+    "Naethra Technologies Global Flutter App Development Services provide comprehensive solutions for businesses of all sizes. We use the latest technologies and frameworks to build high-performance, custom mobile applications for Android and iOS. Our experienced mobile app developers leverage the power of the Flutter SDK to create custom applications with a great user experience. We offer a wide range of services from designing the app layout to integrating it with the backend. Our solutions are tailored to your business needs and help you create unique, engaging, and secure mobile applications. We also provide support and maintenance services to ensure your app stays up to date with the latest market trends.",
+  faqs: [
+    {
+      question: "What are the Flutter app services Naethra Technologies offer?",
+      answer:
+        "Naethra Technologies focuses mainly on Flutter app migration, Flutter app upgradation and support and maintenance. Additionally, we may also offer to consult services to help businesses decide if Flutter is the right platform for their mobile app.",
+    },
+    {
+      question: "How much does it cost to hire a Flutter App Development Company in India?",
+      answer:
+        "The cost of hiring a Flutter App Development Company in India varies based on the complexity of the project and the size of the development team. To know more, schedule a 30-minute free meeting with Naethra Technologies.",
+    },
+    {
+      question: "What kind of integration services do Naethra Technologies provide?",
+      answer:
+        "Naethra Technologies provide these integration services to our client: Native Third-Party SDK-UI integration, Dart UI + Flutter Native SDK - Flutter Communicate with Platform Native Code, Platform-specific code with Flutter, Third-party flutter theme integration, GPS Integration, Payment Gateway Integration.",
+    },
+    {
+      question: "Can I use Flutter with my already existing app?",
+      answer:
+        "Sure. You can use Flutter to add new modules to your existing native Android and iOS apps. Naethra Technologies can help you out by conducting a feasibility study of your existing app and related components. Contact us to know more.",
+    },
+    {
+      question: "How long does it take to develop a Flutter app?",
+      answer:
+        "At Naethra Technologies, we understand that each project comes with its own unique requirements. To ensure a high-quality end result is delivered on time, our team follows an exacting process tailored to meet your individual needs.",
+    },
+  ],
+  testimonialsTitle: "What Naethra’s Clients say",
+  testimonials: [
+    {
+      quote:
+        "I have been working with Naethra Technologies for the past two years and the results have been outstanding. Their team is highly experienced and professional and they have been able to create an amazing Flutter mobile app for my business. Highly recommend them.",
+      name: "Priya Srinivasan",
+      location: "United States",
+    },
+    {
+      quote:
+        "I was looking for Flutter cross-platform app development for business with good quality and cost-effectiveness. Naethra Technologies have exceeded my expectations in every aspect. I would love to work with them again.",
+      name: "Mark Smith",
+      location: "Australia",
+    },
+    {
+      quote:
+        "Naethra Technologies is the best place to hire dedicated Flutter app developers in India. I admire them for the way of their work, and the on-time delivery of a well-built Flutter app for your business. They are extremely knowledgeable, efficient, and reliable. Their extended support paved me to continue my work with them.",
+      name: "Gokul Krishnan",
+      location: "Mumbai, India",
+    },
+  ],
 };
+
+function extractFlutterImageBoxes(html: string) {
+  return Array.from(
+    html.matchAll(
+      /elementor-image-box-title[^>]*>([\s\S]*?)<\/(?:h\d|div|span)>[\s\S]*?elementor-image-box-description[^>]*>([\s\S]*?)<\/(?:p|div)/gi,
+    ),
+  )
+    .map((match) => ({
+      title: stripHtml(match[1] ?? ""),
+      body: stripHtml(match[2] ?? ""),
+    }))
+    .filter((item) => item.title && item.body);
+}
+
+function extractFlutterFaqs(html: string) {
+  return Array.from(
+    html.matchAll(
+      /<a[^>]*class="[^"]*elementor-accordion-title[^"]*"[^>]*>([\s\S]*?)<\/a>[\s\S]*?<div[^>]*class="[^"]*elementor-tab-content[^"]*"[^>]*>([\s\S]*?)<\/div>/gi,
+    ),
+  )
+    .map((match) => ({
+      question: stripHtml(match[1] ?? ""),
+      answer: stripHtml(match[2] ?? ""),
+    }))
+    .filter((item) => item.question && item.answer);
+}
+
+function extractFlutterTestimonials(html: string) {
+  const quotes = Array.from(
+    html.matchAll(/elementor-testimonial-content[^>]*>([\s\S]*?)<\/div>/gi),
+  ).map((match) => stripHtml(match[1] ?? "").replace(/^["“]|["”]$/g, "").trim());
+  const names = Array.from(
+    html.matchAll(/elementor-testimonial-name[^>]*>([\s\S]*?)<\/(?:div|span)>/gi),
+  ).map((match) => stripHtml(match[1] ?? ""));
+  const locations = Array.from(
+    html.matchAll(/elementor-testimonial-job[^>]*>([\s\S]*?)<\/(?:div|span)>/gi),
+  ).map((match) => stripHtml(match[1] ?? ""));
+
+  return quotes
+    .map((quote, index) => ({
+      quote,
+      name: names[index] ?? "",
+      location: locations[index] ?? "",
+    }))
+    .filter((item) => item.quote && item.name);
+}
+
+function extractFlutterOfferings(text: string) {
+  const parts = text
+    .split(/[•·]/)
+    .map((part) => part.replace(/\s+/g, " ").trim())
+    .filter(Boolean);
+
+  return parts
+    .map((part) => {
+      const cleaned = part
+        .replace(/\s*Naethra Technologies[’'].*$/i, "")
+        .replace(/\s*Leverage our native.*$/i, "")
+        .trim();
+      const [title, ...rest] = cleaned.split(":");
+      if (!title || rest.length === 0) return null;
+      return { title: title.trim(), body: rest.join(":").trim() };
+    })
+    .filter((item): item is { title: string; body: string } => Boolean(item?.title && item.body));
+}
 
 export function mapFlutterContent(html: string): FlutterContent {
   const chunks = extractHtmlChunks(html);
   const plain = stripHtml(html);
 
-  const benefitMatchers: Array<[RegExp, string]> = [
-    [/one codebase|efficient code building/i, "One codebase for iOS and Android"],
-    [/fast,? high-performance|smooth performance/i, "Fast, expressive interfaces"],
-    [
-      /support for older devices|consistently across multiple platforms/i,
-      "A flexible foundation for future web and mobile experiences",
-    ],
-    [
-      /support and maintenance|bug fixing|feature updates/i,
-      "Support for upgrades, fixes, and extensions after launch",
-    ],
-  ];
-
-  const benefits = benefitMatchers
-    .map(([matcher, fallback]) => {
-      if (matcher.test(plain)) return fallback;
-      const fromWp = findChunk(chunks, (text) => matcher.test(text));
-      return fromWp ? fallback : "";
-    })
-    .filter(Boolean);
-
-  const heroBenefits = ["Advanced Features", "Best User Experience", "Cost Effective"].filter(
-    (label) => plain.toLowerCase().includes(label.toLowerCase()),
+  const highlights = FLUTTER_FALLBACK.highlights.filter((label) =>
+    plain.toLowerCase().includes(label.toLowerCase()),
   );
 
+  const aboutBlock =
+    findChunk(chunks, (text) => /founded in 2006/i.test(text) && /flutter/i.test(text)) ||
+    findChunk(chunks, (text) => /custom flutter ui\/ux design/i.test(text));
+
+  const offeringItems = extractFlutterOfferings(aboutBlock);
+  const aboutBody =
+    aboutBlock
+      .split(/[•·]/)[0]
+      ?.replace(/\s*it offers services like:?\s*$/i, " it offers services like:")
+      .trim() || FLUTTER_FALLBACK.aboutBody;
+
+  const aboutClosing =
+    findChunk(chunks, (text) =>
+      /flutter mobile app development services are designed/i.test(text),
+    ) ||
+    (aboutBlock.match(/Naethra Technologies[’'] Flutter Mobile App[\s\S]*/i)?.[0] ?? "") ||
+    FLUTTER_FALLBACK.aboutClosing;
+
+  const mapService = (fallback: { title: string; body: string }, matcher: RegExp) => ({
+    title: extractHeadingText(html, "h3", matcher) || fallback.title,
+    body: extractSectionAfterHeading(html, matcher) || fallback.body,
+  });
+
+  const imageBoxes = extractFlutterImageBoxes(html);
+  const reasons =
+    imageBoxes.length >= 4
+      ? imageBoxes
+      : FLUTTER_FALLBACK.reasons.map((reason) => {
+          const fromWp = imageBoxes.find((item) =>
+            item.title.toLowerCase().includes(reason.title.toLowerCase().slice(0, 12)),
+          );
+          return fromWp || reason;
+        });
+
+  const whyBodyMatchers: Array<[RegExp, RegExp]> = [
+    [/flexible-engagement/i, /hourly or fixed-rate hiring/i],
+    [/transparency/i, /open and honest rapport/i],
+    [/experienced developers/i, /uniquely multifaceted approach/i],
+    [/timely delivery/i, /exceed our customer expectations/i],
+    [/technical support/i, /tech experts are on standby/i],
+  ];
+
+  const whyPoints = FLUTTER_FALLBACK.whyPoints.map((point, index) => {
+    const bodyMatcher = whyBodyMatchers[index]?.[1];
+    return {
+      title:
+        extractHeadingText(
+          html,
+          "h4",
+          new RegExp(point.title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i"),
+        ) || point.title,
+      body: (bodyMatcher && findChunk(chunks, (text) => bodyMatcher.test(text))) || point.body,
+    };
+  });
+
+  const faqsFromWp = extractFlutterFaqs(html);
+  const testimonialsFromWp = extractFlutterTestimonials(html);
+
+  const integrationMatchers: Array<[string, RegExp]> = [
+    [FLUTTER_FALLBACK.integrations[0]!, /native third-party sdk/i],
+    [FLUTTER_FALLBACK.integrations[1]!, /dart ui\s*\+\s*flutter native sdk/i],
+    [FLUTTER_FALLBACK.integrations[2]!, /platform-specific code with flutter/i],
+    [FLUTTER_FALLBACK.integrations[3]!, /third-party flutter theme/i],
+    [FLUTTER_FALLBACK.integrations[4]!, /gps integration/i],
+    [FLUTTER_FALLBACK.integrations[5]!, /payment gateway/i],
+  ];
+  const integrations = integrationMatchers
+    .filter(([, matcher]) => matcher.test(plain))
+    .map(([label]) => label);
+
   return {
-    eyebrow: FLUTTER_FALLBACK.eyebrow,
-    title:
-      findChunk(chunks, (text) => /build innovative apps with flutter/i.test(text))
-        ?.replace(/\s+for enhanced.*$/i, "")
-        .trim() || FLUTTER_FALLBACK.title,
-    intro:
+    lead:
       findChunk(chunks, (text) => /build innovative apps with flutter/i.test(text)) ||
-      findChunk(chunks, (text) => /leading flutter app development company/i.test(text)) ||
-      FLUTTER_FALLBACK.intro,
-    calloutEyebrow: FLUTTER_FALLBACK.calloutEyebrow,
-    calloutTitle:
-      findChunk(chunks, (text) => /persuasive reasons to choose flutter/i.test(text)) ||
-      FLUTTER_FALLBACK.calloutTitle,
-    calloutBody:
-      findChunk(chunks, (text) => /quickly transforming the world of native/i.test(text)) ||
-      FLUTTER_FALLBACK.calloutBody,
-    benefitsTitle: FLUTTER_FALLBACK.benefitsTitle,
-    benefits:
-      benefits.length > 0
-        ? benefits
-        : heroBenefits.length > 0
-          ? heroBenefits
-          : FLUTTER_FALLBACK.benefits,
-    closingTitle:
-      findChunk(chunks, (text) => /hire flutter app developers/i.test(text)) ||
-      FLUTTER_FALLBACK.closingTitle,
-    closingBody:
+      FLUTTER_FALLBACK.lead,
+    highlights: highlights.length > 0 ? highlights : FLUTTER_FALLBACK.highlights,
+    aboutTitle:
+      extractHeadingText(html, "h1", /hire the best flutter/i) || FLUTTER_FALLBACK.aboutTitle,
+    aboutEyebrow:
+      findChunk(chunks, (text) => /one of the leading flutter app development/i.test(text)) ||
+      FLUTTER_FALLBACK.aboutEyebrow,
+    aboutBody,
+    offeringItems: offeringItems.length > 0 ? offeringItems : FLUTTER_FALLBACK.offeringItems,
+    aboutClosing,
+    servicesTitle:
+      extractHeadingText(html, "h2", /flutter app development services/i) ||
+      FLUTTER_FALLBACK.servicesTitle,
+    servicesIntro:
+      findChunk(chunks, (text) => /complete confidentiality for your source code/i.test(text)) ||
+      FLUTTER_FALLBACK.servicesIntro,
+    services: [
+      mapService(FLUTTER_FALLBACK.services[0]!, /flutter app migration/i),
+      mapService(FLUTTER_FALLBACK.services[1]!, /flutter app upgradation/i),
+      mapService(FLUTTER_FALLBACK.services[2]!, /support and maintenance/i),
+    ],
+    hireTitle:
+      extractHeadingText(html, "h2", /hire flutter app developers/i) || FLUTTER_FALLBACK.hireTitle,
+    hireBody:
       findChunk(chunks, (text) => /mobile app development using flutter/i.test(text)) ||
+      FLUTTER_FALLBACK.hireBody,
+    integrations: integrations.length > 0 ? integrations : FLUTTER_FALLBACK.integrations,
+    reasonsTitle:
+      extractHeadingText(html, "h2", /persuasive reasons to choose flutter/i) ||
+      FLUTTER_FALLBACK.reasonsTitle,
+    reasonsIntro:
+      findChunk(chunks, (text) => /quickly transforming the world of native/i.test(text)) ||
+      FLUTTER_FALLBACK.reasonsIntro,
+    reasons,
+    whyTitle:
+      extractHeadingText(html, "h3", /why naethra technologies for your flutter/i) ||
+      FLUTTER_FALLBACK.whyTitle,
+    whyIntro:
       findChunk(chunks, (text) =>
-        /flutter mobile app development services are designed/i.test(text),
-      ) ||
-      FLUTTER_FALLBACK.closingBody,
+        /top flutter app development companies in india/i.test(text),
+      ) || FLUTTER_FALLBACK.whyIntro,
+    whyPoints,
+    comprehensiveTitle:
+      extractHeadingText(html, "h3", /comprehensive flutter app development/i) ||
+      FLUTTER_FALLBACK.comprehensiveTitle,
+    comprehensiveBody:
+      findChunk(chunks, (text) =>
+        /global flutter app development services provide comprehensive/i.test(text),
+      ) || FLUTTER_FALLBACK.comprehensiveBody,
+    faqs: faqsFromWp.length > 0 ? faqsFromWp : FLUTTER_FALLBACK.faqs,
+    testimonialsTitle:
+      extractHeadingText(html, "h4", /what naethra.?s clients say/i) ||
+      FLUTTER_FALLBACK.testimonialsTitle,
+    testimonials:
+      testimonialsFromWp.length > 0 ? testimonialsFromWp : FLUTTER_FALLBACK.testimonials,
   };
 }
 
@@ -2854,7 +3160,7 @@ export type MobileAppContent = {
 const MOBILE_APP_FALLBACK: MobileAppContent = {
   title: "Mobile App Development Service",
   introParagraphs: [
-    "We help our customers stay connected through interactive and functional mobile apps. We have strong capabilities across the app development lifecycle starting with Business analysis of the initial idea, UI/UX design, software development, Quality assurance and secure PlayStore deployment. We are technology agnostic and have strong capabilities in native iOS, Android and cross-platform technologies such as Angular, Cordova, Ionic native, Flutter and React native etc.",
+    "We build interactive, high-performance mobile apps with end-to-end services, from business analysis and UI/UX design to development, quality assurance, and secure deployment. Our expertise spans native iOS and Android, as well as cross-platform technologies like Flutter, React Native, Ionic, and Angular.",
     "Do you want an innovative solution to support your business? Bring it to us! We deliver mobile solutions that fit your budget and are delivered on time.",
   ],
   trackRecord: [
