@@ -8,7 +8,7 @@ export const revalidate = 60;
 export const metadata: Metadata = {
   title: "Downloads | Naethra Technologies",
   description: "Download project profiles and technical resources from Naethra Technologies.",
-  alternates: { canonical: "/download/" },
+  alternates: { canonical: "/download" },
 };
 
 export default async function Page() {

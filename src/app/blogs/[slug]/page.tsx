@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: post.title,
     description: post.excerpt || undefined,
-    alternates: { canonical: `/blogs/${post.slug}/` },
+    alternates: { canonical: `/blogs/${post.slug}` },
   };
 }
 

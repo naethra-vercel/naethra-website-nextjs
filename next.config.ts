@@ -7,9 +7,10 @@ const emptyPolyfill = path.join(projectRoot, "src/lib/empty-polyfill.js");
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  // Match WordPress permalinks (…/page/) so old indexed URLs stay the same.
-  // Next also 308-redirects /page → /page/ automatically.
-  trailingSlash: true,
+  // No trailing slash (Next default). WordPress /page/ → /page via 308, which
+  // consolidates SEO onto one URL. Do not set trailingSlash: true — Vercel/host
+  // already strips slashes and that would fight a redirect loop.
+  trailingSlash: false,
   outputFileTracingRoot: projectRoot,
   // Drop Next's always-on Baseline polyfill module (Lighthouse "Legacy JavaScript").
   // Safe for Chrome/Edge/Firefox 111+ and Safari 16.4+ (Next 16 default targets).

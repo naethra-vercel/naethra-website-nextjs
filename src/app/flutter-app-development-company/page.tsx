@@ -11,7 +11,7 @@ import { assetSrc } from "@/lib/asset-src";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  alternates: { canonical: "/flutter-app-development-company/" },
+  alternates: { canonical: "/flutter-app-development-company" },
 };
 
 export default async function Page() {
