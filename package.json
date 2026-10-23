@@ -19,6 +19,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
+    "test": "node --test",
     "format": "prettier --write ."
   },
   "dependencies": {
