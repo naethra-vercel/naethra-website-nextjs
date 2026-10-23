@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Check, Smartphone, Zap } from "lucide-react";
 
 import flutterHeroImage from "@/assets/flutter/hero.png";
@@ -8,6 +9,10 @@ import { getFlutterContent } from "@/lib/wordpress";
 import { assetSrc } from "@/lib/asset-src";
 
 export const revalidate = 60;
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/flutter-app-development-company/" },
+};
 
 export default async function Page() {
   const content = await getFlutterContent();

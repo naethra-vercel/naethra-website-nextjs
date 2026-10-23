@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   title: "30 mins meeting | Naethra Technologies",
   description:
     "Schedule a 30-minute online consultation with Naethra Technologies, or share your preferred time by email.",
-  alternates: { canonical: "/30-mins-meeting" },
+  alternates: { canonical: "/30-mins-meeting/" },
 };
 
 const HUBSPOT_MEETING_SRC = "https://meetings.hubspot.com/info12224?embed=true";

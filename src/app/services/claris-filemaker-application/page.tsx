@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     "FileMaker Custom Web Publishing",
     "Naethra Technologies",
   ],
-  alternates: { canonical: "/services/claris-filemaker-application" },
+  alternates: { canonical: "/services/claris-filemaker-application/" },
   openGraph: {
     title: "FileMaker Development Company India | Naethra Technologies",
     description:

@@ -7,6 +7,9 @@ const emptyPolyfill = path.join(projectRoot, "src/lib/empty-polyfill.js");
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  // Match WordPress permalinks (…/page/) so old indexed URLs stay the same.
+  // Next also 308-redirects /page → /page/ automatically.
+  trailingSlash: true,
   outputFileTracingRoot: projectRoot,
   // Drop Next's always-on Baseline polyfill module (Lighthouse "Legacy JavaScript").
   // Safe for Chrome/Edge/Firefox 111+ and Safari 16.4+ (Next 16 default targets).
