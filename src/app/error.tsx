@@ -20,6 +20,29 @@ export default function Error({
 }) {
   useEffect(() => {
     console.error(error);
+    // #region agent log
+    fetch("http://127.0.0.1:7800/ingest/94ea0936-4433-4e8f-b586-7fcc797a61ea", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Debug-Session-Id": "f894e3",
+      },
+      body: JSON.stringify({
+        sessionId: "f894e3",
+        runId: "pre-fix",
+        hypothesisId: "D",
+        location: "src/app/error.tsx:useEffect",
+        message: "Client error boundary triggered",
+        data: {
+          name: error?.name,
+          message: error?.message?.slice(0, 300),
+          digest: error?.digest ?? null,
+          path: typeof window !== "undefined" ? window.location.pathname : null,
+        },
+        timestamp: Date.now(),
+      }),
+    }).catch(() => {});
+    // #endregion
   }, [error]);
 
   return (

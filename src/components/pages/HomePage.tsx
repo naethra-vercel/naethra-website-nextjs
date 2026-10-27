@@ -297,6 +297,7 @@ export default function HomePage({
   recentProjects: recentProjectsProp = [],
 }: HomePageProps) {
   const { navigationItems, meetingItem } = splitPrimaryMenu(menu);
+  const usedPortfolioFallback = recentProjectsProp.length === 0;
   const recentProjects =
     recentProjectsProp.length > 0
       ? recentProjectsProp
@@ -310,6 +311,29 @@ export default function HomePage({
           href: project.href,
           summary: project.summary,
         }));
+  // #region agent log
+  if (typeof window !== "undefined") {
+    fetch("http://127.0.0.1:7800/ingest/94ea0936-4433-4e8f-b586-7fcc797a61ea", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "f894e3" },
+      body: JSON.stringify({
+        sessionId: "f894e3",
+        runId: "post-fix",
+        hypothesisId: "H1",
+        location: "src/components/pages/HomePage.tsx:recentProjects",
+        message: "Home portfolio source (client)",
+        data: {
+          side: "client",
+          usedPortfolioFallback,
+          propCount: recentProjectsProp.length,
+          firstImage: recentProjects[0]?.image?.slice(0, 80) ?? null,
+          firstHref: recentProjects[0]?.href?.slice(0, 80) ?? null,
+        },
+        timestamp: Date.now(),
+      }),
+    }).catch(() => {});
+  }
+  // #endregion
   const heroSlides =
     home.heroSlides.length > 0
       ? home.heroSlides

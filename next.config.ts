@@ -11,6 +11,11 @@ const nextConfig: NextConfig = {
   // consolidates SEO onto one URL. Do not set trailingSlash: true — Vercel/host
   // already strips slashes and that would fight a redirect loop.
   trailingSlash: false,
+  // Legacy WP redirects temporarily handled in src/middleware.ts for debug logging.
+  // Restored to next.config after verification.
+  async redirects() {
+    return [];
+  },
   outputFileTracingRoot: projectRoot,
   // Drop Next's always-on Baseline polyfill module (Lighthouse "Legacy JavaScript").
   // Safe for Chrome/Edge/Firefox 111+ and Safari 16.4+ (Next 16 default targets).
