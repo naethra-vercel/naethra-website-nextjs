@@ -17,6 +17,9 @@ const nextConfig: NextConfig = {
     return [];
   },
   outputFileTracingRoot: projectRoot,
+  experimental: {
+    agentUpgrade: "security",
+  },
   // Drop Next's always-on Baseline polyfill module (Lighthouse "Legacy JavaScript").
   // Safe for Chrome/Edge/Firefox 111+ and Safari 16.4+ (Next 16 default targets).
   // Turbopack resolves the relative key from next/dist/client; keep both aliases.
