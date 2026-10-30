@@ -13,7 +13,9 @@ import {
 import {
   APP_CATEGORIES,
   WELCOME_MESSAGE,
+  applyAgentChoice,
   createAgentSession,
+  findOptionMatch,
   getStepOptions,
   type AgentOption,
   type AgentSession,
@@ -89,9 +91,49 @@ export function NaethraAIAssistant() {
     setInputText("");
   };
 
+  /** Deterministic Keynote path — chip taps never depend on the chat API. */
+  const applyLocalChoice = (option: AgentOption, current: AgentSession) => {
+    const userMsg: Message = {
+      id: `${Date.now()}-user`,
+      sender: "user",
+      text: option.label,
+      timestamp: stamp(),
+    };
+    const result = applyAgentChoice(current, option);
+    setSession(result.session);
+    setMessages((prev) => [
+      ...prev,
+      userMsg,
+      {
+        id: `${Date.now()}-assistant`,
+        sender: "assistant",
+        text: result.reply,
+        timestamp: stamp(),
+        options: getStepOptions(result.session),
+        showCta: result.session.step === "cta",
+      },
+    ]);
+    setShowErrorAlert(false);
+  };
+
+  const chooseOption = (option: AgentOption) => {
+    if (isLoading) return;
+    applyLocalChoice(option, session);
+  };
+
   const sendMessage = async (rawText: string) => {
     const userText = rawText.trim();
     if (!userText || isLoading) return;
+
+    // If typed text matches a current-step option, stay on the Keynote path locally.
+    if (session.step !== "cta") {
+      const matched = findOptionMatch(userText, getStepOptions(session));
+      if (matched) {
+        applyLocalChoice(matched, session);
+        setInputText("");
+        return;
+      }
+    }
 
     const userMsg: Message = {
       id: `${Date.now()}-user`,
@@ -139,7 +181,7 @@ export function NaethraAIAssistant() {
           sender: "assistant",
           text: data.reply,
           timestamp: stamp(),
-          options: data.options ?? [],
+          options: data.options ?? getStepOptions(data.session),
           showCta: Boolean(data.showCta),
         },
       ]);
@@ -151,7 +193,7 @@ export function NaethraAIAssistant() {
         {
           id: `${Date.now()}-error`,
           sender: "assistant",
-          text: "I am having trouble connecting right now. Please try again, or reach us at info@naethra.com.",
+          text: "I could not reach the AI helper. Please pick one of the options below to continue the guided flow.",
           timestamp: stamp(),
           options: getStepOptions(session),
         },
@@ -300,7 +342,7 @@ export function NaethraAIAssistant() {
                       key={option.id}
                       type="button"
                       disabled={isLoading}
-                      onClick={() => void sendMessage(option.label)}
+                      onClick={() => chooseOption(option)}
                       className="rounded-full border border-cyan-500/30 bg-[#0d1d36] px-3 py-1.5 text-xs font-medium text-cyan-100 transition hover:border-cyan-400 hover:bg-[#123056] disabled:opacity-50"
                     >
                       {option.label}
@@ -318,16 +360,16 @@ export function NaethraAIAssistant() {
             {!isLoading && showCta && (
               <div className="pl-12 flex flex-wrap gap-2">
                 <a
-                  href="/contact-us"
+                  href="/30-mins-meeting"
                   className="inline-flex items-center rounded-full bg-gradient-to-r from-[#0072ff] to-[#00c6ff] px-4 py-2 text-xs font-semibold text-white shadow-md shadow-cyan-500/20"
                 >
-                  Contact Us
+                  Contact Us Meeting
                 </a>
                 <a
-                  href="/30-mins-meeting"
+                  href="/contact-us"
                   className="inline-flex items-center rounded-full border border-cyan-400/40 bg-[#0d1d36] px-4 py-2 text-xs font-semibold text-cyan-100"
                 >
-                  Book a meeting
+                  Contact Us
                 </a>
                 <button
                   type="button"

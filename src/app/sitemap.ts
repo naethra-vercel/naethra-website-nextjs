@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-import { getPosts } from "@/lib/wordpress";
+import { getPortfolio, getPosts } from "@/lib/wordpress";
 
 const SITE = "https://naethra.com";
 
@@ -29,7 +29,10 @@ const STATIC_ROUTES = [
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const posts = await getPosts(1, 50).catch(() => []);
+  const [posts, portfolio] = await Promise.all([
+    getPosts(1, 50).catch(() => []),
+    getPortfolio(50).catch(() => []),
+  ]);
 
   const staticEntries: MetadataRoute.Sitemap = STATIC_ROUTES.map((path) => ({
     url: `${SITE}${path || "/"}`,
@@ -45,5 +48,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
-  return [...staticEntries, ...postEntries];
+  const portfolioEntries: MetadataRoute.Sitemap = portfolio.map((project) => ({
+    url: `${SITE}/portfolio/${project.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "monthly",
+    priority: 0.6,
+  }));
+
+  return [...staticEntries, ...postEntries, ...portfolioEntries];
 }

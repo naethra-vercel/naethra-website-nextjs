@@ -39,7 +39,7 @@ export default async function Page() {
             title: project.title,
             technologies: technologiesByCategory[project.category] ?? [project.category],
             image: project.image,
-            slug: project.href,
+            href: project.href,
           }))}
         />
       </section>

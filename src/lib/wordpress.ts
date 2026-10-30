@@ -1,4 +1,4 @@
-import { extractBlogArticleHtml } from "@/lib/blog-html";
+import { extractBlogArticleHtml, extractPortfolioArticleHtml } from "@/lib/blog-html";
 import {
   WORDPRESS_API_BASE as WP_BASE,
   WORDPRESS_ORIGIN as WP_ORIGIN,
@@ -49,6 +49,7 @@ export type WpPortfolioProject = {
   image: string;
   href: string;
   summary: string;
+  contentHtml?: string;
 };
 
 export type WpPage = {
@@ -308,13 +309,18 @@ export function mapWpPost(post: WpPost, options?: { includeContent?: boolean }):
   };
 }
 
-export function mapWpPortfolio(post: WpPost): WpPortfolioProject {
+export function mapWpPortfolio(
+  post: WpPost,
+  options?: { includeContent?: boolean },
+): WpPortfolioProject {
+  const includeContent = options?.includeContent === true;
   const slug = post.slug ?? "";
   const categories = getCategories(post, "portfolio-category");
   const embeddedImage = wordpressAssetUrl(
     post._embedded?.["wp:featuredmedia"]?.[0]?.source_url ?? "",
   );
-  const contentText = stripHtml(post.content?.rendered ?? "");
+  const rawContent = post.content?.rendered ?? "";
+  const contentText = stripHtml(rawContent);
   const summary =
     stripHtml(post.excerpt?.rendered ?? "") ||
     (contentText ? `${contentText.slice(0, 160).trim()}…` : "");
@@ -326,8 +332,11 @@ export function mapWpPortfolio(post: WpPost): WpPortfolioProject {
     category: categories[0] ?? "Portfolio",
     categories,
     image: embeddedImage || PORTFOLIO_IMAGE_FALLBACKS[slug] || "",
-    href: wordpressAssetUrl(post.link ?? `${WP_ORIGIN}/blog/portfolio/${slug}/`),
+    href: `/portfolio/${encodeURIComponent(slug)}`,
     summary,
+    ...(includeContent
+      ? { contentHtml: extractPortfolioArticleHtml(wordpressAssetUrl(rawContent)) }
+      : {}),
   };
 }
 
@@ -3331,8 +3340,20 @@ export async function getPortfolio(perPage = 50) {
     const items = await wpFetch<WpPost[]>(
       `/portfolio?per_page=${perPage}&_embed&orderby=date&order=desc&status=publish`,
     );
-    return items.map(mapWpPortfolio);
+    return items.map((item) => mapWpPortfolio(item));
   } catch {
     return [];
+  }
+}
+
+export async function getPortfolioBySlug(slug: string) {
+  try {
+    const items = await wpFetch<WpPost[]>(
+      `/portfolio?slug=${encodeURIComponent(slug)}&_embed&status=publish`,
+    );
+    const item = items[0];
+    return item ? mapWpPortfolio(item, { includeContent: true }) : null;
+  } catch {
+    return null;
   }
 }

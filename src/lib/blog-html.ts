@@ -337,6 +337,64 @@ function unwrapBlockElementsFromParagraphs(html: string) {
   );
 }
 
+/**
+ * Portfolio CPT HTML is usually well-formed (`<p><b>…</b>…</p>`).
+ * Some older exports are mid-tag fragments (`Client:</b>…</p>`); repair those only.
+ */
+export function extractPortfolioArticleHtml(html: string): string {
+  if (!html.trim()) return "";
+
+  // Real WP API content already has opening block tags — sanitize only.
+  if (/<(?:p|h[1-6]|ul|ol)\b/i.test(html)) {
+    return extractBlogArticleHtml(html);
+  }
+
+  const lines = html
+    .replace(/&nbsp;/gi, " ")
+    .split(/\n+/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  const out: string[] = [];
+
+  for (const line of lines) {
+    if (
+      /^<\/?ul\b/i.test(line) ||
+      /^<\/?ol\b/i.test(line) ||
+      /^<li\b/i.test(line) ||
+      /^<\/li>/i.test(line)
+    ) {
+      out.push(line);
+      continue;
+    }
+
+    let match = line.match(/^(.+?)\s*<\/h[2-6]>\s*$/i);
+    if (match) {
+      const title = match[1]!.replace(/:$/, "").trim();
+      if (title) out.push(`<h3>${title}</h3>`);
+      continue;
+    }
+
+    match = line.match(/^(.+?)<\/b>(.*)$/i);
+    if (match) {
+      const label = match[1]!.trim();
+      const rest = match[2]!
+        .replace(/<\/p>\s*$/i, "")
+        .replace(/^<\/p>\s*$/i, "")
+        .trim();
+      out.push(`<p><strong>${label}</strong>${rest ? ` ${rest}` : ""}</p>`);
+      continue;
+    }
+
+    if (/^<\/p>$/i.test(line)) continue;
+
+    const body = line.replace(/<\/p>\s*$/i, "").trim();
+    if (body) out.push(`<p>${body}</p>`);
+  }
+
+  return extractBlogArticleHtml(out.join("\n"));
+}
+
 /** Convert WordPress/Elementor HTML into clean article markup. */
 export function extractBlogArticleHtml(html: string, title?: string): string {
   if (!html) return "";

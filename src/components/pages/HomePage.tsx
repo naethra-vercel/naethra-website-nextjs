@@ -303,7 +303,7 @@ export default function HomePage({
       ? recentProjectsProp
       : portfolioFallback.slice(0, 5).map((project, index) => ({
           id: index + 1,
-          slug: project.href,
+          slug: project.href.replace(/^\/portfolio\//, ""),
           title: project.title,
           category: project.category,
           categories: [project.category],

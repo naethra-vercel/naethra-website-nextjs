@@ -9,7 +9,8 @@ export type PortfolioCarouselProject = {
   title: string;
   technologies: string[];
   image: string;
-  slug: string;
+  /** Local case-study path (/portfolio/{slug}). */
+  href: string;
 };
 
 type PortfolioCarouselProps = {
@@ -58,15 +59,17 @@ export default function PortfolioCarousel({ projects }: PortfolioCarouselProps) 
   };
 
   const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
+    // Don't capture pointer — that steals clicks from the active card <a>.
     pointerStart.current = event.clientX;
-    event.currentTarget.setPointerCapture(event.pointerId);
   };
 
   const handlePointerUp = (event: PointerEvent<HTMLDivElement>) => {
     if (pointerStart.current === null) return;
     const distance = event.clientX - pointerStart.current;
     pointerStart.current = null;
-    if (Math.abs(distance) > 45) goTo(activeIndex + (distance < 0 ? 1 : -1));
+    if (Math.abs(distance) > 45) {
+      goTo(activeIndex + (distance < 0 ? 1 : -1));
+    }
   };
 
   return (
@@ -86,7 +89,10 @@ export default function PortfolioCarousel({ projects }: PortfolioCarouselProps) 
           handlePointerUp(event);
           setIsPaused(false);
         }}
-        onPointerCancel={() => setIsPaused(false)}
+        onPointerCancel={() => {
+          pointerStart.current = null;
+          setIsPaused(false);
+        }}
       >
         {projects.map((project, index) => {
           const offset = getOffset(index, activeIndex, total);
@@ -97,24 +103,15 @@ export default function PortfolioCarousel({ projects }: PortfolioCarouselProps) 
           const opacity = MathUtils.clamp(1 - distance * 0.2, 0, 1);
           const isActive = offset === 0;
           const hidden = distance > 4;
-
-          return (
-            <button
-              className={`portfolio-carousel-card ${isActive ? "is-active" : ""}`}
-              key={project.id}
-              type="button"
-              aria-label={`${isActive ? "Open" : "Center"} ${project.title}`}
-              aria-hidden={hidden}
-              tabIndex={hidden ? -1 : 0}
-              onClick={() => (isActive ? (window.location.href = project.slug) : goTo(index))}
-              style={{
-                opacity,
-                pointerEvents: hidden ? "none" : "auto",
-                transform: `translate3d(${position.x}rem, ${distance * 0.35}rem, ${position.z}px) rotateY(${rotation}deg) scale(${scale})`,
-                zIndex: 10 - distance,
-                filter: `blur(${distance * 0.65}px)`,
-              }}
-            >
+          const cardStyle = {
+            opacity,
+            pointerEvents: hidden ? ("none" as const) : ("auto" as const),
+            transform: `translate3d(${position.x}rem, ${distance * 0.35}rem, ${position.z}px) rotateY(${rotation}deg) scale(${scale})`,
+            zIndex: 10 - distance,
+            filter: `blur(${distance * 0.65}px)`,
+          };
+          const cardBody = (
+            <>
               <span
                 className="portfolio-carousel-image"
                 style={{ backgroundImage: `url(${project.image})` }}
@@ -131,6 +128,44 @@ export default function PortfolioCarousel({ projects }: PortfolioCarouselProps) 
                   View case <ArrowUpRight size={16} aria-hidden="true" />
                 </span>
               </span>
+            </>
+          );
+
+          if (isActive) {
+            return (
+              <a
+                className="portfolio-carousel-card is-active"
+                key={project.id}
+                href={project.href}
+                aria-label={`Open case study: ${project.title}`}
+                aria-hidden={hidden}
+                tabIndex={hidden ? -1 : 0}
+                style={cardStyle}
+                onPointerDown={(event) => {
+                  // Keep swipe tracking on the stage, but don't let stage logic
+                  // treat this tap as a drag-navigation gesture.
+                  event.stopPropagation();
+                  setIsPaused(true);
+                }}
+                onPointerUp={() => setIsPaused(false)}
+              >
+                {cardBody}
+              </a>
+            );
+          }
+
+          return (
+            <button
+              className="portfolio-carousel-card"
+              key={project.id}
+              type="button"
+              aria-label={`Center ${project.title}`}
+              aria-hidden={hidden}
+              tabIndex={hidden ? -1 : 0}
+              onClick={() => goTo(index)}
+              style={cardStyle}
+            >
+              {cardBody}
             </button>
           );
         })}

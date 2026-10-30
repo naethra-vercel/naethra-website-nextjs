@@ -158,14 +158,20 @@ export default function BlogArticleContent({ html }: { html: string }) {
         }
 
         if (block.type === "paragraph") {
-          // Safety net: never put block-level HTML inside <p>.
-          const hasBlockChild = /<(ul|ol|figure|blockquote|pre|table|h[2-6])\b/i.test(block.html);
+          // Safety net: never put block-level HTML inside <p> (browsers hoist
+          // nested <p>/<h*> and break hydration).
+          const hasBlockChild = /<(ul|ol|figure|blockquote|pre|table|h[1-6]|p)\b/i.test(
+            block.html,
+          );
           const Tag = hasBlockChild ? "div" : "p";
+          const safeHtml = hasBlockChild
+            ? block.html.replace(/<\/?(?:p|h[1-6])\b[^>]*>/gi, "")
+            : block.html;
           return (
             <Tag
               key={`p-${index}`}
               className="mb-5 max-w-[42rem] text-[1.05rem] leading-[1.8] text-[var(--muted)]"
-              dangerouslySetInnerHTML={{ __html: block.html }}
+              dangerouslySetInnerHTML={{ __html: safeHtml }}
             />
           );
         }

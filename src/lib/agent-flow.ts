@@ -109,7 +109,7 @@ export const INITIAL_AGENT_SESSION: AgentSession = {
 };
 
 export const WELCOME_MESSAGE =
-  "Hi, welcome to Naethra Technologies. What type of service do you require from us?";
+  "Hi, welcome to Naethra Technologies.\n\nWhat type of service you required from us?";
 
 export const CATEGORY_PROMPT =
   "Choose an application type and category that describe the content or main functions of your application.";
@@ -141,7 +141,7 @@ export function getStepOptions(session: AgentSession): AgentOption[] {
 export function getStepPrompt(session: AgentSession): string {
   switch (session.step) {
     case "service":
-      return "What type of service do you require from us?";
+      return "What type of service you required from us?";
     case "category":
       return CATEGORY_PROMPT;
     case "mobile_native":
@@ -162,25 +162,40 @@ export function getStepPrompt(session: AgentSession): string {
 }
 
 export function findOptionMatch(input: string, options: AgentOption[]): AgentOption | null {
-  const normalized = input.trim().toLowerCase();
+  const normalized = input.trim().toLowerCase().replace(/\s+/g, " ");
   if (!normalized) return null;
 
-  const exact = options.find(
-    (option) =>
-      option.id === normalized ||
-      option.label.toLowerCase() === normalized ||
-      option.label.toLowerCase().replace(/&/g, "and") === normalized,
-  );
-  if (exact) return exact;
+  const compact = normalized.replace(/[^a-z0-9]+/g, "");
 
-  return (
-    options.find(
-      (option) =>
-        normalized.includes(option.label.toLowerCase()) ||
-        option.label.toLowerCase().includes(normalized) ||
-        normalized.includes(option.id.replace(/-/g, " ")),
-    ) ?? null
-  );
+  const scored = options
+    .map((option) => {
+      const label = option.label.toLowerCase();
+      const labelAnd = label.replace(/&/g, "and");
+      const idCompact = option.id.replace(/-/g, "");
+      const labelCompact = label.replace(/[^a-z0-9]+/g, "");
+
+      if (option.id === normalized || label === normalized || labelAnd === normalized) {
+        return { option, score: 100 };
+      }
+      if (compact === idCompact || compact === labelCompact) {
+        return { option, score: 95 };
+      }
+      if (normalized.includes(label) || normalized.includes(labelAnd)) {
+        return { option, score: 80 + Math.min(label.length, 15) };
+      }
+      if (normalized.includes(option.id.replace(/-/g, " "))) {
+        return { option, score: 70 };
+      }
+      // Avoid tiny partials like "app" matching "Mobile App"
+      if (normalized.length >= 4 && label.includes(normalized)) {
+        return { option, score: 40 + normalized.length };
+      }
+      return { option, score: 0 };
+    })
+    .filter((item) => item.score > 0)
+    .sort((a, b) => b.score - a.score);
+
+  return scored[0]?.option ?? null;
 }
 
 export function applyAgentChoice(
@@ -234,15 +249,16 @@ export function applyAgentChoice(
     }
     case "mobile_native": {
       answers.mobileNative = option.label;
+      // Keynote: Native Yes → CTA; Native No → Hybrid → CTA
       if (option.id === "yes") {
-        return next(
-          session,
-          answers,
-          "mobile_hybrid",
-          "Do you also need Hybrid (cross-platform) delivery?",
-        );
+        return next(session, answers, "cta", buildCtaMessage(answers));
       }
-      return next(session, answers, "cta", buildCtaMessage(answers));
+      return next(
+        session,
+        answers,
+        "mobile_hybrid",
+        "Do you need Hybrid (cross-platform) delivery?",
+      );
     }
     case "mobile_hybrid": {
       answers.mobileHybrid = option.label;
@@ -301,7 +317,7 @@ export function buildCtaMessage(answers: AgentAnswers): string {
   return [
     "Great — I have enough to route this to our team.",
     summary ? `\nYour brief:\n${summary}` : "",
-    "\nNext step: book a Contact Us meeting and we will map scope, timeline, and delivery.",
+    "\nNext step: Contact Us Meeting — we will map scope, timeline, and delivery.",
   ]
     .filter(Boolean)
     .join("\n");
