@@ -1,7 +1,7 @@
 "use client";
 
 import "@/styles/content.css";
-
+import newLogo from "@/assets/logo/logo-w.png";
 import { type FormEvent, useState, type HTMLAttributes } from "react";
 import { ExternalLink, Mail, MapPin, Phone } from "lucide-react";
 
@@ -141,7 +141,7 @@ export default function SiteFooter({
       <div className="site-footer-detailed-bottom">
         <div className="site-container site-footer-detailed-grid">
           <div className="site-footer-about">
-            <img src="/logo.png" alt="Naethra Technologies" width={150} height={33} />
+            <img src={newLogo.src} alt="Naethra Technologies" width={150} height={33} />
             <p>
               Technology is constantly evolving, shaping the way we live and work. It encompasses
               innovation, automation, and connectivity.
