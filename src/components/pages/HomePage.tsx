@@ -251,7 +251,7 @@ function Logo({ inverse = false }: { inverse?: boolean }) {
       <img
         src={newLogo.src}
         alt="Naethra Technologies"
-        className={`brand-logo ${inverse ? "brand-logo-inverse" : ""}`}
+        className="brand-logo"
         width={220}
         height={49}
       />
