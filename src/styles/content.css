@@ -879,7 +879,7 @@ a.contact-submit-button {
 .site-footer-detailed-bottom { background: linear-gradient(110deg, #061d3d 0%, #092a52 55%, #061a35 100%); }
 .site-footer-detailed-grid { display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: clamp(2rem, 5vw, 4rem); padding-block: 2.25rem 1.75rem; }
 .site-footer-about { max-width: 35rem; min-width: 0; }
-.site-footer-about img { width: min(9rem, 55vw); height: auto; filter: brightness(0) invert(1); }
+.site-footer-about img { width: min(9rem, 55vw); height: auto; filter: none; }
 .site-footer-about p { margin: 1rem 0 0; max-width: 32rem; color: rgb(255 255 255 / .8); font-size: .82rem; line-height: 1.7; }
 .site-footer-contact-block { min-width: 0; }
 .site-footer-contact-block h2 { color: #fff; font-size: clamp(1.4rem, 3vw, 1.8rem); }
