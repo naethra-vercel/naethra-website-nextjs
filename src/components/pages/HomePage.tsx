@@ -78,7 +78,6 @@ const CONTACT_REASON_OPTIONS = [
 import { submitFooterContactForm } from "@/lib/contact-form";
 import { getPrimaryMenu, splitPrimaryMenu } from "@/lib/navigation";
 import { portfolioProjects as portfolioFallback } from "@/lib/portfolio-data";
-import { SOCIAL_PROFILES } from "@/lib/social";
 import { getHomeContent, getPosts, type WpPortfolioProject } from "@/lib/wordpress";
 import { assetSrc } from "@/lib/asset-src";
 
@@ -1201,90 +1200,6 @@ export default function HomePage({
           </form>
         </div>
       </section>
-
-      <footer className="site-footer">
-        <div className="site-container footer-map-wrap">
-          <iframe
-            className="footer-map"
-            title="Naethra Technologies location"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3886.810857592566!2d80.2267234!3d13.047708300000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a5266f74b625631%3A0xdf28fa08eca396b9!2sNaethra%20Technologies%20Private%20Limited!5e0!3m2!1sen!2sin!4v1790084108341!5m2!1sen!2sin"
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          />
-        </div>
-        <div className="site-container footer-grid">
-          <div className="footer-brand">
-            <Logo inverse />
-            <p>
-              Technology is constantly evolving, shaping the way we live and work. It encompasses
-              innovation, automation, and connectivity.
-            </p>
-            <div className="footer-socials" aria-label="Social links">
-              {SOCIAL_PROFILES.map((profile) => (
-                <a
-                  key={profile.id}
-                  href={profile.href}
-                  target="_blank"
-                  rel="noreferrer me"
-                  aria-label={profile.label}
-                >
-                  {profile.short}
-                </a>
-              ))}
-            </div>
-          </div>
-          <div className="footer-address">
-            <h3>Contact</h3>
-            <div className="footer-contact-row">
-              <span className="footer-contact-icon">
-                <HugeiconsIcon icon={Location01Icon} size={17} />
-              </span>
-              <div>
-                <span>Address</span>
-                <strong>
-                  37, Viswanathapuram Main Rd,
-                  <br />
-                  Azeez Nagar, Kodambakkam,
-                  <br />
-                  Chennai, Tamil Nadu 600024
-                </strong>
-              </div>
-            </div>
-          </div>
-          <div className="footer-contact-details">
-            <div className="footer-contact-row">
-              <span className="footer-contact-icon">
-                <HugeiconsIcon icon={SmartPhone01Icon} size={17} />
-              </span>
-              <div>
-                <span>Phone Number</span>
-                <strong>+91 44 3500 3204</strong>
-              </div>
-            </div>
-            <div className="footer-contact-row">
-              <span className="footer-contact-icon">
-                <HugeiconsIcon icon={Mail01Icon} size={17} />
-              </span>
-              <div>
-                <span>Email</span>
-                <strong>info@naethra.com</strong>
-              </div>
-            </div>
-          </div>
-          <div className="footer-copy">
-            <span>
-              2026 © Copyrights <strong>Naethra Technologies</strong> | Designed by{" "}
-              <strong>Naethra Technologies</strong>
-            </span>
-            <div className="footer-links">
-              <a href="/contact-us">Contact Us</a>
-              <a href="/terms-and-conditions">Terms and Conditions</a>
-              <a href="/privacy-policy">Privacy Policy</a>
-              <a href="/disclaimer-and-notification">Disclaimer and Notification</a>
-            </div>
-          </div>
-        </div>
-      </footer>
     </main>
   );
 }

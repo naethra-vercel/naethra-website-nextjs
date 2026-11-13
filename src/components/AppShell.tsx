@@ -27,7 +27,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     <SmoothScroll>
       <SpotlightCursor />
       {children}
-      {pathname !== "/" && <SiteFooter hideTopContact={hideTopContact} />}
+      <SiteFooter hideTopContact={hideTopContact} />
       <JarvisAIAssistant />
       {pathname === "/" && <FakeJobsDisclaimerModal />}
       <ScrollToTopButton />
