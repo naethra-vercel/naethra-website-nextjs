@@ -1,7 +1,6 @@
 "use client";
 
 import "@/styles/home.css";
-import newLogo from "@/assets/logo/logo-w.png";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { WORDPRESS_ORIGIN } from "@/lib/wordpress-config";
 import {
@@ -244,11 +243,11 @@ const offerServiceMeta = [
   },
 ] as const;
 
-function Logo({ inverse = false }: { inverse?: boolean }) {
+function Logo() {
   return (
     <a href="#top" className="brand-mark" aria-label="Naethra Technologies home">
       <img
-        src={newLogo.src}
+        src="/logo.png"
         alt="Naethra Technologies"
         className="brand-logo"
         width={220}
