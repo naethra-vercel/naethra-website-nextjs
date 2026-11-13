@@ -27,7 +27,7 @@ function matchLegacy(pathname: string) {
   return null;
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const destination = matchLegacy(pathname);
   const hasTrailingSlash = pathname.length > 1 && pathname.endsWith("/");
