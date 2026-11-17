@@ -95,7 +95,7 @@ export default function WhyOutsourceSection({
           <div className="why-outsource-globe-glow" aria-hidden="true" />
           <div className="why-outsource-globe-wrap">
             <img
-              src={worldImage}
+              src={worldImage.src}
               alt="Global software development outsourcing to India"
               className="why-outsource-globe-img"
               loading="lazy"
