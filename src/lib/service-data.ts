@@ -1,4 +1,4 @@
-import type { LucideIcon } from "lucide-react";
+import { WORDPRESS_ORIGIN } from "@/lib/wordpress-config";
 import {
   Cloud,
   Code2,
@@ -9,6 +9,16 @@ import {
   Smartphone,
   Workflow,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+
+import { serviceHeroImages } from "@/lib/service-hero-images";
+
+const awsHeroImage = serviceHeroImages.aws;
+const cmsHeroImage = serviceHeroImages.cms;
+const customWebPublishHeroImage = serviceHeroImages.customWebPublish;
+const dotNetHeroImage = serviceHeroImages.dotNet;
+const filemakerHeroImage = serviceHeroImages.filemaker;
+const filemakerServicesImage = serviceHeroImages.filemakerServices;
 
 export type ServiceDetail = {
   slug: string;
@@ -16,12 +26,6 @@ export type ServiceDetail = {
   eyebrow: string;
   intro: string;
   heroImage: string;
-  certifications?: {
-    title: string;
-    description?: string;
-    image: string;
-    badges?: Array<{ version: string; title: string }>;
-  };
   sections: Array<{ title: string; body: string; image?: string; bullets?: string[] }>;
 };
 
@@ -48,13 +52,13 @@ export const services = [
   {
     title: "Java/J2EE applications",
     description: "Enterprise Java solutions that improve the way your business builds software.",
-    href: "/services/dot-net-application",
+    href: "/services/java-j2ee-applications",
     icon: Code2,
   },
   {
     title: "PHP/MySQL applications",
     description: "Practical, scalable PHP and database applications for growing organisations.",
-    href: "/web-app",
+    href: "/services/php-mysql-applications",
     icon: Database,
   },
   {
@@ -66,7 +70,7 @@ export const services = [
   {
     title: "FileMaker development",
     description: "Certified FileMaker development, integrations, and custom business tools.",
-    href: "/services/custom-web-publishing",
+    href: "/services/claris-filemaker-application",
     icon: Workflow,
   },
   {
@@ -83,7 +87,7 @@ export const services = [
   },
 ] satisfies Array<{ title: string; description: string; href: string; icon: LucideIcon }>;
 
-const base = "https://naethra.com/wp-content/uploads";
+const base = `${WORDPRESS_ORIGIN}/wp-content/uploads`;
 
 export const serviceDetails = {
   cms: {
@@ -92,7 +96,7 @@ export const serviceDetails = {
     eyebrow: "Content management systems",
     intro:
       "Naethra offers cost-effective CMS development services using PHP, WordPress, Joomla, and Magento, with WooCommerce and payment gateway integration when your product needs it.",
-    heroImage: `${base}/2022/06/web-app-changed.jpg`,
+    heroImage: cmsHeroImage,
     sections: [
       {
         title: "Website and CMS development in India",
@@ -123,7 +127,7 @@ export const serviceDetails = {
     eyebrow: "FileMaker integrations",
     intro:
       "FileMaker Custom Web Publishing integrates a FileMaker database with a custom website, giving teams secure control over how business data is published and used on the web.",
-    heroImage: `${base}/2022/12/filemaker-server.jpg`,
+    heroImage: customWebPublishHeroImage,
     sections: [
       {
         title: "Publish the data your users need",
@@ -159,21 +163,7 @@ export const serviceDetails = {
     eyebrow: "FileMaker solutions",
     intro:
       "One-stop FileMaker solutions for design, development, hosting, maintenance, and 24 x 7 support services.",
-    heroImage: `${base}/2025/10/filemaker-ser-new-1.jpg`,
-    certifications: {
-      title: "Claris Partner & Certified FileMaker Developers",
-      description:
-        "Our team of certified FileMaker developers holds official credentials spanning FileMaker 13 through FileMaker 18. As a trusted Claris Partner, we deliver enterprise-grade FileMaker applications with proven expertise.",
-      image: `${base}/2025/10/slider-fm-new.jpg`,
-      badges: [
-        { version: "FileMaker 18", title: "Certified Developer" },
-        { version: "FileMaker 17", title: "Certified Developer" },
-        { version: "FileMaker 16", title: "Certified Developer" },
-        { version: "FileMaker 15", title: "Certified Developer" },
-        { version: "FileMaker 14", title: "Certified Developer" },
-        { version: "FileMaker 13", title: "Certified Developer" },
-      ],
-    },
+    heroImage: filemakerHeroImage,
     sections: [
       {
         title: "One-stop shop for FileMaker solutions",
@@ -192,7 +182,7 @@ export const serviceDetails = {
       {
         title: "Experience across industries and locations",
         body: "We have more than 20 years of market experience and industry know-how. More than 100 clients have chosen us for FileMaker projects across finance, construction, media, technology, retail, manufacturing, legal, education, health, and other sectors around the world.",
-        image: `${base}/2022/12/naethra-filemaker.jpg`,
+        image: filemakerServicesImage,
       },
       {
         title: "Integration, migration, and support",
@@ -206,7 +196,7 @@ export const serviceDetails = {
     eyebrow: "Microsoft .NET development",
     intro:
       "Naethra provides full-cycle development services in Microsoft .NET for independent software vendors, product companies, and teams that need scalable custom applications.",
-    heroImage: `${base}/2022/12/net-2.jpg`,
+    heroImage: dotNetHeroImage,
     sections: [
       {
         title: "Benefits of ASP.NET in development",
@@ -229,7 +219,7 @@ export const serviceDetails = {
     eyebrow: "Cloud infrastructure and support",
     intro:
       "Move from infrastructure pressure to dependable delivery with cloud architecture, deployment, monitoring, and support shaped around your product and team.",
-    heroImage: `${base}/2022/09/web-app-img.jpg`,
+    heroImage: awsHeroImage,
     sections: [
       {
         title: "Cloud solutions that fit the business",
@@ -251,4 +241,4 @@ export const serviceDetails = {
       },
     ],
   },
-} satisfies Record<string, ServiceDetail>;
+};

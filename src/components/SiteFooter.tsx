@@ -1,46 +1,79 @@
+"use client";
+
+import "@/styles/content.css";
+import newLogo from "@/assets/logo/logo-w.png";
 import { type FormEvent, useState, type HTMLAttributes } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { Location01Icon, Mail01Icon, SmartPhone01Icon } from "@hugeicons/core-free-icons";
-import { MessageCircle, ArrowRight, Sparkles, Video, Send } from "lucide-react";
+import { ExternalLink, Mail, MapPin, Phone } from "lucide-react";
+
+import { submitFooterContactForm } from "@/lib/contact-form";
+import { SOCIAL_PROFILES } from "@/lib/social";
+
+const MAP_EMBED =
+  "https://maps.google.com/maps?q=37%2C%20Viswanathapuram%20Main%20Rd%2C%20Azeez%20Nagar%2C%20Kodambakkam%2C%20Chennai%2C%20Tamil%20Nadu%20600024&t=m&z=14&output=embed&iwloc=near";
+
+const MAP_LINK =
+  "https://maps.google.com/?q=37,+Viswanathapuram+Main+Rd,+Kodambakkam,+Chennai+600024";
 
 type SiteFooterProps = HTMLAttributes<HTMLElement> & {
-  variant?: "simple" | "detailed";
+  /** Hide Send a Message / Free Demo (used on Contact + Meeting pages). */
+  hideTopContact?: boolean;
 };
 
 export default function SiteFooter({
   className = "",
-  variant,
+  hideTopContact = false,
   ...props
 }: SiteFooterProps) {
-  const [submitted, setSubmitted] = useState(false);
+  const [formStatus, setFormStatus] = useState<"idle" | "submitting" | "success" | "error">(
+    "idle",
+  );
+  const [formMessage, setFormMessage] = useState("");
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setSubmitted(true);
+    const form = event.currentTarget;
+    const data = new FormData(form);
+
+    setFormStatus("submitting");
+    setFormMessage("");
+
+    try {
+      await submitFooterContactForm({
+        name: String(data.get("name") ?? ""),
+        email: String(data.get("email") ?? ""),
+        phone: String(data.get("phone") ?? ""),
+        reason: String(data.get("reason") ?? ""),
+        message: String(data.get("message") ?? ""),
+      });
+      form.reset();
+      setFormStatus("success");
+    } catch (error) {
+      setFormMessage(error instanceof Error ? error.message : "Unable to send your message.");
+      setFormStatus("error");
+    }
   };
 
   return (
-    <footer className={`site-footer ${className}`.trim()} {...props}>
-      {/* Top Section: Send A Message & Request a Free Demo Today */}
-      <div className="site-footer-top-wrap">
-        <div className="site-container site-footer-top-shell">
+    <footer className={`site-footer-detailed ${className}`.trim()} {...props}>
+      {!hideTopContact && (
+        <div className="site-container site-footer-detailed-shell">
           <div className="site-footer-message-panel">
             <h2>Send A Message</h2>
             <form className="site-footer-message-form" onSubmit={handleSubmit}>
               <div className="site-footer-field-row">
                 <label>
                   <span>Your Name</span>
-                  <input aria-label="Your name" name="name" required placeholder="Your Name" />
+                  <input aria-label="Your name" name="name" required />
                 </label>
                 <label>
                   <span>Your Email</span>
-                  <input aria-label="Your email" name="email" type="email" required placeholder="Your Email" />
+                  <input aria-label="Your email" name="email" type="email" required />
                 </label>
               </div>
               <div className="site-footer-field-row">
                 <label>
                   <span>Your Number</span>
-                  <input aria-label="Your phone number" name="phone" type="tel" placeholder="Your Number" />
+                  <input aria-label="Your phone number" name="phone" type="tel" />
                 </label>
                 <label>
                   <span>Choose a Reason</span>
@@ -57,146 +90,139 @@ export default function SiteFooter({
                 </label>
               </div>
               <label className="site-footer-message-field">
-                <span>Message here..</span>
-                <textarea aria-label="Your message" name="message" rows={4} required placeholder="Message here.." />
+                <span>Message here.</span>
+                <textarea aria-label="Your message" name="message" rows={4} required />
               </label>
-              <button type="submit" className="site-footer-send-btn">
-                <span>{submitted ? "Message Sent!" : "Send a message"}</span>
-                <Send size={15} className="send-btn-icon" aria-hidden="true" />
+              <button type="submit" disabled={formStatus === "submitting"}>
+                {formStatus === "submitting" ? "Sending…" : "Send a message"}
               </button>
+              {formStatus === "success" ? (
+                <p className="site-footer-form-success" role="status">
+                  Thanks. We&apos;ll get back to you at the earliest.
+                </p>
+              ) : null}
+              {formStatus === "error" ? (
+                <p className="site-footer-form-error" role="alert">
+                  {formMessage}
+                </p>
+              ) : null}
             </form>
           </div>
 
           <div className="site-footer-demo">
-            <div className="site-footer-demo-header">
-              <span className="demo-tag">
-                <Sparkles size={13} aria-hidden="true" /> Live Meeting
-              </span>
-              <h2>Request a Free Demo Today</h2>
-            </div>
-            
+            <h2>Request a Free Demo Today</h2>
             <a href="/30-mins-meeting" className="site-footer-demo-card">
-              <div className="demo-card-glow" />
-              <div className="demo-icon-ring">
-                <div className="demo-icon-inner">
-                  <Video size={24} aria-hidden="true" />
+              <span className="site-footer-demo-icon" aria-hidden="true">
+                ◉
+              </span>
+              <strong>Meet with Naethra Works</strong>
+              <small>Schedule a conversation about your next product.</small>
+            </a>
+          </div>
+        </div>
+      )}
+
+      <div className="site-footer-map-block">
+        <div className="site-container site-footer-map-wrap">
+          <a className="site-footer-map-open" href={MAP_LINK} target="_blank" rel="noreferrer">
+            Open in Maps
+            <ExternalLink size={14} aria-hidden="true" />
+          </a>
+          <iframe
+            loading="lazy"
+            title="Naethra Technologies office map"
+            src={MAP_EMBED}
+            allowFullScreen
+            referrerPolicy="no-referrer-when-downgrade"
+          />
+        </div>
+      </div>
+
+      <div className="site-footer-detailed-bottom">
+        <div className="site-container site-footer-detailed-grid">
+          <div className="site-footer-about test-k">
+            <img src={newLogo.src} alt="Naethra Technologies" width={150} height={33} />
+            <p>
+              Technology is constantly evolving, shaping the way we live and work. It encompasses
+              innovation, automation, and connectivity.
+            </p>
+            <div className="site-footer-socials" aria-label="Social links">
+              {SOCIAL_PROFILES.map((profile) => (
+                <a
+                  key={profile.id}
+                  href={profile.href}
+                  target="_blank"
+                  rel="noreferrer me"
+                  aria-label={profile.label}
+                >
+                  {profile.short}
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <div className="site-footer-contact-block">
+            <h2>Contact</h2>
+            <div className="site-footer-contact-list">
+              <div className="site-footer-contact-item">
+                <span className="site-footer-contact-icon">
+                  <MapPin size={18} aria-hidden="true" />
+                </span>
+                <div>
+                  <span>Address</span>
+                  <strong>
+                    37, Viswanathapuram Main Rd,
+                    <br />
+                    Azeez Nagar, Kodambakkam,
+                    <br />
+                    Chennai, Tamil Nadu 600024
+                  </strong>
                 </div>
               </div>
-              <div className="demo-card-content">
-                <strong>Meet with Naethra Works</strong>
-                <small>Schedule a 30-minute interactive session to discuss your next product.</small>
+            </div>
+          </div>
+
+          <div className="site-footer-contact-block site-footer-contact-secondary">
+            <div className="site-footer-contact-list">
+              <div className="site-footer-contact-item">
+                <span className="site-footer-contact-icon">
+                  <Phone size={18} aria-hidden="true" />
+                </span>
+                <div>
+                  <span>Phone Number</span>
+                  <strong>
+                    <a href="tel:+914435003204">+91 44 3500 3204</a>
+                  </strong>
+                </div>
               </div>
-              <div className="demo-card-cta">
-                <span>Book 30 Mins Meeting</span>
-                <ArrowRight size={15} className="demo-cta-arrow" aria-hidden="true" />
+              <div className="site-footer-contact-item">
+                <span className="site-footer-contact-icon">
+                  <Mail size={18} aria-hidden="true" />
+                </span>
+                <div>
+                  <span>Email</span>
+                  <strong>
+                    <a href="mailto:info@naethra.com">info@naethra.com</a>
+                  </strong>
+                </div>
               </div>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      {/* Middle Section: Map */}
-      <div className="site-container footer-map-wrap">
-        <iframe
-          className="footer-map"
-          title="Naethra Technologies location"
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3886.810857592566!2d80.2267234!3d13.047708300000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a5266f74b625631%3A0xdf28fa08eca396b9!2sNaethra%20Technologies%20Private%20Limited!5e0!3m2!1sen!2sin!4v1790084108341!5m2!1sen!2sin"
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-        />
-      </div>
-
-      {/* Bottom Section: Brand, Contact, Copy */}
-      <div className="site-container footer-grid">
-        <div className="footer-brand">
-          <a href="/" className="brand-mark" aria-label="Naethra Technologies home">
-            <img
-              src="/logo.png"
-              alt="Naethra Technologies"
-              className="brand-logo brand-logo-inverse"
-              width="220"
-              height="49"
-            />
-          </a>
-          <p>
-            Technology is constantly evolving, shaping the way we live and work. It encompasses
-            innovation, automation, and connectivity.
-          </p>
-          <div className="footer-socials" aria-label="Social links">
-            <a href="https://www.facebook.com/naethratechnologies" aria-label="Facebook">
-              f
-            </a>
-            <a href="https://twitter.com/naethratech" aria-label="X">
-              X
-            </a>
-            <a href="https://www.linkedin.com/company/naethra-technologies/" aria-label="LinkedIn">
-              in
-            </a>
-            <a href="https://www.pinterest.com/naethratechnologies" aria-label="Pinterest">
-              p
-            </a>
-          </div>
-        </div>
-
-        <div className="footer-address">
-          <h3>Contact</h3>
-          <div className="footer-contact-row">
-            <span className="footer-contact-icon">
-              <HugeiconsIcon icon={Location01Icon} size={17} />
-            </span>
-            <div>
-              <span>Address</span>
-              <strong>
-                37, Viswanathapuram Main Rd,
-                <br />
-                Azeez Nagar, Kodambakkam,
-                <br />
-                Chennai, Tamil Nadu 600024
-              </strong>
             </div>
           </div>
         </div>
 
-        <div className="footer-contact-details">
-          <div className="footer-contact-row">
-            <span className="footer-contact-icon">
-              <HugeiconsIcon icon={SmartPhone01Icon} size={17} />
-            </span>
-            <div>
-              <span>Phone Number</span>
-              <strong>+91 44 3500 3204</strong>
-            </div>
-          </div>
-          <div className="footer-contact-row">
-            <span className="footer-contact-icon">
-              <HugeiconsIcon icon={Mail01Icon} size={17} />
-            </span>
-            <div>
-              <span>Email</span>
-              <strong>info@naethra.com</strong>
-            </div>
-          </div>
-        </div>
-
-        <div className="footer-copy">
+        <div className="site-container site-footer-detailed-legal">
           <span>
             2026 © Copyrights <strong>Naethra Technologies</strong> | Designed by{" "}
             <strong>Naethra Technologies</strong>
           </span>
-
-          <div className="footer-links">
+          <nav className="footer-links" aria-label="Footer links">
             <a href="/contact-us">Contact Us</a>
             <a href="/terms-and-conditions">Terms and Conditions</a>
             <a href="/privacy-policy">Privacy Policy</a>
             <a href="/disclaimer-and-notification">Disclaimer and Notification</a>
-          </div>
+          </nav>
         </div>
       </div>
-
-      {/* Floating Chat Button */}
-      <a className="site-footer-chat" href="mailto:info@naethra.com" aria-label="Email Naethra Technologies">
-        <MessageCircle size={24} aria-hidden="true" />
-      </a>
     </footer>
   );
 }

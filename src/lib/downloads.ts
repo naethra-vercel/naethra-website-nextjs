@@ -1,0 +1,155 @@
+import { WORDPRESS_ORIGIN, wordpressAssetUrl } from "@/lib/wordpress-config";
+
+export type DownloadResource = {
+  id: number;
+  title: string;
+  category: string;
+  href: string;
+};
+
+type DownloadManagerPackage = {
+  ID?: number;
+  post_title?: string;
+  post_content?: string;
+};
+
+type DownloadManagerResponse = {
+  packages?: DownloadManagerPackage[];
+};
+
+type DownloadUnlockResponse = {
+  success?: boolean;
+  message?: string;
+  downloadurl?: string;
+  download_url?: string;
+  url?: string;
+};
+
+const DOWNLOADS_FALLBACK: DownloadResource[] = [
+  [46108, "PHP Web Apps", "PHP"],
+  [46079, "WordPress", "WordPress"],
+  [46132, "Ecommerce Solutions", "Ecommerce solutions"],
+  [46133, "Android Apps", "Android"],
+  [46134, "iOS Apps", "iOS"],
+  [46137, "Hybrid Mobile Apps", "Hybrid"],
+  [46138, "Flutter Apps", "Flutter"],
+  [46139, "Content Management Systems (CMS)", "Content Management Systems"],
+  [46140, "Cloud (AWS / AZURE / DevOps)", "Cloud"],
+  [46141, "Angular", "Angular"],
+  [46142, "Custom Web Publishing (CWP)", "CWP"],
+  [46143, "Claris FileMaker", "Claris FileMaker"],
+  [46188, "Java", "Java"],
+  [46198, ".Net", ".Net"],
+  [46476, "Database Management", "Database"],
+  [46479, "Mobile Project", "Mobile"],
+  [46489, "Oracle project", "Oracle"],
+  [46490, "Shopify Project", "Shopify"],
+  [46491, "WordPress Integration With FileMaker", "WordPress / FileMaker"],
+  [46496, "Web Project", "Web"],
+].map(([id, title, category]) => ({
+  id: id as number,
+  title: title as string,
+  category: category as string,
+  href: `${WORDPRESS_ORIGIN}/?p=${id}`,
+}));
+
+const fallbackById = new Map(DOWNLOADS_FALLBACK.map((item, index) => [item.id, { item, index }]));
+
+export async function getDownloads() {
+  try {
+    const response = await fetch(`${WORDPRESS_ORIGIN}/wp-json/wpdm/search`, {
+      next: { revalidate: 60 },
+    });
+    if (!response.ok) throw new Error(`Downloads request failed: ${response.status}`);
+
+    const data = (await response.json()) as DownloadManagerResponse;
+    const downloads = (data.packages ?? [])
+      .map((item): DownloadResource | null => {
+        if (typeof item.ID !== "number" || !item.post_title) return null;
+        return {
+          id: item.ID,
+          title: item.post_title,
+          category:
+            item.post_content?.trim() ||
+            fallbackById.get(item.ID)?.item.category ||
+            "Project resource",
+          href: `${WORDPRESS_ORIGIN}/?p=${item.ID}`,
+        };
+      })
+      .filter((item): item is DownloadResource => item !== null)
+      .sort((a, b) => a.title.localeCompare(b.title, undefined, { sensitivity: "base" }));
+
+    return downloads.length > 0
+      ? downloads
+      : [...DOWNLOADS_FALLBACK].sort((a, b) =>
+          a.title.localeCompare(b.title, undefined, { sensitivity: "base" }),
+        );
+  } catch {
+    return [...DOWNLOADS_FALLBACK].sort((a, b) =>
+      a.title.localeCompare(b.title, undefined, { sensitivity: "base" }),
+    );
+  }
+}
+
+function extractDownloadUrl(result: DownloadUnlockResponse) {
+  const value = result.downloadurl || result.download_url || result.url || "";
+  if (/^https?:\/\//i.test(value)) return wordpressAssetUrl(value);
+
+  const html = `${value} ${result.message ?? ""}`;
+  const href = html.match(/href=["']([^"']+)["']/i)?.[1];
+  return href ? wordpressAssetUrl(new URL(href, WORDPRESS_ORIGIN).toString()) : "";
+}
+
+function plainMessage(message?: string) {
+  return (
+    message
+      ?.replace(/<[^>]*>/g, " ")
+      .replace(/&nbsp;/gi, " ")
+      .replace(/\s+/g, " ")
+      .trim() || "The password is incorrect. Please try again."
+  );
+}
+
+async function validateDownloadPassword(packageId: number, password: string) {
+  if (!Number.isInteger(packageId) || packageId < 1) {
+    throw new Error("Invalid download.");
+  }
+  const trimmed = password.trim();
+  if (!trimmed || trimmed.length > 200) {
+    throw new Error("Enter a valid password.");
+  }
+
+  const body = new URLSearchParams({
+    __wpdm_ID: String(packageId),
+    dataType: "json",
+    execute: "wpdm_getlink",
+    action: "wpdm_ajax_call",
+    password: trimmed,
+  });
+  const response = await fetch(`${WORDPRESS_ORIGIN}/wp-json/wpdm/validate-password`, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body,
+  });
+  const result = (await response.json().catch(() => null)) as DownloadUnlockResponse | null;
+
+  if (!response.ok || !result) {
+    throw new Error("WordPress could not validate this download.");
+  }
+  return result;
+}
+
+export async function unlockDownload(packageId: number, password: string) {
+  const result = await validateDownloadPassword(packageId, password);
+
+  if (!result.success) {
+    throw new Error(plainMessage(result?.message));
+  }
+
+  const downloadUrl = extractDownloadUrl(result);
+  if (!downloadUrl) {
+    throw new Error("The download link could not be created. Please try again.");
+  }
+
+  return downloadUrl;
+}

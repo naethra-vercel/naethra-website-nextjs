@@ -1,5 +1,13 @@
+"use client";
+
 import React, { useEffect } from "react";
 import Lenis from "lenis";
+
+declare global {
+  interface Window {
+    __naethraLenis?: Lenis | null;
+  }
+}
 
 export function SmoothScroll({ children }: { children?: React.ReactNode }) {
   useEffect(() => {
@@ -12,6 +20,7 @@ export function SmoothScroll({ children }: { children?: React.ReactNode }) {
       touchMultiplier: 1.5,
       infinite: false,
     });
+    window.__naethraLenis = lenis;
 
     let rafId: number;
 
@@ -45,6 +54,7 @@ export function SmoothScroll({ children }: { children?: React.ReactNode }) {
     return () => {
       document.removeEventListener("click", handleAnchorClick);
       cancelAnimationFrame(rafId);
+      if (window.__naethraLenis === lenis) window.__naethraLenis = null;
       lenis.destroy();
     };
   }, []);

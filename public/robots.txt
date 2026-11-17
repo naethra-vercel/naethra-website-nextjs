@@ -12,3 +12,11 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+# Latin placeholder / demo posts still published in WordPress — keep them out of crawl.
+Disallow: /blogs/excepteur-sint-cupidatat-non-proident-sunt-in-culpa
+Disallow: /blogs/excepteur-sint-cupidatat-non-proident-sunt-in-culpa-2
+Disallow: /blogs/duis-aute-irure-dolor-in-reprehenderit-in-voluptate
+Disallow: /blogs/duis-aute-irure-dolor-in-reprehenderit-in-voluptate-2
+
+Sitemap: https://naethra.com/sitemap.xml
