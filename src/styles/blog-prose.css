@@ -1,0 +1,160 @@
+/* Blog article prose — styles Elementor-extracted semantic HTML with a modern reading layout */
+
+.blog-prose {
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.8;
+}
+
+.blog-prose > :first-child {
+  margin-top: 0;
+}
+
+.blog-prose :where(h2, h3, h4, h5, h6) {
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.2;
+}
+
+.blog-prose h2 {
+  margin: 2.4rem 0 0.85rem;
+  font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+}
+
+.blog-prose h3 {
+  margin: 2rem 0 0.7rem;
+  font-size: clamp(1.2rem, 2vw, 1.45rem);
+}
+
+.blog-prose h4,
+.blog-prose h5,
+.blog-prose h6 {
+  margin: 1.6rem 0 0.55rem;
+  font-size: 1.1rem;
+}
+
+.blog-prose p {
+  max-width: 42rem;
+  margin: 0 0 1.15rem;
+}
+
+.blog-prose :where(ul, ol) {
+  max-width: 42rem;
+  margin: 0 0 1.35rem;
+  padding-left: 1.35rem;
+}
+
+.blog-prose ol {
+  list-style: decimal;
+}
+
+.blog-prose ul {
+  list-style: disc;
+}
+
+.blog-prose li {
+  margin-bottom: 0.7rem;
+  padding-left: 0.25rem;
+}
+
+.blog-prose li::marker {
+  color: var(--blue);
+  font-weight: 700;
+}
+
+.blog-prose a {
+  color: var(--blue);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.blog-prose a:hover {
+  color: var(--blue-deep);
+}
+
+.blog-prose strong,
+.blog-prose b {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.blog-prose blockquote {
+  max-width: 40rem;
+  margin: 1.75rem 0;
+  border-left: 3px solid var(--blue);
+  padding-left: 1.1rem;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  letter-spacing: -0.02em;
+}
+
+.blog-prose figure {
+  margin: 1.75rem 0;
+}
+
+.blog-prose img {
+  display: block;
+  width: 100%;
+  max-width: 48rem;
+  height: auto;
+  margin-inline: auto;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: #eef2f8;
+}
+
+.blog-prose pre {
+  max-width: 48rem;
+  margin: 1.4rem 0;
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  background: #eef2f8;
+  padding: 1rem 1.1rem;
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  line-height: 1.55;
+}
+
+.blog-prose code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+.blog-prose :not(pre) > code {
+  border-radius: 0.35rem;
+  background: #e8edf6;
+  padding: 0.12rem 0.4rem;
+  color: var(--ink);
+}
+
+.blog-prose table {
+  width: 100%;
+  max-width: 48rem;
+  margin: 1.5rem 0;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.blog-prose :where(th, td) {
+  border: 1px solid var(--line);
+  padding: 0.7rem 0.85rem;
+  text-align: left;
+}
+
+.blog-prose th {
+  background: #e8edf6;
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.blog-prose hr {
+  margin: 2.25rem 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+}

@@ -1,6 +1,7 @@
 import founderImage from "@/assets/putech-founder.jpg";
 import projectImage from "@/assets/putech-project.jpg";
 import teamImage from "@/assets/putech-team.jpg";
+import { assetSrc } from "@/lib/asset-src";
 
 export type BlogPost = {
   slug: string;
@@ -23,7 +24,7 @@ export const blogPosts: BlogPost[] = [
     title: "Tips for Writing Clean and Reusable Flutter Code",
     excerpt:
       "A practical approach to building Flutter codebases that stay readable, testable, and ready for the next feature.",
-    image: projectImage,
+    image: assetSrc(projectImage),
     intro:
       "Flutter makes it possible to move quickly, but speed only compounds when the code remains easy to understand. Clear boundaries, small widgets, and deliberate naming give a growing product room to breathe.",
     sections: [
@@ -49,7 +50,7 @@ export const blogPosts: BlogPost[] = [
     title: "The Great Debate: Flutter vs React Native",
     excerpt:
       "The right cross-platform choice depends on your product, team, and long-term maintenance plan, not a popularity contest.",
-    image: teamImage,
+    image: assetSrc(teamImage),
     intro:
       "Flutter and React Native both help teams ship across platforms. The useful question is not which framework wins in general, but which one fits your product constraints and the people who will maintain it.",
     sections: [
@@ -71,7 +72,7 @@ export const blogPosts: BlogPost[] = [
     title: "Optimising Performance in Flutter Apps",
     excerpt:
       "Practical performance improvements begin with measuring the slow path and end with a calmer, more responsive product.",
-    image: founderImage,
+    image: assetSrc(founderImage),
     intro:
       "Performance is a user experience signal. Flutter gives teams strong tools for smooth interfaces, but those tools work best when performance is treated as a measurable product requirement.",
     sections: [
@@ -93,7 +94,7 @@ export const blogPosts: BlogPost[] = [
     title: "Understanding the Flutter Architecture and Why It Matters",
     excerpt:
       "A closer look at the layers that make Flutter flexible and how architecture decisions affect everyday development.",
-    image: projectImage,
+    image: assetSrc(projectImage),
     intro:
       "Understanding the framework's layers helps teams make better decisions when a product grows beyond a collection of screens. Architecture becomes useful when it clarifies trade-offs rather than adding ceremony.",
     sections: [
@@ -115,7 +116,7 @@ export const blogPosts: BlogPost[] = [
     title: "Create and Update an Event in Google Calendar from FileMaker",
     excerpt:
       "Connect FileMaker workflows with Google Calendar so teams can move from a record to a scheduled action without duplicate entry.",
-    image: teamImage,
+    image: assetSrc(teamImage),
     intro:
       "When a business process lives in FileMaker but the calendar lives elsewhere, small integration gaps quickly become daily friction. A focused API connection can keep both systems useful and in sync.",
     sections: [
@@ -137,7 +138,7 @@ export const blogPosts: BlogPost[] = [
     title: "FileMaker Integration with Microsoft OneDrive",
     excerpt:
       "Bring documents into the workflow your team already understands with a dependable FileMaker and OneDrive connection.",
-    image: founderImage,
+    image: assetSrc(founderImage),
     intro:
       "Document workflows often fail at the handoff between a business record and the file attached to it. Connecting FileMaker with OneDrive can make that relationship visible, searchable, and easier to maintain.",
     sections: [
@@ -159,7 +160,7 @@ export const blogPosts: BlogPost[] = [
     title: "Why Your Business Needs a Thoughtful Digital Roadmap",
     excerpt:
       "A useful roadmap connects business priorities to the sequence of product decisions that will create measurable progress.",
-    image: projectImage,
+    image: assetSrc(projectImage),
     intro:
       "Digital transformation is rarely blocked by a lack of ideas. It is blocked by too many competing ideas and no shared way to decide what comes next.",
     sections: [
@@ -181,7 +182,7 @@ export const blogPosts: BlogPost[] = [
     title: "Five Ways Modern Teams Can Build Better Software",
     excerpt:
       "Better software comes from better feedback loops: clearer decisions, smaller releases, and a closer relationship with real users.",
-    image: teamImage,
+    image: assetSrc(teamImage),
     intro:
       "Tools change quickly, but the habits behind reliable delivery are remarkably consistent. Strong teams make the work visible, reduce uncertainty, and keep learning close to the code.",
     sections: [
