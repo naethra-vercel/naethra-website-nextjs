@@ -34,6 +34,11 @@ import gsap from "gsap";
 import aboutElevateImage from "@/assets/design/about-section/about-elevate.jpg";
 import aboutInnovateImage from "@/assets/design/about-section/about-innovate.jpg";
 import aboutIntegrateImage from "@/assets/design/about-section/about-integrate.jpg";
+import adLogo from "@/assets/client-logo/ad.png";
+import drievLogo from "@/assets/client-logo/driev.png";
+import gbLogo from "@/assets/client-logo/gb.png";
+import giftoLogo from "@/assets/client-logo/gifto.png";
+import neocodeLogo from "@/assets/client-logo/neocode.png";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   Smartphone,
@@ -353,7 +358,20 @@ export default function HomePage({
       image: hasRealPortrait ? rawImage : uniquePortrait(item.name, index),
     };
   });
-  const clients = home.clients.length > 0 ? home.clients : valuedClients;
+  const localClients = [
+    { name: "Driev", logo: assetSrc(drievLogo) },
+    { name: "AD", logo: assetSrc(adLogo) },
+    { name: "GB", logo: assetSrc(gbLogo) },
+    { name: "NeoCode", logo: assetSrc(neocodeLogo) },
+    { name: "Gifto", logo: assetSrc(giftoLogo) },
+  ];
+  const localClientNames = new Set(localClients.map((client) => client.name.toLowerCase()));
+  const clients = [
+    ...(home.clients.length > 0 ? home.clients : valuedClients).filter(
+      (client) => !localClientNames.has(client.name.toLowerCase()),
+    ),
+    ...localClients,
+  ];
   const offerServices = home.offerServices.map((service) => {
     const meta =
       offerServiceMeta.find((item) => item.key.test(service.title)) ?? offerServiceMeta[0]!;
