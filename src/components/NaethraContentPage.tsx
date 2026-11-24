@@ -107,6 +107,7 @@ type ContentPageProps = {
   compact?: boolean;
   className?: string;
   heroBannerImage?: string;
+  revealArticle?: boolean;
 };
 
 export default function NaethraContentPage({
@@ -117,6 +118,7 @@ export default function NaethraContentPage({
   compact = false,
   className = "",
   heroBannerImage,
+  revealArticle = true,
 }: ContentPageProps) {
   useEffect(() => {
     const revealElements = document.querySelectorAll<HTMLElement>("[data-reveal]");
@@ -159,7 +161,10 @@ export default function NaethraContentPage({
           </div>
         </section>
       )}
-      <article className="content-page-body site-container" data-reveal="fade-up">
+      <article
+        className="content-page-body site-container"
+        data-reveal={revealArticle ? "fade-up" : undefined}
+      >
         {children}
       </article>
     </main>

@@ -10,7 +10,12 @@ export default async function Page() {
   if (!page) notFound();
 
   return (
-    <NaethraContentPage eyebrow="Agreement and support" title={page.title} compact>
+    <NaethraContentPage
+      eyebrow="Agreement and support"
+      title={page.title}
+      compact
+      revealArticle={false}
+    >
       <div
         className="content-page-html"
         dangerouslySetInnerHTML={{ __html: page.contentHtml }}
