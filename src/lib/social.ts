@@ -3,7 +3,7 @@ export const SOCIAL_PROFILES = [
   {
     id: "facebook",
     label: "Facebook",
-    href: "https://www.facebook.com/naethratechnologies",
+    href: "https://www.facebook.com/NTPL2006/",
     short: "f",
   },
   {
